@@ -1,0 +1,32 @@
+{
+  "name": "aframe-material-collection",
+  "version": "0.1.0",
+  "description": "Material UI based primitives and components for use in your aframe projects.",
+  "homepage": "",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/shaneharris"
+  },
+  "bugs": {
+    "url": ""
+  },
+  "devDependencies": {
+    "aframe": "^0.8.2",
+    "babelify": "~5.0.3",
+    "browser-sync": "^2.24.5",
+    "browserify": "^6.3.3",
+    "gulp": "^3.9.1",
+    "gulp-plumber": "^1.2.0",
+    "gulp-rename": "^1.2.0",
+    "gulp-util": "^3.0.8",
+    "lodash": "^2.4.1",
+    "rimraf": "~2.2.8",
+    "vinyl-source-stream": "^1.0.0",
+    "watchify": "^2.1.1"
+  },
+  "author": "Shane Harris",
+  "license": "MIT",
+  "dependencies": {
+    "css-layout": "^1.1.1"
+  }
+}
