@@ -2,13 +2,13 @@
   "name": "aframe-material-collection",
   "version": "0.1.0",
   "description": "Material UI based primitives and components for use in your aframe projects.",
-  "homepage": "",
+  "homepage": "https://github.com/shaneharris/aframe-material-collection",
   "repository": {
     "type": "git",
-    "url": "git://github.com/shaneharris"
+    "url": "git@github.com:shaneharris/aframe-material-collection.git"
   },
   "bugs": {
-    "url": ""
+    "url": "https://github.com/shaneharris/aframe-material-collection/issues"
   },
   "devDependencies": {
     "babelify": "~5.0.3",
