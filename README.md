@@ -1,7 +1,7 @@
 # AFRAME Material Collection.
 ![Demo](https://raw.githubusercontent.com/shaneharris/aframe-material-collection/master/demo.gif)
 
-Aframe Material Components uses material design and the yoga layout engine to make prototyping UI configurations much easier inside aframe.
+Aframe Material Components uses material design and the [yoga layout engine](https://github.com/facebook/yoga) to make prototyping UI configurations much easier inside aframe.
 It goes further than providing some reusable components for your UI, but also integrated yoga for flex layouts made easy. 2D primitives
 used inside the a-ui-scroll-pane primitive are automatically measured for width and height to allow the layout engine to automatically place
 them with default settings, but all of these can be overridden with the ui-yoga component to allow granular control over the layout properties.
