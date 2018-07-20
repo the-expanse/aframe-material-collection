@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Material UI based primitives and components for use in your aframe projects.",
   "homepage": "https://github.com/shaneharris/aframe-material-collection",
+  "keywords":"AFRAME,UI,Material",
   "repository": {
     "type": "git",
     "url": "git@github.com:shaneharris/aframe-material-collection.git"

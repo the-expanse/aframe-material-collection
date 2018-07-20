@@ -5,8 +5,30 @@ Aframe Material Components uses material design and the [yoga layout engine](htt
 It goes further than providing some reusable components for your UI, but also integrates yoga for easy and powerful flex layouts. 2D primitives used inside the a-ui-scroll-pane are automatically measured for width and height to allow the layout engine to automatically place them with default settings, but all of these can be overridden with the ui-yoga component to allow granular control over the layout properties. Note only a subset of 2D primitives are supported for auto layout including a-plane, a-circle, a-ring, a-text ( width width and height explicitly set ) and all the primitives below.
 
 
-TODOs:
+## Getting Started
 
+#### Installing
+
+```
+npm i aframe-material-collection
+```
+
+#### Running
+
+```
+gulp watch
+```
+
+#### Building
+
+```
+gulp build
+```
+
+
+## TODOs:
+
+* Move to webpack build tools.
 * Need to expose the padding/border/margin sides as seperate properties to allow them to be used in conjunction.
 * Need to listen for clicks on the scoll rail - currently its just the handle that listens for click events.
 * Need to add mousewheel/touchpad/joystick support for scolling.
