@@ -7,9 +7,7 @@
  */
 module.exports = AFRAME.registerPrimitive('a-ui-switch', AFRAME.utils.extendDeep({}, AFRAME.primitives.getMeshMixin(), {
     defaultComponents: {
-        "ui-switch":{
-            hasShadow: true
-        }
+        "ui-switch":{}
     },
     mappings: {
         value: 'ui-switch.value',
