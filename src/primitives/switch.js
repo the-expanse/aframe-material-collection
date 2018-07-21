@@ -12,6 +12,5 @@ module.exports = AFRAME.registerPrimitive('a-ui-switch', AFRAME.utils.extendDeep
     mappings: {
         value: 'ui-switch.value',
         disabled: 'ui-switch.disabled',
-        "has-shadow":'ui-switch.hasShadow',
     }
 }));

@@ -69,6 +69,7 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
                 this.ripple.geometry = this.rippleGeometry.clone();
                 this.el.object3D.add(this.ripple);
                 // Reset throttle flag.
+                console.log('rippling done');
                 this.isRippling = false;
             })
             .easing(TWEEN.Easing.Exponential.Out).start();
@@ -82,6 +83,7 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
             })
             .onComplete(()=>{
                 material.opacity = 0.4;
+                console.log('fading done');
             })
             .easing(TWEEN.Easing.Exponential.Out).start();
     }

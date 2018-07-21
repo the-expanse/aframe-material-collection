@@ -7,7 +7,9 @@
  */
 module.exports = AFRAME.registerPrimitive('a-ui-scroll-pane', AFRAME.utils.extendDeep({}, AFRAME.primitives.getMeshMixin(), {
     defaultComponents: {
-        "ui-scroll-pane":{}
+        "ui-scroll-pane":{
+
+        }
     },
     mappings: {
         width:"ui-scroll-pane.width",

@@ -30,13 +30,12 @@ module.exports = AFRAME.registerComponent('ui-radio', {
         this.el.components.material.material.color = new THREE.Color(this.data.disabled?this.data.disabledColor:this.data.unselectedColor);
         this.el.appendChild(this.filled_circle);
         // Create backing for getting click events.
-        let backing = document.createElement('a-circle');
-        backing.setAttribute('radius',this.data.selectedRadius+0.04);
-        // backing.setAttribute('height',0.21);
+        let backing = document.createElement('a-plane');
+        backing.setAttribute('width',0.21);
+        backing.setAttribute('height',0.21);
         backing.setAttribute('position','0 0 -0.002');
         backing.setAttribute('class','intersectable no-yoga-layout');
-        backing.setAttribute('transparent',true);
-        backing.setAttribute('opacity',0.00001);
+        backing.setAttribute('visible',false);
         backing.setAttribute('shader','flat');
         backing.setAttribute('segments',6);
         this.el.appendChild(backing);

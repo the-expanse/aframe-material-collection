@@ -10,7 +10,7 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
     schema: {
         value: {type:'boolean',default: false},
         selectedColor: {default: '#009688'},
-        unselectedColor: {default: '#5f5f5f'},
+        unselectedColor: {default: '#7f7f7f'},
         disabledColor: {default: '#afafaf'},
         indeterminate: {type:'boolean',default: false},
         disabled:{type:'boolean',default: false}

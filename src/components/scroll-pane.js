@@ -93,20 +93,9 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.backgroundPanel.setAttribute('width',this.data.width+1);
         this.backgroundPanel.setAttribute('height',this.data.height+1);
         this.backgroundPanel.setAttribute('position','0 0 -0.013');
-        this.backgroundPanel.setAttribute('color','#cfcfcf');
-        this.backgroundPanel.setAttribute('shader','flat');
-        this.backgroundPanel.setAttribute('side','double');
+        this.backgroundPanel.setAttribute('visible',false);
         this.el.appendChild(this.backgroundPanel);
-
-        // Semi-opaque background on the content section
-        let contentBack = document.createElement('a-plane');
-        contentBack.setAttribute('width',this.data.width);
-        contentBack.setAttribute('height',this.data.height);
-        contentBack.setAttribute('position','0 0 -0.012');
-        contentBack.setAttribute('color','#fff');
-        contentBack.setAttribute('transparent','true');
-        contentBack.setAttribute('opacity','0.1');
-        this.el.appendChild(contentBack);
+        console.log(this.data.contentBack);
 
         // Add scroll bar rail.
         this.rail = document.createElement('a-plane');
