@@ -16,19 +16,18 @@ npm i aframe-material-collection
 #### Running
 
 ```
-gulp watch
+npm start
 ```
 
 #### Building
 
 ```
-gulp build
+npm run build
 ```
 
 
 ## TODOs:
 
-* Move to webpack build tools.
 * Need to expose the padding/border/margin sides as seperate properties to allow them to be used in conjunction.
 * Need to listen for clicks on the scoll rail - currently its just the handle that listens for click events.
 * Need to add mousewheel/touchpad/joystick support for scolling.
@@ -48,6 +47,14 @@ gulp build
     <a-entity class="container"></a-entity>
 </a-ui-scroll-pane>
 ```
+#### Properties
+
+| Property   | Description                                                                                 | Default Value |
+| --------   | -----------                                                                                 | ------------- |
+| channel    | String to specify to only render logs that are sent with a specific channel.                | ''            |
+| filter     | Plain-text string filter. (e.g., `filter: bar` would match log messages with `bar` in them. | ''            |
+| max        | Max number of logs to show at a time.                                                       | 100           |
+| showErrors | Whether to show JS errors.                                                                  | true          |
 
 #### Button
 

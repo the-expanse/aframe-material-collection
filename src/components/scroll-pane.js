@@ -17,8 +17,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.setupElements();
         // Grab content container.
         this.container = this.el.querySelector('.container');
-
-        if (typeof this.container === 'undefined') {
+        if(typeof this.container === 'undefined'){
             throw 'ui-scroll-pane needs an entity inside it with the class "container" - <a-entity class="container"></a-entity>';
         }
         // Setup scroll bar.
@@ -291,7 +290,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                                 vertexParts.splice(vertexMainIndex+2,0,'#include <begin_vertex>');
                                 vertexParts.splice(vertexParts.length-2,0,'#include <project_vertex>');
                                 vertexParts.splice(vertexParts.length-2,0,'#include <clipping_planes_vertex>');
-                                shader.vertexShader = vertexParts.join('\n')
+                                shader.vertexShader = vertexParts.join('\n');
                                 let fragmentParts = shader.fragmentShader.split('\n');
                                 let fragmentMainIndex = fragmentParts.indexOf('void main() {');
                                 fragmentParts.splice(fragmentMainIndex,0,'#include <clipping_planes_pars_fragment>');
@@ -318,6 +317,5 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             // Recurse.
             this.setChildClips(child);
         })
-
     }
 });

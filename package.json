@@ -3,7 +3,15 @@
   "version": "0.1.1",
   "description": "Material UI based primitives and components for use in your aframe projects.",
   "homepage": "https://github.com/shaneharris/aframe-material-collection",
-  "keywords":"AFRAME,UI,Material",
+  "keywords": [
+    "AFRAME",
+    "UI",
+    "Material"
+  ],
+  "scripts": {
+    "start": "webpack-dev-server --mode development",
+    "build": "webpack --mode production"
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:shaneharris/aframe-material-collection.git"
@@ -12,21 +20,10 @@
     "url": "https://github.com/shaneharris/aframe-material-collection/issues"
   },
   "devDependencies": {
-    "babelify": "~5.0.3",
-    "browser-sync": "^2.24.5",
-    "browserify": "^16.2.2",
-    "gulp": "^3.9.1",
-    "gulp-plumber": "^1.2.0",
-    "gulp-rename": "^1.2.0",
-    "gulp-util": "^3.0.8",
-    "lodash": "^2.4.1",
-    "rimraf": "~2.2.8",
-    "vinyl-source-stream": "^1.0.0",
-    "watchify": "^2.1.1"
+    "webpack": "^4.16.1",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.4"
   },
   "author": "Shane Harris",
-  "license": "MIT",
-  "dependencies": {
-    "css-layout": "^1.1.1"
-  }
+  "license": "MIT"
 }
