@@ -21,7 +21,7 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
     init(){
         // Setup circle geometry for ripple effect
         this.rippleGeometry = new THREE.CircleGeometry(Math.max(this.data.size.x,this.data.size.y),this.data.segments);
-        this.ripple = new THREE.Mesh(this.rippleGeometry.clone(),new THREE.MeshBasicMaterial({color:this.data.color,transparent:true, opacity:0.4}));
+        this.ripple = new THREE.Mesh(this.rippleGeometry.clone(),new THREE.MeshBasicMaterial({color:this.data.color,transparent:true, opacity:0.4,alphaTest:0.1}));
         this.ripple.scale.set(0.00001,0.00001,0.00001);
         this.el.object3D.add(this.ripple);
         this.el.addEventListener('click',this.click.bind(this));
