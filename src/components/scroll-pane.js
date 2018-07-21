@@ -94,18 +94,10 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.backgroundPanel.setAttribute('width',this.data.width+1);
         this.backgroundPanel.setAttribute('height',this.data.height+1);
         this.backgroundPanel.setAttribute('position','0 0 -0.013');
-        this.backgroundPanel.setAttribute('color','#9f9f9f');
-        this.backgroundPanel.setAttribute('shadow','receive: true');
+        this.backgroundPanel.setAttribute('color','#cfcfcf');
+        this.backgroundPanel.setAttribute('shader','flat');
+        this.backgroundPanel.setAttribute('side','double');
         this.el.appendChild(this.backgroundPanel);
-
-        // Rear face of panel - no shading on this one as it caused weridness with the lighting/shadows.
-        let backFace = document.createElement('a-plane');
-        backFace.setAttribute('width',this.data.width+1);
-        backFace.setAttribute('height',this.data.height+1);
-        backFace.setAttribute('color','#fff');
-        backFace.setAttribute('position','0 0 -0.014');
-        backFace.setAttribute('side','back');
-        this.el.appendChild(backFace);
 
         // Semi-opaque background on the content section
         let contentBack = document.createElement('a-plane');
@@ -122,6 +114,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.rail.setAttribute('class','rail');
         this.rail.setAttribute('width',0.1);
         this.rail.setAttribute('height',this.data.height);
+        this.rail.setAttribute('shader','flat');
         this.el.appendChild(this.rail);
 
         // Add scroll bar handle.
@@ -130,6 +123,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.handle.setAttribute('width',0.1);
         this.handle.setAttribute('height',this.data.height);
         this.handle.setAttribute('color','#009688');
+        this.handle.setAttribute('shader','flat');
         this.el.appendChild(this.handle);
     },
     setupYogaNode(node,width,height,properties){

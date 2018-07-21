@@ -12,11 +12,10 @@ module.exports = AFRAME.registerComponent('ui-switch', {
         disabled:{type:'boolean',default: false},
         progressColor:{default:'#009688'},
         handleColor:{default:'#4db6ac'},
-        handleDisabledColor:{default:'#cfcfcf'},
+        handleDisabledColor:{default:'#afafaf'},
         railColor:{default:'#fff'},
         switchDuration:{type:'int',default: 350},
         handleZIndex:{type:'number',default:0.01},
-        hasShadow: {type:'boolean',default: false},
         intersectableClass: {default: 'intersectable'},
     },
     updateSchema(){
@@ -37,16 +36,13 @@ module.exports = AFRAME.registerComponent('ui-switch', {
         this.height = 0.3;
         // Setup handle circle entity.
         this.handleEl = document.createElement('a-circle');
-        this.handleEl.setAttribute('radius',0.1);
+        this.handleEl.setAttribute('radius',0.11);
         this.handleEl.setAttribute('color',this.data.handleColor);
         this.handleEl.setAttribute('shader','flat');
-        this.handleEl.setAttribute('side',this.data.hasShadow?'double':'front');
         this.handleEl.setAttribute('ui-ripple','size:0.2 0.2;color:#999;fadeDelay:300;duration:500');
         this.handleEl.setAttribute('class',this.data.intersectableClass+' no-yoga-layout');
         this.handleEl.setAttribute('position','-0.1 0 '+this.data.handleZIndex);
-        if(this.data.hasShadow){
-            this.handleEl.setAttribute('shadow','receive:false');
-        }
+        this.handleEl.setAttribute('segments',6);
         this.el.appendChild(this.handleEl);
 
         // Setup rail entity.
@@ -56,11 +52,6 @@ module.exports = AFRAME.registerComponent('ui-switch', {
         this.railEl.setAttribute('ui-rounded','borderRadius:0.05');
         this.railEl.setAttribute('color',this.data.railColor);
         this.railEl.setAttribute('class',this.data.intersectableClass+' no-yoga-layout');
-        if(this.data.hasShadow){
-            // Add shadow component
-            this.railEl.setAttribute('shadow','cast:false');
-            this.railEl.setAttribute('side','double');
-        }
         this.el.appendChild(this.railEl);
         // Wait for the rounded edge on the rail to load to clone the geometry for the
         // selected progress bar part of the rail

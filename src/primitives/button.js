@@ -20,7 +20,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-button', AFRAME.utils.extendDeep
             transparent: true,
         },
         "ui-btn":{},
-        "ui-rounded":{borderRadius:0.02},
+        "ui-rounded":{borderRadius:0.005},
         "ui-ripple":{size:{x:1,y:0.35},clampToSquare:true,zIndex:0.001},
         text:{
             font:'roboto',

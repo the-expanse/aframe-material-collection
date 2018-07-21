@@ -9,7 +9,8 @@ module.exports = AFRAME.registerPrimitive('a-ui-fab-button-small', AFRAME.utils.
     defaultComponents: {
         geometry: {
             primitive: 'circle',
-            radius: 0.15
+            radius: 0.15,
+            segments:6
         },
         material: {
             color: '#009688',

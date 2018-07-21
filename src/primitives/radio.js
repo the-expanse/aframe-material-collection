@@ -11,7 +11,8 @@ module.exports = AFRAME.registerPrimitive('a-ui-radio', AFRAME.utils.extendDeep(
         "geometry":{
             primitive:'ring',
             radiusInner:0.115,
-            radiusOuter:0.135
+            radiusOuter:0.135,
+            segmentsTheta:6
         },
         "material":{
             shader:'flat',

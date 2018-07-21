@@ -10,7 +10,8 @@ module.exports = AFRAME.registerPrimitive('a-ui-fab-button', AFRAME.utils.extend
     defaultComponents: {
         geometry: {
             primitive: 'circle',
-            radius: 0.2
+            radius: 0.2,
+            segments:6
         },
         material: {
             color: '#009688',
@@ -19,7 +20,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-fab-button', AFRAME.utils.extend
             transparent: true,
         },
         "ui-btn":{},
-        "ui-ripple":{size:{x:0.21,y:0.21},zIndex:0.002,fadeDelay:300,duration:500},
+        "ui-ripple":{size:{x:0.2,y:0.2},zIndex:0.002,fadeDelay:300,duration:500},
         "ui-icon":{size:{x:0.21,y:0.21}}
     },
     mappings: {

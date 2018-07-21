@@ -9,7 +9,7 @@
 module.exports = AFRAME.registerComponent('ui-rounded', {
     schema: {
         borderRadius: {type: 'number', default: 0.01},
-        curveSegments:{type: 'int', default: 2},
+        curveSegments:{type: 'int', default: 1},
     },
     init() {
         this.el.addEventListener('loaded',()=>{

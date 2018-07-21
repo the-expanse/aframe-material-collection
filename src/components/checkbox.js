@@ -10,8 +10,8 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
     schema: {
         value: {type:'boolean',default: false},
         selectedColor: {default: '#009688'},
-        unselectedColor: {default: '#afafaf'},
-        disabledColor: {default: '#cfcfcf'},
+        unselectedColor: {default: '#5f5f5f'},
+        disabledColor: {default: '#afafaf'},
         indeterminate: {type:'boolean',default: false},
         disabled:{type:'boolean',default: false}
     },
@@ -27,6 +27,7 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
         backing.setAttribute('width',0.21);
         backing.setAttribute('height',0.21);
         backing.setAttribute('position','0 0 -0.002');
+        backing.setAttribute('shader','flat');
         backing.setAttribute('class','intersectable no-yoga-layout');
         backing.setAttribute('transparent',true);
         // Zero opacity seems to disable click event.
@@ -153,11 +154,10 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
     line(is_vertical){
         // Create horizontal/vertical line.
         let line = document.createElement('a-plane');
-        line.setAttribute('width',is_vertical?0.02:0.2);
-        line.setAttribute('height',is_vertical?0.2:0.02);
+        line.setAttribute('width',is_vertical?0.02:0.21);
+        line.setAttribute('height',is_vertical?0.21:0.02);
         line.setAttribute('class','no-yoga-layout');
         line.setAttribute('shader','flat');
-        line.setAttribute('ui-rounded','borderRadius:0.01');
         return line;
     }
 });
