@@ -261,7 +261,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             if(highest>this.content_height){
                 this.content_height = highest;
             }
-            child.setAttribute('position',position.x+' '+(-position.y)+' 0');
+            child.setAttribute('position',position.x+' '+(-position.y)+' '+child.getAttribute('position').z);
             this.updateYoga(child);
         });
     },
