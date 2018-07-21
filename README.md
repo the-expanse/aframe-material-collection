@@ -47,14 +47,6 @@ npm run build
     <a-entity class="container"></a-entity>
 </a-ui-scroll-pane>
 ```
-#### Properties
-
-| Property   | Description                                                                                 | Default Value |
-| --------   | -----------                                                                                 | ------------- |
-| channel    | String to specify to only render logs that are sent with a specific channel.                | ''            |
-| filter     | Plain-text string filter. (e.g., `filter: bar` would match log messages with `bar` in them. | ''            |
-| max        | Max number of logs to show at a time.                                                       | 100           |
-| showErrors | Whether to show JS errors.                                                                  | true          |
 
 #### Button
 
