@@ -77,10 +77,8 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             this.container.yoga_node.calculateLayout(this.data.width*100, 'auto', Yoga.DIRECTION_LTR);
             this.content_height = Number.NEGATIVE_INFINITY;
             this.updateYoga(this.container);
-            this.handleSize = (this.data.height/this.content_height);
-            if(this.handleSize<0.1){
-                this.handleSize = 0.1;
-            }
+            this.handleSize = THREE.Math.clamp((this.data.height/this.content_height),this.data.height,0.1);
+            this.handle.setAttribute("visible",this.handleSize!=this.data.height);
             this.handle.setAttribute('height',this.data.height*this.handleSize);
             this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+(this.data.height-(this.data.height*this.handleSize))/2+' 0.0004');
         });

@@ -3,7 +3,8 @@
  * Application entry point
  * @author Shane Harris
  */
-
+var version = require('./../package.json').version;
+console.log('aframe-material-collection version '+version);
 // Yoga
 window.Yoga = require('./vendor/yoga-layout/entry-browser');
 
