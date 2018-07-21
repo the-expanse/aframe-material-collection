@@ -15,8 +15,6 @@ module.exports = AFRAME.registerPrimitive('a-ui-fab-button-small', AFRAME.utils.
         material: {
             color: '#009688',
             shader: 'flat',
-            side: 'double',
-            transparent: true,
         },
         "ui-btn":{},
         "ui-ripple":{size:{x:0.25,y:0.25},zIndex:-0.001,color:'#ff0000'},

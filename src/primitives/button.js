@@ -16,8 +16,6 @@ module.exports = AFRAME.registerPrimitive('a-ui-button', AFRAME.utils.extendDeep
         material: {
             color: '#009688',
             shader: 'flat',
-            side: 'double',
-            transparent: true,
         },
         "ui-btn":{},
         "ui-rounded":{borderRadius:0.005},

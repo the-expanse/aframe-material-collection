@@ -24,7 +24,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.scrollBarWidth = this.rail.getAttribute('width');
         this.container.setAttribute('position',(-this.data.width/2)+' '+((this.data.height/2))+' 0');
         this.rail.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' 0 0.0002');
-        this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' 0 0.0004');
+        this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' 0 0.0005');
         this.el.sceneEl.renderer.localClippingEnabled = true;
         // Setup content clips.
         this.content_clips = [
@@ -45,7 +45,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 let scroll_pos = THREE.Math.clamp(pos.y-this.handlePos,min,max);
                 let scroll_perc = 1-((scroll_pos-min)/(max-min));
                 this.container.object3D.position.y = ((this.content_height-this.data.height)*scroll_perc)+(this.data.height/2);
-                this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+scroll_pos+' 0.0004');
+                this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+scroll_pos+' 0.0005');
             }
         };
         // Start scroll
@@ -81,7 +81,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             this.handle.setAttribute('height',this.data.height*this.handleSize);
             this.handle.setAttribute('width',this.handleSize===1?0.00000001:0.1);
             this.rail.setAttribute('color',this.handleSize===1?'#efefef':'#fff');
-            this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+(this.data.height-(this.data.height*this.handleSize))/2+' 0.0004');
+            this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+(this.data.height-(this.data.height*this.handleSize))/2+' 0.0005');
         });
 
     },
@@ -95,7 +95,6 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.backgroundPanel.setAttribute('position','0 0 -0.013');
         this.backgroundPanel.setAttribute('visible',false);
         this.el.appendChild(this.backgroundPanel);
-        console.log(this.data.contentBack);
 
         // Add scroll bar rail.
         this.rail = document.createElement('a-plane');

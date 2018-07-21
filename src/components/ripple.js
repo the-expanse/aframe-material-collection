@@ -20,11 +20,22 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
     },
     init(){
         // Setup circle geometry for ripple effect
-        this.rippleGeometry = new THREE.CircleGeometry(0.001,this.data.segments);
+        this.rippleGeometry = new THREE.CircleGeometry(Math.max(this.data.size.x,this.data.size.y),this.data.segments);
         this.ripple = new THREE.Mesh(this.rippleGeometry.clone(),new THREE.MeshBasicMaterial({color:this.data.color,transparent:true, opacity:0.4}));
+        this.ripple.scale.set(0.00001,0.00001,0.00001);
         this.el.object3D.add(this.ripple);
         this.el.addEventListener('click',this.click.bind(this));
         this.ripple.position.set(0,0,this.data.zIndex);
+        // Set clipping planes if clamping to square
+        if(this.data.clampToSquare){
+
+            this.content_clips = [
+                new THREE.Plane( new THREE.Vector3( 0, 1, 0 ), (this.data.size.y/2) ),
+                new THREE.Plane( new THREE.Vector3( 0, -1, 0 ), (this.data.size.y/2) ),
+                new THREE.Plane( new THREE.Vector3( -1, 0, 0 ), (this.data.size.x/2) ),
+                new THREE.Plane( new THREE.Vector3( 1, 0, 0 ), (this.data.size.x/2) )
+            ];
+        }
     },
     click(e){
         if(this.isRippling){
@@ -32,44 +43,60 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
             return e.preventDefault();
         }
         this.isRippling = true;
+        // Set clipping planes if clamping to square
+        if(this.data.clampToSquare){
+            this.setRippleClips(this.ripple.material);
+        }
         // Animate the size of the circle ripple from the center of the entity.
         this.tweenSize(this.ripple.geometry);
         // Fade the circle out as it ripples.
         this.tweenOpacity(this.ripple.material);
     },
+    setRippleClips(){
+        // update content clips world positions from this current element.
+        this.content_clips[0].set(new THREE.Vector3( 0, 1, 0 ), (this.data.size.y/2));
+        this.content_clips[1].set(new THREE.Vector3( 0, -1, 0 ), (this.data.size.y/2));
+        this.content_clips[2].set(new THREE.Vector3( -1, 0, 0 ), (this.data.size.x/2));
+        this.content_clips[3].set(new THREE.Vector3( 1, 0, 0 ), (this.data.size.x/2));
+        this.el.sceneEl.object3D.updateMatrixWorld();
+        this.content_clips[0].applyMatrix4(this.el.object3D.matrixWorld);
+        this.content_clips[1].applyMatrix4(this.el.object3D.matrixWorld);
+        this.content_clips[2].applyMatrix4(this.el.object3D.matrixWorld);
+        this.content_clips[3].applyMatrix4(this.el.object3D.matrixWorld);
+        this.ripple.material.clippingPlanes = this.el._content_clips?this.el._content_clips.concat(this.content_clips):this.content_clips;
+        this.ripple.material.clipShadows = true;
+        this.ripple.material.needsUpdate = true;
+    },
     tweenSize(geometry){
         let _this = this;
-        new TWEEN.Tween({x:0})
-            .to({ x: Math.max(this.data.size.x,this.data.size.y)}, this.data.duration)
+        new TWEEN.Tween({x:0.00001})
+            .to({ x: 1}, this.data.duration)
             .onUpdate(function(){
-                // Update the vertices and clamp if need be to lock to a rectangle shape.
-                for ( let i = 0, l = geometry.vertices.length; i < l; i ++ ) {
-                    let vertex = geometry.vertices[ i ];
-                    vertex.normalize().multiplyScalar( this.x );
-                    if(_this.data.clampToSquare){
-                        if(vertex.x>_this.data.size.x/2){
-                            vertex.x = _this.data.size.x/2;
-                        }
-                        if(vertex.x<-_this.data.size.x/2){
-                            vertex.x = -_this.data.size.x/2;
-                        }
-                        if(vertex.y>_this.data.size.y/2){
-                            vertex.y = _this.data.size.y/2;
-                        }
-                        if(vertex.y<-_this.data.size.y/2){
-                            vertex.y = -_this.data.size.y/2;
-                        }
-                    }
-                }
-                geometry.verticesNeedUpdate = true;
+                _this.ripple.scale.set(this.x,this.x,this.x);
+                // // Update the vertices and clamp if need be to lock to a rectangle shape.
+                // for ( let i = 0, l = geometry.vertices.length; i < l; i ++ ) {
+                //     let vertex = geometry.vertices[ i ];
+                //     vertex.normalize().multiplyScalar( this.x );
+                //     // if(_this.data.clampToSquare){
+                //     //     if(vertex.x>_this.data.size.x/2){
+                //     //         vertex.x = _this.data.size.x/2;
+                //     //     }
+                //     //     if(vertex.x<-_this.data.size.x/2){
+                //     //         vertex.x = -_this.data.size.x/2;
+                //     //     }
+                //     //     if(vertex.y>_this.data.size.y/2){
+                //     //         vertex.y = _this.data.size.y/2;
+                //     //     }
+                //     //     if(vertex.y<-_this.data.size.y/2){
+                //     //         vertex.y = -_this.data.size.y/2;
+                //     //     }
+                //     // }
+                // }
+                // geometry.verticesNeedUpdate = true;
             })
             .onComplete(()=>{
-                // Reset geometry after ripple
-                this.el.object3D.remove(this.ripple);
-                this.ripple.geometry = this.rippleGeometry.clone();
-                this.el.object3D.add(this.ripple);
+                _this.ripple.scale.set(0.00001,0.00001,0.00001);
                 // Reset throttle flag.
-                console.log('rippling done');
                 this.isRippling = false;
             })
             .easing(TWEEN.Easing.Exponential.Out).start();
@@ -83,7 +110,6 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
             })
             .onComplete(()=>{
                 material.opacity = 0.4;
-                console.log('fading done');
             })
             .easing(TWEEN.Easing.Exponential.Out).start();
     }
