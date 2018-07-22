@@ -34,7 +34,7 @@ module.exports = {
     ripple: require('./components/ripple'),
     ui_switch: require('./components/switch'),
     scroll_pane: require('./components/scroll-pane'),
-    mouse_move: require('./components/mouse-move'),
+    mouse_shim: require('./components/mouse-shim'),
     double_click: require('./components/double-click'),
     checkbox: require('./components/checkbox'),
     radio: require('./components/radio'),
