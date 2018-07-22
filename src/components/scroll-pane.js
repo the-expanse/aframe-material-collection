@@ -257,7 +257,6 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
     setChildClips(parent){
         // Traverse the entity tree inside the content container and add content clips to each material found.
         parent = parent||this.container;
-        let height = 0;
         [].slice.call(parent.children).forEach(child=>{
             child._content_clips = this.content_clips;
             let traverse = ()=>{
