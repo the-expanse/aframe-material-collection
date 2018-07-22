@@ -10,8 +10,8 @@ module.exports = AFRAME.registerPrimitive('a-ui-radio', AFRAME.utils.extendDeep(
         "ui-radio":{},
         "geometry":{
             primitive:'ring',
-            radiusInner:0.115,
-            radiusOuter:0.135,
+            radiusInner:0.0575,
+            radiusOuter:0.0675,
             segmentsTheta:6
         },
         "material":{
@@ -19,7 +19,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-radio', AFRAME.utils.extendDeep(
             color:'#afafaf'
         },
         "ui-ripple":{
-            size:{x:0.2,y:0.2},
+            size:{x:0.1,y:0.1},
             zIndex:-0.001,
             color:'#afafaf'
         }

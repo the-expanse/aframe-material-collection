@@ -11,8 +11,8 @@ if (typeof CanvasInput === 'undefined') {
 }
 module.exports = AFRAME.registerComponent('ui-text', {
     schema: {
-        width:{type:'number',default:1},
-        height:{type:'number',default:0.2},
+        width:{type:'number',default:0.5},
+        height:{type:'number',default:0.1},
         value: {default: ''},
         type: {default: 'text'},
         lineFocusColor: {default: '#009688'},
@@ -40,9 +40,9 @@ module.exports = AFRAME.registerComponent('ui-text', {
 
         // Add under line for showing focus state.
         this.underLine = document.createElement('a-plane');
-        this.underLine.setAttribute('width',this.data.width-0.1);
-        this.underLine.setAttribute('height',0.01);
-        this.underLine.setAttribute('position','0 -0.1 0.001');
+        this.underLine.setAttribute('width',this.data.width-0.05);
+        this.underLine.setAttribute('height',0.005);
+        this.underLine.setAttribute('position','0 -0.05 0.001');
         this.underLine.setAttribute('class','no-yoga-layout');
         this.underLine.setAttribute('shader','flat');
         this.underLine.setAttribute('color',this.data.disabled?this.data.disabledColor:this.data.lineBlurColor);
@@ -164,7 +164,7 @@ module.exports = AFRAME.registerComponent('ui-text', {
     resetCanvasInput(){
         // Set the canvas input to this current inputs settings.
         if(this.el.sceneEl.canvas_input) {
-            this.el.sceneEl.canvas_input.width((this.data.width - 0.2) * 150);
+            this.el.sceneEl.canvas_input.width((this.data.width - 0.1) * 300);
             this.el.sceneEl.canvas_input.fontFamily(this.data.fontFamily);
             this.el.sceneEl.canvas_input.fontColor(this.data.fontColor);
             this.el.sceneEl.canvas_input.placeHolder(this.data.placeHolder);
@@ -181,7 +181,7 @@ module.exports = AFRAME.registerComponent('ui-text', {
     setupCanvasInput(){
         // Setup the input canvas if not already setup
         let canvas = document.getElementById('textCanvas');
-        canvas.width = (this.data.width)*150;
+        canvas.width = (this.data.width)*300;
         this.resetCanvasInput();
         if(this.el.sceneEl.canvas_input){
             return;
@@ -192,7 +192,7 @@ module.exports = AFRAME.registerComponent('ui-text', {
             fontSize:18,
             fontFamily: this.data.fontFamily,
             fontColor: this.data.fontColor,
-            width:(this.data.width-0.2)*150,
+            width:(this.data.width-0.1)*300,
             padding: 6,
             borderWidth: 0,
             backgroundColor: '#fff',

@@ -8,8 +8,8 @@
 
 module.exports = AFRAME.registerComponent('ui-scroll-pane', {
     schema: {
-        height:{type:'number',default:2.4},
-        width:{type:'number',default:5},
+        height:{type:'number',default:1.2},
+        width:{type:'number',default:2.5},
         scrollPadding:{type:'number',default:0.1}
     },
     init() {
@@ -156,7 +156,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 parent.yoga_node.setFlexDirection(Yoga.FLEX_DIRECTION_ROW);
                 parent.yoga_node.setAlignContent(Yoga.ALIGN_AUTO);
                 parent.yoga_node.setFlexWrap(Yoga.WRAP_WRAP);
-                parent.yoga_node.setPadding(Yoga.EDGE_ALL,16);
+                parent.yoga_node.setPadding(Yoga.EDGE_ALL,8);
             }
         }
         // Automatically detect the entity width / height by the element tagname.

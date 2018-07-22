@@ -11,14 +11,14 @@ module.exports = AFRAME.registerComponent('ui-radio', {
         value: {default: ''},
         selected:{type: 'boolean', default: false},
         selectedColor: {default: '#009688'},
-        selectedRadius: {type:'number',default: 0.09},
+        selectedRadius: {type:'number',default: 0.045},
         unselectedColor: {default: '#5f5f5f'},
         disabledColor: {default: '#afafaf'},
         disabled: {type: 'boolean', default: false}
     },
     init() {
-        this.width = this.data.size||0.3;
-        this.height = this.data.size||0.3;
+        this.width = this.data.size||0.11;
+        this.height = this.data.size||0.11;
         // Create center circle for checked state.
         this.filled_circle = document.createElement('a-circle');
         this.filled_circle.setAttribute('radius',this.data.selectedRadius);
@@ -31,8 +31,8 @@ module.exports = AFRAME.registerComponent('ui-radio', {
         this.el.appendChild(this.filled_circle);
         // Create backing for getting click events.
         let backing = document.createElement('a-plane');
-        backing.setAttribute('width',0.21);
-        backing.setAttribute('height',0.21);
+        backing.setAttribute('width',0.105);
+        backing.setAttribute('height',0.105);
         backing.setAttribute('position','0 0 -0.002');
         backing.setAttribute('class','intersectable no-yoga-layout');
         backing.setAttribute('visible',false);

@@ -32,24 +32,24 @@ module.exports = AFRAME.registerComponent('ui-switch', {
         }
     },
     init() {
-        this.width = 0.5;
-        this.height = 0.3;
+        this.width = 0.2;
+        this.height = 0.05;
         // Setup handle circle entity.
         this.handleEl = document.createElement('a-circle');
-        this.handleEl.setAttribute('radius',0.11);
+        this.handleEl.setAttribute('radius',0.055);
         this.handleEl.setAttribute('color',this.data.handleColor);
         this.handleEl.setAttribute('shader','flat');
-        this.handleEl.setAttribute('ui-ripple','size:0.2 0.2;color:#999;fadeDelay:300;duration:500');
+        this.handleEl.setAttribute('ui-ripple','size:0.1 0.1;color:#999;fadeDelay:300;duration:500');
         this.handleEl.setAttribute('class',this.data.intersectableClass+' no-yoga-layout');
-        this.handleEl.setAttribute('position','-0.1 0 '+this.data.handleZIndex);
+        this.handleEl.setAttribute('position','-0.05 0 '+this.data.handleZIndex);
         this.handleEl.setAttribute('segments',6);
         this.el.appendChild(this.handleEl);
 
         // Setup rail entity.
         this.railEl = document.createElement('a-plane');
-        this.railEl.setAttribute('width','0.3');
-        this.railEl.setAttribute('height','0.1');
-        this.railEl.setAttribute('ui-rounded','borderRadius:0.05');
+        this.railEl.setAttribute('width','0.15');
+        this.railEl.setAttribute('height','0.05');
+        this.railEl.setAttribute('ui-rounded','borderRadius:0.025');
         this.railEl.setAttribute('color',this.data.railColor);
         this.railEl.setAttribute('class',this.data.intersectableClass+' no-yoga-layout');
         this.el.appendChild(this.railEl);
@@ -82,7 +82,7 @@ module.exports = AFRAME.registerComponent('ui-switch', {
         object.traverse(child=>{
             if(child.geometry&&child.geometry.type==="ShapeGeometry"){
                 this.progress = new THREE.Mesh(child.geometry.clone(),new THREE.MeshBasicMaterial({color:this.data.progressColor}));
-                this.progress.position.set(-0.15,0,0.001);
+                this.progress.position.set(-0.075,0,0.001);
                 this.progress.scale.set(0.00001,1,1);
                 this.el.object3D.add(this.progress);
             }
@@ -91,7 +91,7 @@ module.exports = AFRAME.registerComponent('ui-switch', {
     tweenProgress(){
         if(this.progress){
             new TWEEN.Tween(this.progress.position)
-                .to(new THREE.Vector3(this.data.value?0:-0.15,0,0.001), this.data.switchDuration)
+                .to(new THREE.Vector3(this.data.value?0:-0.075,0,0.001), this.data.switchDuration)
                 .easing(TWEEN.Easing.Exponential.Out).start();
             new TWEEN.Tween(this.progress.scale)
                 .to(new THREE.Vector3(this.data.value?1:0.00001,1,1), this.data.switchDuration)
@@ -101,7 +101,7 @@ module.exports = AFRAME.registerComponent('ui-switch', {
     tweenHandle(){
         if(this.handleEl){
             new TWEEN.Tween(this.handleEl.object3D.position)
-                .to(new THREE.Vector3(this.data.value?0.1:-0.1,0,this.data.handleZIndex), this.data.switchDuration)
+                .to(new THREE.Vector3(this.data.value?0.05:-0.05,0,this.data.handleZIndex), this.data.switchDuration)
                 .easing(TWEEN.Easing.Exponential.Out).start();
         }
     }

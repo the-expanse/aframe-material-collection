@@ -12,7 +12,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-checkbox', AFRAME.utils.extendDe
 
         },
         "ui-ripple":{
-            size:{x:0.2,y:0.2},
+            size:{x:0.1,y:0.1},
             zIndex:-0.001,
             color:'#afafaf'
         }

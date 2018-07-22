@@ -58,7 +58,7 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
         this.content_clips[1].set(new THREE.Vector3( 0, -1, 0 ), (this.data.size.y/2));
         this.content_clips[2].set(new THREE.Vector3( -1, 0, 0 ), (this.data.size.x/2));
         this.content_clips[3].set(new THREE.Vector3( 1, 0, 0 ), (this.data.size.x/2));
-        this.el.sceneEl.object3D.updateMatrixWorld();
+        //this.el.sceneEl.object3D.updateMatrixWorld();
         this.content_clips[0].applyMatrix4(this.el.object3D.matrixWorld);
         this.content_clips[1].applyMatrix4(this.el.object3D.matrixWorld);
         this.content_clips[2].applyMatrix4(this.el.object3D.matrixWorld);

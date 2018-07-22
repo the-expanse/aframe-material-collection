@@ -9,7 +9,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-fab-button-small', AFRAME.utils.
     defaultComponents: {
         geometry: {
             primitive: 'circle',
-            radius: 0.15,
+            radius: 0.075,
             segments:6
         },
         material: {
@@ -17,8 +17,8 @@ module.exports = AFRAME.registerPrimitive('a-ui-fab-button-small', AFRAME.utils.
             shader: 'flat',
         },
         "ui-btn":{},
-        "ui-ripple":{size:{x:0.25,y:0.25},zIndex:-0.001,color:'#ff0000'},
-        "ui-icon":{size:{x:0.15,y:0.15}, src:'/icons/sort_white_64dp.png'}
+        "ui-ripple":{size:{x:0.125,y:0.125},zIndex:-0.001,color:'#ff0000'},
+        "ui-icon":{size:{x:0.075,y:0.075}, src:'/icons/sort_white_64dp.png'}
     },
     mappings: {
         radius: 'geometry.radius',
