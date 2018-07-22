@@ -37,18 +37,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         // Get camera element for pause/play for scroll bar dragging.
         let camera = document.getElementById('camera');
         // Setup mouse move handler for scrolling and updating scroll handle.
-        let mousemove = e=>{
-            if(this.isDragging){
-                let pos = this.backgroundPanel.object3D.worldToLocal(e.detail.intersection.point);
-                let min = (-this.data.height/2)+(this.data.height*this.handleSize)/2;
-                let max = (this.data.height/2)-(this.data.height*this.handleSize)/2;
-                // Set scroll position with start point offset.
-                let scroll_pos = THREE.Math.clamp(pos.y-this.handlePos,min,max);
-                let scroll_perc = 1-((scroll_pos-min)/(max-min));
-                this.container.object3D.position.y = ((this.content_height-this.data.height)*scroll_perc)+(this.data.height/2);
-                this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+scroll_pos+' 0.0005');
-            }
-        };
+        let mousemove = e=>this.mouseMove(e);
         // Start scroll
         this.handle.addEventListener('mousedown',e=>{
             camera.components["look-controls"].pause();
@@ -65,6 +54,16 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 this.isDragging = false;
             }
         });
+        // Handle clicks on rail to scroll
+        this.rail.addEventListener('mousedown',e=>{
+            // Pause look controls
+            camera.components["look-controls"].pause();
+            this.isDragging = true;
+            // Scroll immediately and register mouse move events.
+            this.scroll(this.rail.object3D.worldToLocal(e.detail.intersection.point).y);
+            this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
+        });
+
         // Setup content clips after the scene is loaded to be able to access all entity materials
         this.el.sceneEl.addEventListener('loaded',()=>{
             // update content clips world positions from this current element.
@@ -85,9 +84,29 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+(this.data.height-(this.data.height*this.handleSize))/2+' 0.0005');
             this.el.emit('scroll-pane-loaded');
         });
+        this.setupMouseWheelScroll();
+    },
+    mouseMove(e){
+        if(this.isDragging){
+            let pos = this.backgroundPanel.object3D.worldToLocal(e.detail.intersection.point);
+            this.scroll(pos.y-this.handlePos);
+        }
+    },
+    scroll(positionY){
+        let min = (-this.data.height/2)+(this.data.height*this.handleSize)/2;
+        let max = (this.data.height/2)-(this.data.height*this.handleSize)/2;
+        // Set scroll position with start point offset.
+        let scroll_pos = THREE.Math.clamp(positionY,min,max);
+        let scroll_perc = 1-((scroll_pos-min)/(max-min));
+        this.container.object3D.position.y = ((this.content_height-this.data.height)*scroll_perc)+(this.data.height/2);
+        this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+scroll_pos+' 0.0005');
+    },
+    setupMouseWheelScroll(){
+        this.el.addEventListener('ui-mousewheel',e=>{
+            this.scroll(this.handle.getAttribute('position').y+(-e.detail.evt.deltaY/800));
+        });
     },
     setupElements(){
-
         // Setup background with mouse input to catch mouse move events when not exactly over the scroll bar.
         this.backgroundPanel = document.createElement('a-plane');
         this.backgroundPanel.setAttribute('class','background intersectable');
@@ -95,6 +114,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.backgroundPanel.setAttribute('height',this.data.height+1);
         this.backgroundPanel.setAttribute('position','0 0 -0.013');
         this.backgroundPanel.setAttribute('visible',false);
+
         this.el.appendChild(this.backgroundPanel);
 
         // Add scroll bar rail.
