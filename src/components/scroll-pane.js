@@ -11,7 +11,8 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         height:{type:'number',default:1.2},
         width:{type:'number',default:2.5},
         scrollPadding:{type:'number',default:0.1},
-        curveRadius:{type:'number',default:0}
+        curveRadius:{type:'number',default:0},
+        scrollZOffset:{type:'number',default:0}
     },
     init() {
         // Setup scroll bar and panel backing.
@@ -24,8 +25,8 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         // Setup scroll bar.
         this.scrollBarWidth = this.rail.getAttribute('width');
         this.container.setAttribute('position',(-this.data.width/2)+' '+((this.data.height/2))+' 0');
-        this.rail.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' 0 0.0002');
-        this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' 0 0.0005');
+        this.rail.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' 0 '+(this.data.scrollZOffset+0.0002));
+        this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' 0 '+(this.data.scrollZOffset+0.0005));
         this.el.sceneEl.renderer.localClippingEnabled = true;
         // Setup content clips.
         this.content_clips = [
@@ -81,7 +82,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             this.handle.setAttribute('height',this.data.height*this.handleSize);
             this.handle.setAttribute('width',this.handleSize===1?0.00000001:0.1);
             this.rail.setAttribute('color',this.handleSize===1?'#efefef':'#fff');
-            this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+(this.data.height-(this.data.height*this.handleSize))/2+' 0.0005');
+            this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+(this.data.height-(this.data.height*this.handleSize))/2+' '+(this.data.scrollZOffset+0.0005));
             this.el.emit('scroll-pane-loaded');
         });
         this.setupMouseWheelScroll();
@@ -99,7 +100,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         let scroll_pos = THREE.Math.clamp(positionY,min,max);
         let scroll_perc = 1-((scroll_pos-min)/(max-min));
         this.container.object3D.position.y = ((this.content_height-this.data.height)*scroll_perc)+(this.data.height/2);
-        this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+scroll_pos+' 0.0005');
+        this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+scroll_pos+' '+(this.data.scrollZOffset+0.0005));
     },
     setupMouseWheelScroll(){
         this.el.addEventListener('ui-mousewheel',e=>{

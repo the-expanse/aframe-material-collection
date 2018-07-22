@@ -14,5 +14,6 @@ module.exports = AFRAME.registerPrimitive('a-ui-scroll-pane', AFRAME.utils.exten
     mappings: {
         width:"ui-scroll-pane.width",
         height:"ui-scroll-pane.height",
+        "scroll-z-offset":"ui-scroll-pane.scrollZOffset"
     }
 }));
