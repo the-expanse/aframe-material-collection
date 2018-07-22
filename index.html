@@ -15,7 +15,7 @@
     <a-assets>
         <canvas id="textCanvas"></canvas>
     </a-assets>
-    <a-entity id="camera" camera="near:1;far:1000"  look-controls wasd-controls>
+    <a-entity id="camera" camera="near:0.1;far:1000"  look-controls wasd-controls>
         <a-entity id="cursor" cursor="rayOrigin: mouse" ui-mouse-move
                   raycaster="far: 30; objects: .intersectable;"></a-entity>
     </a-entity>
@@ -23,52 +23,52 @@
     <a-entity light="type: ambient; intensity: 0.5;"></a-entity>
     <a-sky color="#efefef"></a-sky>
 
-    <a-entity position="0 0 -2" id="uiPanel" class="intersectable">
+    <a-entity position="0 0 -1" id="uiPanel" class="intersectable">
 
         <!-- Scroll Pane -->
         <a-text font="roboto" baseLine="bottom" value="Aframe Material Collection"
-                position="-2.8 1.2 0.01" color="#212121" wrap-count="25" width="2.5" height="0.5"></a-text>
+                position="-1.4 0.6 0.005" color="#212121" wrap-count="25" width="1.25" height="0.25"></a-text>
 
-        <a-plane width="6" height="3.4" position="0 0 -0.02" shader="flat" color="#cfcfcf" side="double"></a-plane>
+        <a-plane width="3" height="1.7" position="0 0 -0.02" shader="flat" color="#cfcfcf" side="double"></a-plane>
 
-        <a-ui-scroll-pane position="0 -0.2 0">
+        <a-ui-scroll-pane position="0 -0.1 0">
             <a-entity class="container">
                 <!--Introduction-->
-                <a-entity width="4" height="1.4">
+                <a-entity width="2" height="0.7">
                     <a-text font="roboto" baseLine="center" value="Introduction"
-                            color="#212121" anchor="center" wrap-count="40" width="4" height="0.3"></a-text>
+                            color="#212121" anchor="center" wrap-count="54" width="2" height="0.1"></a-text>
 
                     <a-text font="roboto" baseLine="bottom" value="Here we have some material UI based primitives and components for use in your aframe projects."
-                            anchor="center" color="#515151" wrap-count="80" width="4.8" height="0.3"></a-text>
+                            anchor="center" color="#515151" wrap-count="80" width="2.4" height="0.15"></a-text>
 
                     <a-text id="getwidth" font="roboto" baseLine="center" anchor="center" value="Scroll Pane"
-                            color="#212121" wrap-count="54" width="4" height="0.2"></a-text>
+                            color="#212121" wrap-count="54" width="2" height="0.1"></a-text>
 
-                    <a-text font="roboto" baseLine="center" value="All of these primitive elements are enclosed inside a scroll pane. Elements out of view are automatically clipped."
-                            anchor="center" color="#515151" wrap-count="80" width="4.8" height="0.2"></a-text>
+                    <a-text font="roboto" baseLine="bottom" value="All of these primitive elements are enclosed inside a scroll pane. Elements out of view are automatically clipped."
+                            anchor="center" color="#515151" wrap-count="80" width="2.4" height="0.1"></a-text>
                 </a-entity>
 
                 <!-- Left Panel -->
-                <a-entity width="2.18">
+                <a-entity width="1.00">
 
                     <!--Ripple-->
-                    <a-entity width="1.8">
+                    <a-entity width="0.9">
 
                         <a-text font="roboto" baseLine="bottom" value="Ripple"
-                                position="-1.1 0 0.01" color="#212121" anchor="center" wrap-count="25" width="1.8" height="0.4"></a-text>
+                                color="#212121" anchor="center" wrap-count="25" width="0.9" height="0.2"></a-text>
 
-                        <a-plane shader="flat" width="0.5" height="0.4" class="intersectable"
-                                 color="#673ab7" ui-ripple="size:0.5 0.4;clampToSquare:true;zIndex:0.001;color:white;"></a-plane>
+                        <a-plane shader="flat" width="0.25" height="0.2" class="intersectable"
+                                 color="#673ab7" ui-ripple="size:0.25 0.2;clampToSquare:true;zIndex:0.001;color:white;"></a-plane>
 
-                        <a-triangle shader="flat" vertex-a="0 0.15 0" vertex-b="-0.15 -0.15 0" vertex-c="0.15 -0.15 0" class="intersectable"
-                                     color="#ec407a" ui-ripple="size:0.3 0.3;zIndex:-0.001;color:#f48fb1; duration:500;fadeDuration:250;"  width="0.5" height="0.4"></a-triangle>
+                        <a-triangle shader="flat" vertex-a="0 0.075 0" vertex-b="-0.075 -0.075 0" vertex-c="0.075 -0.075 0" class="intersectable"
+                                     color="#ec407a" ui-ripple="size:0.15 0.15;zIndex:-0.001;color:#f48fb1; duration:500;fadeDuration:250;"  width="0.25" height="0.2"></a-triangle>
                     </a-entity>
 
                     <!-- Buttons -->
-                    <a-entity position="0 -2 0" width="1.8">
+                    <a-entity position="0 -2 0" width="0.9">
 
                         <a-text font="roboto" baseLine="center" value="Buttons"
-                                position="-1.1 0 0.01" color="#212121" anchor="center" wrap-count="25" width="1.8" height="0.2"></a-text>
+                                color="#212121" anchor="center" wrap-count="25" width="0.9" height="0.1"></a-text>
 
                         <!--Button-->
                         <a-ui-button text-value="Button"  class="intersectable"></a-ui-button>
@@ -82,7 +82,7 @@
                                      font-color="#cfcfcf" color="#efefef" ripple-color="#cfcfcf"></a-ui-button>
 
                         <a-text font="roboto" baseLine="center" value="Floating Action Buttons"
-                                color="#212121" anchor="center" wrap-count="25" width="1.8" height="0.3"></a-text>
+                                color="#212121" anchor="center" wrap-count="25" width="0.9" height="0.15"></a-text>
 
                         <!--Floating Action Button-->
                         <a-ui-fab-button
@@ -101,37 +101,37 @@
                 </a-entity>
 
                 <!-- Right Panel -->
-                <a-entity width="2.18">
+                <a-entity width="1.00">
 
                     <!--Text Input-->
-                    <a-entity width="1.8">
+                    <a-entity width="0.9">
                         <a-text font="roboto" baseLine="center" anchor="center" value="Text"
-                                color="#212121" wrap-count="25" width="1.8" height="0.2"></a-text>
+                                color="#212121" wrap-count="25" width="0.9" height="0.1"></a-text>
 
-                        <a-ui-text-input width="1.8" height="0.3" value="something"></a-ui-text-input>
+                        <a-ui-text-input width="0.9" height="0.15" value="something"></a-ui-text-input>
                     </a-entity>
 
                     <!--Number Input-->
-                    <a-entity width="1.8">
+                    <a-entity width="0.9">
                         <a-text font="roboto" baseLine="center" anchor="center" value="Number"
-                                color="#212121" wrap-count="25" width="1.8" height="0.2"></a-text>
+                                color="#212121" wrap-count="25" width="0.9" height="0.1"></a-text>
 
-                        <a-ui-number-input width="1.8" height="0.3" ui-yoga="margin:0"></a-ui-number-input>
+                        <a-ui-number-input width="0.9" height="0.15" ui-yoga="margin:0"></a-ui-number-input>
                     </a-entity>
 
                     <!--Int Input-->
-                    <a-entity width="1.8">
+                    <a-entity width="0.9">
                         <a-text font="roboto" baseLine="center" anchor="center" value="Integer"
-                                color="#212121" wrap-count="25" width="1.8" height="0.2"></a-text>
+                                color="#212121" wrap-count="25" width="0.9" height="0.1"></a-text>
 
-                        <a-ui-int-input width="1.8" height="0.3" ui-yoga="margin:0"></a-ui-int-input>
+                        <a-ui-int-input width="0.9" height="0.15" ui-yoga="margin:0"></a-ui-int-input>
                     </a-entity>
 
                     <!--Switch-->
-                    <a-entity width="1.8">
+                    <a-entity width="0.9">
 
                         <a-text font="roboto" baseLine="center" anchor="center" value="Switch"
-                                color="#212121" wrap-count="25" width="1.8" height="0.3"></a-text>
+                                color="#212121" wrap-count="25" width="0.9" height="0.15"></a-text>
                         <a-ui-switch class="intersectable"></a-ui-switch>
 
                         <a-ui-switch disabled="true"  class="intersectable"></a-ui-switch>
@@ -139,10 +139,10 @@
                     </a-entity>
 
                     <a-text font="roboto" baseLine="center" anchor="center" value="Checkbox"
-                            color="#212121" wrap-count="25" width="1.8" height="0.2"></a-text>
+                            color="#212121" wrap-count="25" width="0.9" height="0.1"></a-text>
 
                     <!--Checkbox-->
-                    <a-entity width="1.8">
+                    <a-entity width="0.9">
                         <a-ui-checkbox class="intersectable" ></a-ui-checkbox>
 
                         <a-ui-checkbox class="intersectable" value="true" ></a-ui-checkbox>
@@ -153,9 +153,9 @@
                     </a-entity>
 
                     <!--Radio Group-->
-                    <a-entity width="1.8">
+                    <a-entity width="0.9">
                         <a-text font="roboto" baseLine="center" anchor="center" value="Radio"
-                                color="#212121" wrap-count="25" width="1.8" height="0.2"></a-text>
+                                color="#212121" wrap-count="25" width="0.9" height="0.1"></a-text>
                         <a-ui-radio class="intersectable"></a-ui-radio>
                         <a-ui-radio selected="true" class="intersectable"></a-ui-radio>
                         <a-ui-radio class="intersectable"></a-ui-radio>
