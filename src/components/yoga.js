@@ -59,10 +59,11 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
     getProperties(){
         // Get the current yoga properties
         return Object.keys(this.data)
-            .filter(name=>name.indexOf('padding')===-1&&
-                name.indexOf('margin')===-1&&
-                name.indexOf('border')===-1&&
-                name.indexOf('position')===-1&&
+            .filter(name=>
+                // name.indexOf('padding')===-1&&
+                // name.indexOf('margin')===-1&&
+                // name.indexOf('border')===-1&&
+                // name.indexOf('position')===-1&&
                 this.data[name]!=='default'&&this.data[name])
             .map(name=>{
                 return {method:'set'+name.charAt(0).toUpperCase() + name.substr(1),value:this.mapPropertyToEnum(name)}
