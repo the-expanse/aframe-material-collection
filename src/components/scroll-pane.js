@@ -12,7 +12,8 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         width:{type:'number',default:2.5},
         scrollPadding:{type:'number',default:0.1},
         curveRadius:{type:'number',default:0},
-        scrollZOffset:{type:'number',default:0}
+        scrollZOffset:{type:'number',default:0},
+        scrollHandleColor:{default:'#009688'}
     },
     init() {
         // Setup scroll bar and panel backing.
@@ -137,7 +138,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.handle.setAttribute('class','handle intersectable');
         this.handle.setAttribute('width',0.1);
         this.handle.setAttribute('height',this.data.height);
-        this.handle.setAttribute('color','#009688');
+        this.handle.setAttribute('color',this.data.scrollHandleColor);
         this.handle.setAttribute('shader','flat');
         this.el.appendChild(this.handle);
     },
