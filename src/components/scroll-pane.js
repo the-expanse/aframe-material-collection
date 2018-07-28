@@ -42,7 +42,8 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         let mousemove = e=>this.mouseMove(e);
         // Start scroll
         this.handle.addEventListener('mousedown',e=>{
-            camera.components["look-controls"].pause();
+            // Pause look controls to allow scrolling
+            if(camera.components["look-controls"])camera.components["look-controls"].pause();
             this.isDragging = true;
             // Store the start point offset
             this.handlePos = this.handle.object3D.worldToLocal(e.detail.intersection.point).y;
@@ -52,7 +53,8 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.el.sceneEl.addEventListener('mouseup',e=>{
             if(this.isDragging){
                 this.backgroundPanel.removeEventListener('ui-mousemove',mousemove);
-                camera.components["look-controls"].play();
+                // Play look controls once scrolling is finished
+                if(camera.components["look-controls"])camera.components["look-controls"].play();
                 this.isDragging = false;
             }
         });

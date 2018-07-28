@@ -38,6 +38,7 @@ module.exports = {
     double_click: require('./components/double-click'),
     checkbox: require('./components/checkbox'),
     radio: require('./components/radio'),
+    border: require('./components/border'),
     yoga_properties: require('./components/yoga'),
 };
 
