@@ -24,7 +24,7 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
         this.ripple = new THREE.Mesh(this.rippleGeometry.clone(),new THREE.MeshBasicMaterial({color:this.data.color,transparent:true, opacity:0.4,alphaTest:0.1}));
         this.ripple.scale.set(0.00001,0.00001,0.00001);
         this.el.object3D.add(this.ripple);
-        this.el.addEventListener('click',this.click.bind(this));
+        this.el.addEventListener('mousedown',this.click.bind(this));
         this.ripple.position.set(0,0,this.data.zIndex);
         // Set clipping planes if clamping to square
         if(this.data.clampToSquare){
