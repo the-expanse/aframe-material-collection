@@ -10,8 +10,8 @@ module.exports = AFRAME.registerComponent('ui-switch', {
     schema: {
         value: {type:'boolean',default: false},
         disabled:{type:'boolean',default: false},
-        progressColor:{default:'#009688'},
-        handleColor:{default:'#4db6ac'},
+        progressColor:{default:'#4db6ac'},
+        handleColor:{default:'#009688'},
         handleDisabledColor:{default:'#afafaf'},
         railColor:{default:'#fff'},
         switchDuration:{type:'int',default: 350},
