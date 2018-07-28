@@ -114,7 +114,9 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
     },
     setupMouseWheelScroll(){
         this.el.addEventListener('ui-mousewheel',e=>{
-            this.scroll(this.handle.getAttribute('position').y+(-e.detail.evt.deltaY/800));
+            if(this.handleSize!==1){
+                this.scroll(this.handle.getAttribute('position').y+(-e.detail.evt.deltaY/800));
+            }
         });
     },
     setupElements(){
@@ -224,16 +226,17 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 parent.yoga_node.setFlexDirection(Yoga.FLEX_DIRECTION_ROW);
                 parent.yoga_node.setAlignContent(Yoga.ALIGN_AUTO);
                 parent.yoga_node.setFlexWrap(Yoga.WRAP_WRAP);
-                //p
             }
             // Add the yoga node to the Yoga tree.
             if(parent.parentElement&&parent.parentElement.yoga_node){
+                // Default margin if none set;
                 if(!parent.components["ui-yoga"]){
                     parent.yoga_node.setMargin(Yoga.EDGE_RIGHT, 5);
                     parent.yoga_node.setMargin(Yoga.EDGE_BOTTOM, 5);
                 }
                 parent.parentElement.yoga_node.insertChild(parent.yoga_node,parent.parentElement.yoga_node.getChildCount());
             }else{
+                // Default root padding if none set;
                 if(!parent.components["ui-yoga"]){
                     parent.yoga_node.setPadding(Yoga.EDGE_ALL,2);
                 }
@@ -243,32 +246,6 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             if(child.classList.contains('no-yoga-layout')){
                 return;
             }
-
-            // // Create the yoga node if it doesnt exist.
-            // if(!child.yoga_node){
-            //     child.yoga_node = Yoga.Node.create();
-            //     // If node properties then setup those properties.
-            //     if(child.components["ui-yoga"]){
-            //         this.setupYogaNode(child.yoga_node,width ? width * 100 : 'auto',height ? height * 100 : 'auto',
-            //             child.components["ui-yoga"].getProperties());
-            //     }else {
-            //         // Set default properties.
-            //         child.yoga_node.setWidth(width ? width * 100 : 'auto');
-            //         child.yoga_node.setHeight(height ? height * 100 : 'auto');
-            //         child.yoga_node.setMargin(Yoga.EDGE_RIGHT, 10);
-            //         child.yoga_node.setMargin(Yoga.EDGE_BOTTOM, 10);
-            //         if (child.tagName === "A-ENTITY") {
-            //             child.yoga_node.setFlexDirection(Yoga.FLEX_DIRECTION_ROW);
-            //             child.yoga_node.setJustifyContent(Yoga.JUSTIFY_FLEX_START);
-            //             child.yoga_node.setAlignItems(Yoga.ALIGN_FLEX_START);
-            //             child.yoga_node.setAlignSelf(Yoga.ALIGN_AUTO);
-            //             child.yoga_node.setAlignContent(Yoga.ALIGN_AUTO);
-            //             child.yoga_node.setFlexWrap(Yoga.WRAP_WRAP);
-            //         }
-            //     }
-            //     // Add the yoga node to the Yoga tree.
-            //     parent.yoga_node.insertChild(child.yoga_node,parent.yoga_node.getChildCount());
-            // }
             this.initialiseYoga(child);
         });
     },
