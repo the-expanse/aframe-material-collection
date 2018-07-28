@@ -23,7 +23,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-fab-button-small', AFRAME.utils.
     mappings: {
         radius: 'geometry.radius',
         color: 'material.color',
-        url: 'ui-icon.url',
+        src: 'ui-icon.src',
         "ripple-color":'ui-ripple.color',
         disabled:'ui-btn.disabled'
     }
