@@ -57,11 +57,8 @@ module.exports = AFRAME.registerComponent('ui-switch', {
         // selected progress bar part of the rail
         this.railEl.addEventListener('rounded-loaded',()=>this.getRailObject(this.railEl.object3D));
         this.clickHandler = e=>{
-            console.warn('here');
             this.data.value = !this.data.value;
             this.click();
-            e.stopPropagation();
-            e.preventDefault();
         };
         this.setDisabled();
     },
