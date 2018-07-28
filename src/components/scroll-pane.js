@@ -171,91 +171,104 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             }
         });
     },
-    initialiseYoga(parent,width){
+    initialiseYoga(parent){
         // Traverse the tree and setup Yoga layout nodes with default settings
         // or settings specified in the elements yoga properties component.
         parent = parent||this.container;
-        let height = 0;
+        // Automatically detect the entity width / height by the element tagname.
+        let width = 0,height = 0;
+        switch(parent.tagName){
+            case "A-TEXT":
+            case "A-TRIANGLE":
+            case "A-UI-TEXT-INPUT":
+            case "A-UI-NUMBER-INPUT":
+            case "A-UI-INT-INPUT":
+            case "A-UI-PASSWORD-INPUT":
+                width = parent.getAttribute('width');
+                height = parent.getAttribute('height');
+                break;
+            case "A-UI-BUTTON":
+            case "A-PLANE":
+            case "A-ENTITY":
+                width = Number(parent.components.geometry?parent.components.geometry.data.width:parent.getAttribute('width'));
+                height = Number(parent.components.geometry?parent.components.geometry.data.height:parent.getAttribute('height'));
+                break;
+            case "A-UI-FAB-BUTTON":
+            case "A-UI-FAB-BUTTON-SMALL":
+            case "A-CIRCLE":
+                width = Number(parent.components.geometry?parent.components.geometry.data.radius*2:(parent.getAttribute('radius')||0)*2);
+                height = width;
+                break;
+            case "A-RING":
+                width = Number(parent.components.geometry?parent.components.geometry.data["radius-outer"]*2:(parent.getAttribute('radius-outer')||0)*2);
+                height = width;
+                break;
+            case "A-UI-SWITCH":
+            case "A-UI-CHECKBOX":
+            case "A-UI-RADIO":
+                let componentName = parent.tagName.substr(2).toLowerCase();
+                width = parent.components[componentName].width;
+                height = parent.components[componentName].height;
+                break;
+        }
+
         if(!parent.yoga_node){
             parent.yoga_node = Yoga.Node.create();
             if(parent.components["ui-yoga"]){
-                this.setupYogaNode(parent.yoga_node,width,'auto',
+                this.setupYogaNode(parent.yoga_node,width ? width * 100 : 'auto',height ? height * 100 : 'auto',
                     parent.components["ui-yoga"].getProperties());
             }else{
-                parent.yoga_node.setWidth(width);
-                parent.yoga_node.setHeight('auto');
+                parent.yoga_node.setWidth(width ? width * 100 : 'auto');
+                parent.yoga_node.setHeight(height ? height * 100 : 'auto');
                 parent.yoga_node.setJustifyContent(Yoga.JUSTIFY_FLEX_START);
                 parent.yoga_node.setFlexDirection(Yoga.FLEX_DIRECTION_ROW);
                 parent.yoga_node.setAlignContent(Yoga.ALIGN_AUTO);
                 parent.yoga_node.setFlexWrap(Yoga.WRAP_WRAP);
-                parent.yoga_node.setPadding(Yoga.EDGE_ALL,8);
+                //p
+            }
+            // Add the yoga node to the Yoga tree.
+            if(parent.parentElement&&parent.parentElement.yoga_node){
+                if(!parent.components["ui-yoga"]){
+                    parent.yoga_node.setMargin(Yoga.EDGE_RIGHT, 5);
+                    parent.yoga_node.setMargin(Yoga.EDGE_BOTTOM, 5);
+                }
+                parent.parentElement.yoga_node.insertChild(parent.yoga_node,parent.parentElement.yoga_node.getChildCount());
+            }else{
+                if(!parent.components["ui-yoga"]){
+                    parent.yoga_node.setPadding(Yoga.EDGE_ALL,2);
+                }
             }
         }
-        // Automatically detect the entity width / height by the element tagname.
         [].slice.call(parent.children).forEach(child=>{
-            let width = 0,height = 0;
             if(child.classList.contains('no-yoga-layout')){
                 return;
             }
-            switch(child.tagName){
-                case "A-TEXT":
-                case "A-TRIANGLE":
-                case "A-UI-TEXT-INPUT":
-                case "A-UI-NUMBER-INPUT":
-                case "A-UI-INT-INPUT":
-                case "A-UI-PASSWORD-INPUT":
-                    width = child.getAttribute('width');
-                    height = child.getAttribute('height');
-                    break;
-                case "A-UI-BUTTON":
-                case "A-PLANE":
-                case "A-ENTITY":
-                    width = Number(child.components.geometry?child.components.geometry.data.width:child.getAttribute('width'));
-                    height = Number(child.components.geometry?child.components.geometry.data.height:child.getAttribute('height'));
-                    break;
-                case "A-UI-FAB-BUTTON":
-                case "A-UI-FAB-BUTTON-SMALL":
-                case "A-CIRCLE":
-                    width = Number(child.components.geometry?child.components.geometry.data.radius*2:(child.getAttribute('radius')||0)*2);
-                    height = width;
-                    break;
-                case "A-RING":
-                    width = Number(child.components.geometry?child.components.geometry.data["radius-outer"]*2:(child.getAttribute('radius-outer')||0)*2);
-                    height = width;
-                    break;
-                case "A-UI-SWITCH":
-                case "A-UI-CHECKBOX":
-                case "A-UI-RADIO":
-                    let componentName = child.tagName.substr(2).toLowerCase();
-                    width = child.components[componentName].width;
-                    height = child.components[componentName].height;
-                    break;
-            }
-            // Create the yoga node if it doesnt exist.
-            if(!child.yoga_node){
-                child.yoga_node = Yoga.Node.create();
-                // If node properties then setup those properties.
-                if(child.components["ui-yoga"]){
-                    this.setupYogaNode(child.yoga_node,width ? width * 100 : 'auto',height ? height * 100 : 'auto',
-                        child.components["ui-yoga"].getProperties());
-                }else {
-                    // Set default properties.
-                    child.yoga_node.setWidth(width ? width * 100 : 'auto');
-                    child.yoga_node.setHeight(height ? height * 100 : 'auto');
-                    child.yoga_node.setMargin(Yoga.EDGE_RIGHT, 10);
-                    child.yoga_node.setMargin(Yoga.EDGE_BOTTOM, 10);
-                    if (child.tagName === "A-ENTITY") {
-                        child.yoga_node.setFlexDirection(Yoga.FLEX_DIRECTION_ROW);
-                        child.yoga_node.setJustifyContent(Yoga.JUSTIFY_FLEX_START);
-                        child.yoga_node.setAlignItems(Yoga.ALIGN_FLEX_START);
-                        child.yoga_node.setAlignSelf(Yoga.ALIGN_AUTO);
-                        child.yoga_node.setAlignContent(Yoga.ALIGN_AUTO);
-                        child.yoga_node.setFlexWrap(Yoga.WRAP_WRAP);
-                    }
-                }
-                // Add the yoga node to the Yoga tree.
-                parent.yoga_node.insertChild(child.yoga_node,parent.yoga_node.getChildCount());
-            }
+
+            // // Create the yoga node if it doesnt exist.
+            // if(!child.yoga_node){
+            //     child.yoga_node = Yoga.Node.create();
+            //     // If node properties then setup those properties.
+            //     if(child.components["ui-yoga"]){
+            //         this.setupYogaNode(child.yoga_node,width ? width * 100 : 'auto',height ? height * 100 : 'auto',
+            //             child.components["ui-yoga"].getProperties());
+            //     }else {
+            //         // Set default properties.
+            //         child.yoga_node.setWidth(width ? width * 100 : 'auto');
+            //         child.yoga_node.setHeight(height ? height * 100 : 'auto');
+            //         child.yoga_node.setMargin(Yoga.EDGE_RIGHT, 10);
+            //         child.yoga_node.setMargin(Yoga.EDGE_BOTTOM, 10);
+            //         if (child.tagName === "A-ENTITY") {
+            //             child.yoga_node.setFlexDirection(Yoga.FLEX_DIRECTION_ROW);
+            //             child.yoga_node.setJustifyContent(Yoga.JUSTIFY_FLEX_START);
+            //             child.yoga_node.setAlignItems(Yoga.ALIGN_FLEX_START);
+            //             child.yoga_node.setAlignSelf(Yoga.ALIGN_AUTO);
+            //             child.yoga_node.setAlignContent(Yoga.ALIGN_AUTO);
+            //             child.yoga_node.setFlexWrap(Yoga.WRAP_WRAP);
+            //         }
+            //     }
+            //     // Add the yoga node to the Yoga tree.
+            //     parent.yoga_node.insertChild(child.yoga_node,parent.yoga_node.getChildCount());
+            // }
             this.initialiseYoga(child);
         });
     },

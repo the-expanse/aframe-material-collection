@@ -17,8 +17,8 @@ module.exports = AFRAME.registerComponent('ui-radio', {
         disabled: {type: 'boolean', default: false}
     },
     init() {
-        this.width = this.data.size||0.11;
-        this.height = this.data.size||0.11;
+        this.width = this.data.size||0.15;
+        this.height = this.data.size||0.15;
         // Create center circle for checked state.
         this.filled_circle = document.createElement('a-circle');
         this.filled_circle.setAttribute('radius',this.data.selectedRadius);

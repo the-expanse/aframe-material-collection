@@ -16,8 +16,8 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
         disabled:{type:'boolean',default: false}
     },
     init() {
-        this.width = 0.11;
-        this.height = 0.11;
+        this.width = 0.15;
+        this.height = 0.15;
         this.container = document.createElement('a-entity');
         this.container.setAttribute('class','no-yoga-layout');
         this.el.appendChild(this.container);
@@ -58,11 +58,11 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
         // Adjust position and rotation based on the interpolated value x between 0 and 1.
         // Used to offset the checkbox when in a checked state
         if(this.data.value){
-            this.container.object3D.rotation.set(0,0,(-Math.PI/4)*x);
-            this.container.object3D.position.set(-0.025*x,0.05*x,0);
+            this.container.setAttribute('rotation',{x:0,y:0,z:-45*x});
+            this.container.setAttribute('position',{x:-0.025*x,y:0.05*x,z:0});
         }else{
-            this.container.object3D.rotation.set(0,0,-Math.PI/4+((Math.PI/4)*x));
-            this.container.object3D.position.set(0.025-(0.025*x),0.05-(0.05*x),0);
+            this.container.setAttribute('rotation',{x:0,y:0,z:-45+(45*x)});
+            this.container.setAttribute('position',{x:0.025-(0.025*x),y:0.05-(0.05*x),z:0});
         }
     },
     click(){

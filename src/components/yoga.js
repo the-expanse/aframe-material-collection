@@ -14,7 +14,7 @@ if (typeof Yoga === 'undefined') {
 module.exports = AFRAME.registerComponent('ui-yoga', {
     schema: {
         alignContent: {default: 'flex-start'},
-        alignItems: {default: 'flex-start'},
+        alignItems: {default: 'auto'},
         alignSelf: {default: 'auto'},
         display: {default: 'default'},
         flex: {type:'number',default: 1},
@@ -22,7 +22,7 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
         flexWrap:{default: 'default'},
         aspectRatio: {default: 'default'},
         overflow:{default:'default'},
-        justifyContent:{default:'default'},
+        justifyContent:{default:'start'},
         border: {type:'int',default: 0},
         borderEdge: {default: 'all'},
         padding: {type:'int',default: 0},

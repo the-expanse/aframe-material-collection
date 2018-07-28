@@ -32,8 +32,8 @@ module.exports = AFRAME.registerComponent('ui-switch', {
         }
     },
     init() {
-        this.width = 0.2;
-        this.height = 0.05;
+        this.width = 0.3;
+        this.height = 0.08;
         // Setup handle circle entity.
         this.handleEl = document.createElement('a-circle');
         this.handleEl.setAttribute('radius',0.055);
