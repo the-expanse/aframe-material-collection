@@ -26,7 +26,7 @@ export class Utils{
         if(has_none){
             if(this.is_changeing){
                 // with a delay to allow render
-                setTimeout(()=>this.scene.emit('ui-changing-stopped'),60);
+                setTimeout(()=>this.scene.emit('ui-changing-stopped'),100);
             }
             this.is_changeing = false;
         }
