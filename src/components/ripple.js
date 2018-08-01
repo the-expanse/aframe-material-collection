@@ -69,35 +69,19 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
     },
     tweenSize(geometry){
         let _this = this;
+        // Start changes
+        UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
         new TWEEN.Tween({x:0.00001})
             .to({ x: 1}, this.data.duration)
             .onUpdate(function(){
                 _this.ripple.scale.set(this.x,this.x,this.x);
-                // // Update the vertices and clamp if need be to lock to a rectangle shape.
-                // for ( let i = 0, l = geometry.vertices.length; i < l; i ++ ) {
-                //     let vertex = geometry.vertices[ i ];
-                //     vertex.normalize().multiplyScalar( this.x );
-                //     // if(_this.data.clampToSquare){
-                //     //     if(vertex.x>_this.data.size.x/2){
-                //     //         vertex.x = _this.data.size.x/2;
-                //     //     }
-                //     //     if(vertex.x<-_this.data.size.x/2){
-                //     //         vertex.x = -_this.data.size.x/2;
-                //     //     }
-                //     //     if(vertex.y>_this.data.size.y/2){
-                //     //         vertex.y = _this.data.size.y/2;
-                //     //     }
-                //     //     if(vertex.y<-_this.data.size.y/2){
-                //     //         vertex.y = -_this.data.size.y/2;
-                //     //     }
-                //     // }
-                // }
-                // geometry.verticesNeedUpdate = true;
             })
             .onComplete(()=>{
                 _this.ripple.scale.set(0.00001,0.00001,0.00001);
                 // Reset throttle flag.
                 this.isRippling = false;
+                // Stop changes
+                UI.utils.stoppedChanging(this.el.object3D.uuid);
             })
             .easing(TWEEN.Easing.Exponential.Out).start();
     },

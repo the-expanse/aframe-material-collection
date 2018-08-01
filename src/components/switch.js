@@ -100,8 +100,14 @@ module.exports = AFRAME.registerComponent('ui-switch', {
     },
     tweenHandle(){
         if(this.handleEl){
+            // Start changes
+            UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
             new TWEEN.Tween(this.handleEl.object3D.position)
                 .to(new THREE.Vector3(this.data.value?0.05:-0.05,0,this.data.handleZIndex), this.data.switchDuration)
+                .onComplete(()=>{
+                    // Stop changes
+                    UI.utils.stoppedChanging(this.el.object3D.uuid);
+                })
                 .easing(TWEEN.Easing.Exponential.Out).start();
         }
     }

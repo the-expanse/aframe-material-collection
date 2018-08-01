@@ -48,6 +48,8 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             // Store the start point offset
             this.handlePos = this.handle.object3D.worldToLocal(e.detail.intersection.point).y;
             this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
+            // Start changes
+            UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
         });
         // End scroll
         this.el.sceneEl.addEventListener('mouseup',e=>{
@@ -56,6 +58,8 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 // Play look controls once scrolling is finished
                 if(camera.components["look-controls"])camera.components["look-controls"].play();
                 this.isDragging = false;
+                // Stop changes
+                UI.utils.stoppedChanging(this.el.object3D.uuid);
             }
         });
         // Handle clicks on rail to scroll
@@ -115,7 +119,11 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
     setupMouseWheelScroll(){
         this.el.addEventListener('ui-mousewheel',e=>{
             if(this.handleSize!==1){
+                // Start changes
+                UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
                 this.scroll(this.handle.getAttribute('position').y+(-e.detail.evt.deltaY/800));
+                // Stop changes
+                UI.utils.stoppedChanging(this.el.object3D.uuid);
             }
         });
     },
@@ -151,27 +159,50 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         // Parse yoga properties and call the yoga methods to setup this layout node.
         if(!properties.hasOwnProperty('setWidth'))node.setWidth(width);
         if(!properties.hasOwnProperty('setHeight'))node.setHeight(height);
-        Object.keys(properties).filter(method=>method.indexOf('Edge')===-1).forEach(function(method){
-            switch(method){
-                case "setMargin":
-                case "setMarginPercent":
-                case "setPadding":
-                case "setBorder":
-                case "setPosition":
-                case "setPositionPercent":
-                    node[method](properties[method+"Edge"]||Yoga.EDGE_ALL,properties[method]);
-                    break;
-                case "setMarginAuto":
-                    node[method](properties[method+"Edge"]||Yoga.EDGE_ALL);
-                    break;
-                case "setWidthAuto":
-                case "setHeightAuto":
+        for(let method in properties){
+            if(properties.hasOwnProperty(method)&&method.indexOf('Edge')===-1){
+                if(["setMarginLeft","setMarginPercentLeft","setPaddingLeft","setBorderLeft","setPositionLeft","setPositionPercentLeft"]
+                    .indexOf(method)>-1){
+                    node[method](Yoga.EDGE_LEFT,properties[method]);
+                }else if(["setMarginRight","setMarginPercentRight","setPaddingRight","setBorderRight","setPositionRight","setPositionPercentRight"]
+                    .indexOf(method)>-1){
+                    node[method](Yoga.EDGE_RIGHT,properties[method]);
+                }else if(["setMarginTop","setMarginPercentTop","setPaddingTop","setBorderTop","setPositionTop","setPositionPercentTop"]
+                    .indexOf(method)>-1){
+                    node[method](Yoga.EDGE_TOP,properties[method]);
+                }else if(["setMarginBottom","setMarginPercentBottom","setPaddingBottom","setBorderBottom","setPositionBottom","setPositionPercentBottom"]
+                    .indexOf(method)>-1){
+                    node[method](Yoga.EDGE_BOTTOM,properties[method]);
+                }else if(["setMargin","setMarginPercent","setPadding","setBorder","setPosition","setPositionPercent"]
+                    .indexOf(method)>-1){
+                    node[method](Yoga.EDGE_ALL,properties[method]);
+                }else if(method.indexOf('setMarginAuto')>-1){
+                    let side = method.replace('setMarginAuto','');
+                    switch(side){
+                        case "":
+                            node[method](Yoga.EDGE_ALL);
+                            break;
+                        case "Left":
+                            node[method](Yoga.EDGE_LEFT);
+                            break;
+                        case "Right":
+                            node[method](Yoga.EDGE_RIGHT);
+                            break;
+                        case "Top":
+                            node[method](Yoga.EDGE_TOP);
+                            break;
+                        case "Bottom":
+                            node[method](Yoga.EDGE_BOTTOM);
+                            break;
+                    }
+                }else if(["setWidthAuto","setHeightAuto"]
+                .indexOf(method)>-1) {
                     node[method]();
-                    break;
-                default:
+                }else{
                     node[method](properties[method]);
+                }
             }
-        });
+        }
     },
     initialiseYoga(parent){
         // Traverse the tree and setup Yoga layout nodes with default settings

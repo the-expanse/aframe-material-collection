@@ -75,10 +75,16 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
     },
     animateSelected(){
         let _this = this;
+        // Start changes
+        UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
         new TWEEN.Tween({x:0})
             .to({ x: 1}, 200)
             .onUpdate(function(){
                 _this.setTransform(this.x);
+            })
+            .onComplete(function(){
+                // Stop changes
+                UI.utils.stoppedChanging(_this.el.object3D.uuid);
             })
             .easing(TWEEN.Easing.Exponential.Out).start();
     },

@@ -52,13 +52,16 @@ module.exports = AFRAME.registerComponent('ui-radio', {
         // Deselect this radio with a scale animation on the circle.
         this.el.setAttribute('selected',false);
         let _this = this;
+        // Start changes
+        UI.utils.isChanging(this.el.sceneEl,this.filled_circle.object3D.uuid);
         new TWEEN.Tween({x:1})
             .to({ x: 0.000001}, 200)
             .onUpdate(function(){
                 _this.filled_circle.object3D.scale.set(this.x,this.x,this.x);
-                //_this.filled_circle.setAttribute('radius',this.x);
             })
             .onComplete(()=>{
+                // Stop changes
+                UI.utils.stoppedChanging(_this.filled_circle.object3D.uuid);
                 this.isRippling = false;
             })
             .easing(TWEEN.Easing.Exponential.Out).start();
@@ -76,12 +79,16 @@ module.exports = AFRAME.registerComponent('ui-radio', {
         if(this.isSelecting)return;
         this.isSelecting = true;
         let _this = this;
+        // Start changes
+        UI.utils.isChanging(this.el.sceneEl,this.filled_circle.object3D.uuid);
         new TWEEN.Tween({x:0.000001})
             .to({ x: 1}, 250)
             .onUpdate(function(){
                 _this.filled_circle.object3D.scale.set(this.x,this.x,this.x);
             })
             .onComplete(()=>{
+                // Stop changes
+                UI.utils.stoppedChanging(this.filled_circle.object3D.uuid);
                 this.isSelecting = false;
             })
             .easing(TWEEN.Easing.Exponential.Out).start();

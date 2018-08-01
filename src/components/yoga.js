@@ -24,15 +24,30 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
         overflow:{default:'default'},
         justifyContent:{default:'start'},
         border: {type:'int',default: 0},
-        borderEdge: {default: 'all'},
+        borderLeft: {type:'int',default: 0},
+        borderRight: {type:'int',default: 0},
+        borderTop: {type:'int',default: 0},
+        borderBottom: {type:'int',default: 0},
         padding: {type:'int',default: 0},
-        paddingEdge: {default: 'all'},
+        paddingLeft: {type:'int',default: 0},
+        paddingRight: {type:'int',default: 0},
+        paddingTop: {type:'int',default: 0},
+        paddingBottom: {type:'int',default: 0},
         margin: {type:'int',default: 0},
-        marginEdge: {default: 'all'},
-        marginAuto: {type:'boolean',default: false},
-        marginAutoEdge: {default: 'all'},
+        marginLeft: {type:'int',default: 0},
+        marginRight: {type:'int',default: 0},
+        marginTop: {type:'int',default: 0},
+        marginBottom: {type:'int',default: 0},
+        marginAuto: {type:'boolean',default: 'default'},
+        marginAutoLeft: {type:'int',default: 'default'},
+        marginAutoRight: {type:'int',default: 'default'},
+        marginAutoTop: {type:'int',default: 'default'},
+        marginAutoBottom: {type:'int',default: 'default'},
         marginPercent:{type:'number',default: 0},
-        marginPercentEdge:{default: 'all'},
+        marginPercentLeft: {type:'int',default: 0},
+        marginPercentRight: {type:'int',default: 0},
+        marginPercentTop: {type:'int',default: 0},
+        marginPercentBottom: {type:'int',default: 0},
         flexBasis: {default: 'default'},
         flexBasisPercent: {type:'number',default: 0},
         flexGrow:{type:'number',default: 0},
@@ -46,33 +61,47 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
         maxWidthPercent:{default: 'default'},
         minWidthPercent:{default: 'default'},
         position:{default: 'default'},
-        positionEdge: {default: 'all'},
+        positionLeft: {type:'int',default: 0},
+        positionRight: {type:'int',default: 0},
+        positionTop: {type:'int',default: 0},
+        positionBottom: {type:'int',default: 0},
         positionPercent:{default: 'default'},
-        positionPercentEdge: {default: 'all'},
+        positionPercentLeft: {type:'int',default: 0},
+        positionPercentRight: {type:'int',default: 0},
+        positionPercentTop: {type:'int',default: 0},
+        positionPercentBottom: {type:'int',default: 0},
         width:{default: 'default'},
         height:{default: 'default'},
-        widthAuto:{type:'boolean',default: false},
-        heightAuto:{type:'boolean',default: false},
+        widthAuto:{type:'boolean',default: 'default'},
+        heightAuto:{type:'boolean',default: 'default'},
         widthPercent:{default: 'default'},
         heightPercent:{default: 'default'},
     },
+    init(){
+        this.setProperties();
+    },
+    updateSchema(){
+        this.setProperties();
+    },
+    setProperties(){
+        this.properties = this.properties||[];
+        this.properties.length = 0;
+        // Store the current valid yoga properties;
+        for(let name in this.data){
+            if(this.data.hasOwnProperty(name)&&
+                this.data[name]!=='default'&&this.data[name]){
+                let value = this.mapPropertyToEnum(name);
+                if(value)this.properties.push({method:'set'+name.charAt(0).toUpperCase() + name.substr(1),value:this.mapPropertyToEnum(name)});
+            }
+        }
+    },
     getProperties(){
-        // Get the current yoga properties
-        return Object.keys(this.data)
-            .filter(name=>
-                // name.indexOf('padding')===-1&&
-                // name.indexOf('margin')===-1&&
-                // name.indexOf('border')===-1&&
-                // name.indexOf('position')===-1&&
-                this.data[name]!=='default'&&this.data[name])
-            .map(name=>{
-                return {method:'set'+name.charAt(0).toUpperCase() + name.substr(1),value:this.mapPropertyToEnum(name)}
-            })
-            .filter(d=>d.value)
-            .reduce((a,b)=>{
-                a[b.method] = b.value;
-                return a;
-            },{});
+        // Get the current yoga properties array as an object
+        let propertiesObj = {};
+        for(let i = 0;i < this.properties.length;i++){
+            propertiesObj[this.properties[i].method] = this.properties[i];
+        }
+        return propertiesObj;
     },
     mapPropertyToEnum(name){
         // Get the yoga enum for the friendly name.

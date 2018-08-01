@@ -75,10 +75,17 @@ module.exports = AFRAME.registerComponent('ui-btn', {
         })
     },
     tween(from,to,callback,complete){
+        let _this = this;
+        // Start changes
+        UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
         return new TWEEN.Tween({x:from})
             .to({ x: to}, this.data.duration)
             .onUpdate(callback)
-            .onComplete(complete)
+            .onComplete(function(){
+                // Stop changes
+                UI.utils.stoppedChanging(_this.el.object3D.uuid);
+                return complete.call(this);
+            })
             .easing(TWEEN.Easing.Exponential.Out).start();
     }
 });

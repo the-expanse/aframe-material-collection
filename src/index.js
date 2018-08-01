@@ -3,7 +3,9 @@
  * Application entry point
  * @author Shane Harris
  */
-var version = require('./../package.json').version;
+import {Utils} from "./utils";
+
+let version = require('./../package.json').version;
 console.log('aframe-material-collection version '+version);
 // Yoga
 window.Yoga = require('./vendor/yoga-layout/entry-browser');
@@ -11,8 +13,11 @@ window.Yoga = require('./vendor/yoga-layout/entry-browser');
 if (typeof AFRAME === 'undefined') {
     throw 'aframe-material-collection requires AFRAME to be loaded first. - <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>';
 }
+let utils = new Utils();
 
-module.exports = {
+window.UI = {
+    // Utils
+    utils:utils,
     // Primitives
     a_ui_button: require('./primitives/button'),
     a_ui_fab_button: require('./primitives/fab_button'),
@@ -41,5 +46,5 @@ module.exports = {
     border: require('./components/border'),
     yoga_properties: require('./components/yoga'),
 };
-
+//module.exports = UI;
 
