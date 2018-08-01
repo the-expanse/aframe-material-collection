@@ -122,8 +122,8 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 // Start changes
                 UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
                 this.scroll(this.handle.getAttribute('position').y+(-e.detail.evt.deltaY/800));
-                // Stop changes
-                UI.utils.stoppedChanging(this.el.object3D.uuid);
+                // Stop changes with a delay to allow render
+                setTimeout(()=>UI.utils.stoppedChanging(this.el.object3D.uuid),60);
             }
         });
     },
