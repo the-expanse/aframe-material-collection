@@ -11,7 +11,6 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         height:{type:'number',default:1.2},
         width:{type:'number',default:2.5},
         scrollPadding:{type:'number',default:0.1},
-        curveRadius:{type:'number',default:0},
         scrollZOffset:{type:'number',default:0},
         scrollHandleColor:{default:'#009688'}
     },

@@ -28,9 +28,8 @@ npm run build
 
 ## TODOs:
 
-* Need to expose the padding/border/margin sides as seperate properties to allow them to be used in conjunction.
-* Need to listen for clicks on the scoll rail - currently its just the handle that listens for click events.
-* Need to add mousewheel/touchpad/joystick support for scolling.
+
+* Need to add touchpad/joystick support for scolling.
 * Need to expose DOM-like events on all the primitives, as well as getters and setters for values etc.
 * Properly document all primitive/component options.
 * Submit to AFRAME registry.
@@ -44,9 +43,23 @@ npm run build
 
 ```HTML
 <a-ui-scroll-pane position="0 -0.2 0">
-    <a-entity class="container"></a-entity>
+    <a-entity class="container">
+        <!-- Your content here -->
+    </a-entity>
 </a-ui-scroll-pane>
 ```
+## Attributes
+
+| Attribute                        | Component Mapping                      | Default Value |
+| --------                         | -----------------                      | ------------- |
+| width                            | ui-scroll-pane.width                   | 1.2           |
+| height                           | ui-scroll-pane.height                  | 2.5           |
+| scroll-padding                   | ui-scroll-pane.scrollPadding           | 0.1           |
+| scroll-z-offset                  | ui-scroll-pane.scrollZOffset           | 0             |
+| handle-color                     | ui-scroll-pane.scrollHandleColor       | #009688       |
+
+
+
 
 #### Button
 
@@ -177,9 +190,21 @@ npm run build
 
 ```HTML
 <a-entity ui-scroll-pane="scrollPadding:0.1;width:2.4;height: 1.6">
-      <a-entity class="container"></a-entity>
+      <a-entity class="container">
+        <!-- Your content here -->
+      </a-entity>
 </a-entity>
 ```
+
+## Properties
+
+| Property                         | Description                                              | Type        | Default Value |
+| --------                         | -----------------                                        | ----------- | ------------- |
+| width                            | The fixed width of the scroll panel                      | number      | 1.2           |
+| height                           | The fixed height of the scroll panel                     | number      | 2.5           |
+| scrollPadding                    | The space between the scroll bar and the content         | number      | 0.1           |
+| scrollZOffset                    | The z-index or z offset of the scroll bar to raise it up | number      | 0             |
+| scrollHandleColor                | The color of the handle on the scroll bar                | string      | #009688       |
 
 
 #### Switch
