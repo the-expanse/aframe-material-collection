@@ -37,8 +37,6 @@ npm run build
     </a-entity>
 </a-ui-scroll-pane>
 ```
-##### Scroll Pane Attributes
-
 | Attribute                        | Component Mapping                      | Default Value |
 | --------                         | -----------------                      | ------------- |
 | width                            | ui-scroll-pane.width                   | 2.5           |
@@ -56,8 +54,6 @@ npm run build
 ```HTML
 <a-ui-button text-value="Button"></a-ui-button>
 ```
-##### Button Attributes
-
 | Attribute                        | Component Mapping                      | Default Value   |
 | --------                         | -----------------                      | --------------- |
 | width                            | geometry.width                         | 0.5             |
@@ -72,14 +68,12 @@ npm run build
 | ripple-z-index                   | ui-ripple.zIndex                       | 0.001           |
 | disabled                         | ui-btn.disabled                        | false           |
 
-----
+
 ### Floating Action Button
 
 ```HTML
 <a-ui-fab-button color="#f44336"></a-ui-fab-button>
 ```
-##### Floating Action Attributes
-
 | Attribute                        | Component Mapping                      | Default Value   |
 | --------                         | -----------------                      | --------------- |
 | width                            | geometry.width                         | 0.5             |
@@ -100,8 +94,6 @@ npm run build
 ```HTML
 <a-ui-fab-button-small  class="intersectable" color="#2196f3"></a-ui-fab-button-small>
 ```
-##### Small Floating Action Attributes
-
 | Attribute                        | Component Mapping                      | Default Value   |
 | --------                         | -----------------                      | --------------- |
 | width                            | geometry.width                         | 0.5             |
@@ -224,9 +216,6 @@ npm run build
       </a-entity>
 </a-entity>
 ```
-
-##### Scroll Pane Properties
-
 | Property                         | Description                                              | Type        | Default Value |
 | --------                         | -----------------                                        | ----------- | ------------- |
 | width                            | The fixed width of the scroll panel                      | number      | 1.2           |
