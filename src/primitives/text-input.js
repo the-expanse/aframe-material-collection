@@ -15,6 +15,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-text-input', AFRAME.utils.extend
     mappings: {
         width:"ui-text.width",
         height:"ui-text.height",
-        value:"ui-text.value"
+        value:"ui-text.value",
+        "place-holder":"ui-text.placeHolder"
     }
 }));

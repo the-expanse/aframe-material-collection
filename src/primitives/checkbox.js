@@ -20,7 +20,6 @@ module.exports = AFRAME.registerPrimitive('a-ui-checkbox', AFRAME.utils.extendDe
     mappings: {
         value: 'ui-checkbox.value',
         disabled: 'ui-checkbox.disabled',
-        indeterminate:'ui-checkbox.indeterminate',
-        "has-shadow":'ui-checkbox.hasShadow',
+        indeterminate:'ui-checkbox.indeterminate'
     }
 }));

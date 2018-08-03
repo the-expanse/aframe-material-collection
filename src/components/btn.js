@@ -8,7 +8,6 @@
 
 module.exports = AFRAME.registerComponent('ui-btn', {
     schema:{
-        color: {default: '#ff0000'},
         duration:{type:'int',default:250},
         hoverHeight:{type:'number',default:0.01},
         activeHeight:{type:'number',default:-0.001},

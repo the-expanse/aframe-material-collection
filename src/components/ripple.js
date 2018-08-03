@@ -16,7 +16,7 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
         clampToSquare:{type:'boolean',default:false},
         size:{type:'vec2',default:{x:1,y:1}},
         zIndex:{type:'number',default:-0.001},
-        segments:{type:'number',default:6}
+        segments:{type:'int',default:6}
     },
     init(){
         // Setup circle geometry for ripple effect

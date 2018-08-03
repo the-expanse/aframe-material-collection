@@ -24,8 +24,11 @@ module.exports = AFRAME.registerPrimitive('a-ui-fab-button', AFRAME.utils.extend
     mappings: {
         radius: 'geometry.radius',
         color: 'material.color',
+        transparent: 'material.transparent',
         src: 'ui-icon.src',
         "ripple-color":'ui-ripple.color',
+        "ripple-size":'ui-ripple.size',
+        "ripple-z-index":'ui-ripple.zIndex',
         disabled:'ui-btn.disabled'
     }
 }));
