@@ -25,7 +25,7 @@ npm start
 npm run build
 ```
 
-## Primitive Documentation
+## Documentation - Primitives
 
 
 ### Scroll Pane
@@ -72,7 +72,7 @@ npm run build
 | ripple-z-index                   | ui-ripple.zIndex                       | 0.001           |
 | disabled                         | ui-btn.disabled                        | false           |
 
-
+----
 ### Floating Action Button
 
 ```HTML
@@ -163,7 +163,7 @@ npm run build
 ```
 
 
-## Component Documentation
+## Documentation - Components
 
 
 ### Button
