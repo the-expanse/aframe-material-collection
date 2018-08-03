@@ -7,7 +7,7 @@
  */
 module.exports = AFRAME.registerComponent('ui-icon', {
     schema: {
-        src: {default: '/icons/send_white_64dp.png'},
+        src: {default: 'icons/send_white_64dp.png'},
         size:{type:'vec2',default:{x:0.1,y:0.1}},
         zIndex:{type:'number',default:0.003},
         color:{default:'#fff'}
