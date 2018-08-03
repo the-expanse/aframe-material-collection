@@ -88,7 +88,7 @@
 /* 0 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.2.4","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.2.5","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 1 */
@@ -12647,6 +12647,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-button', AFRAME.utils.extendDeep
         "font-color":'text.color',
         "ripple-color":'ui-ripple.color',
         "ripple-size":'ui-ripple.size',
+        "ripple-z-index":'ui-ripple.zIndex',
         "text-value": 'text.value',
         "wrap-count":'text.wrapCount',
         disabled:'ui-btn.disabled'
@@ -12683,8 +12684,11 @@ module.exports = AFRAME.registerPrimitive('a-ui-fab-button', AFRAME.utils.extend
     mappings: {
         radius: 'geometry.radius',
         color: 'material.color',
+        transparent: 'material.transparent',
         src: 'ui-icon.src',
         "ripple-color":'ui-ripple.color',
+        "ripple-size":'ui-ripple.size',
+        "ripple-z-index":'ui-ripple.zIndex',
         disabled:'ui-btn.disabled'
     }
 }));
@@ -12718,8 +12722,11 @@ module.exports = AFRAME.registerPrimitive('a-ui-fab-button-small', AFRAME.utils.
     mappings: {
         radius: 'geometry.radius',
         color: 'material.color',
+        transparent: 'material.transparent',
         src: 'ui-icon.src',
         "ripple-color":'ui-ripple.color',
+        "ripple-size":'ui-ripple.size',
+        "ripple-z-index":'ui-ripple.zIndex',
         disabled:'ui-btn.disabled'
     }
 }));
@@ -12771,8 +12778,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-checkbox', AFRAME.utils.extendDe
     mappings: {
         value: 'ui-checkbox.value',
         disabled: 'ui-checkbox.disabled',
-        indeterminate:'ui-checkbox.indeterminate',
-        "has-shadow":'ui-checkbox.hasShadow',
+        indeterminate:'ui-checkbox.indeterminate'
     }
 }));
 
@@ -12835,7 +12841,8 @@ module.exports = AFRAME.registerPrimitive('a-ui-text-input', AFRAME.utils.extend
     mappings: {
         width:"ui-text.width",
         height:"ui-text.height",
-        value:"ui-text.value"
+        value:"ui-text.value",
+        "place-holder":"ui-text.placeHolder"
     }
 }));
 
@@ -12941,7 +12948,8 @@ module.exports = AFRAME.registerPrimitive('a-ui-scroll-pane', AFRAME.utils.exten
         width:"ui-scroll-pane.width",
         height:"ui-scroll-pane.height",
         "scroll-z-offset":"ui-scroll-pane.scrollZOffset",
-        "handle-color":"ui-scroll-pane.scrollHandleColor"
+        "handle-color":"ui-scroll-pane.scrollHandleColor",
+        "scroll-padding":"ui-scroll-pane.scrollPadding"
     }
 }));
 
@@ -13170,7 +13178,6 @@ module.exports = AFRAME.registerComponent('ui-text', {
 
 module.exports = AFRAME.registerComponent('ui-btn', {
     schema:{
-        color: {default: '#ff0000'},
         duration:{type:'int',default:250},
         hoverHeight:{type:'number',default:0.01},
         activeHeight:{type:'number',default:-0.001},
@@ -13338,7 +13345,7 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
         clampToSquare:{type:'boolean',default:false},
         size:{type:'vec2',default:{x:1,y:1}},
         zIndex:{type:'number',default:-0.001},
-        segments:{type:'number',default:6}
+        segments:{type:'int',default:6}
     },
     init(){
         // Setup circle geometry for ripple effect
@@ -13557,7 +13564,6 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         height:{type:'number',default:1.2},
         width:{type:'number',default:2.5},
         scrollPadding:{type:'number',default:0.1},
-        curveRadius:{type:'number',default:0},
         scrollZOffset:{type:'number',default:0},
         scrollHandleColor:{default:'#009688'}
     },
