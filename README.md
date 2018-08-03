@@ -9,9 +9,9 @@ It goes further than providing some reusable components for your UI, but also in
 
 #### CDN for browser
 ```HTML
-    <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
-    <!-- Include in your head tag after aframe -->
-    <script src="https://unpkg.com/aframe-material-collection/dist/aframe-material-collection.min.js"></script>
+<script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+<!-- Include in your head tag after aframe -->
+<script src="https://unpkg.com/aframe-material-collection/dist/aframe-material-collection.min.js"></script>
 ```
 
 #### Installing
