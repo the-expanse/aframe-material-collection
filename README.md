@@ -5,7 +5,7 @@ Aframe Material Components uses material design and the [yoga layout engine](htt
 It goes further than providing some reusable components for your UI, but also integrates yoga for easy and powerful flex layouts. 2D primitives used inside the a-ui-scroll-pane are automatically measured for width and height to allow the layout engine to automatically place them with default settings, but all of these can be overridden with the ui-yoga component to allow granular control over the layout properties. Note only a subset of 2D primitives are supported for auto layout including a-plane, a-circle, a-ring, a-text ( width width and height explicitly set ) and all the primitives below.
 
 
-## Getting Started
+# Getting Started
 
 #### Installing
 
@@ -25,18 +25,10 @@ npm start
 npm run build
 ```
 
-
-## TODOs:
-
-
-* Need to add touchpad/joystick support for scolling.
-* Need to expose DOM-like events on all the primitives, as well as getters and setters for values etc.
-* Properly document all primitive/component options.
-* Submit to AFRAME registry.
+# Documentation
 
 
 ## Primitives
-
 
 
 ### Scroll Pane
@@ -57,6 +49,7 @@ npm run build
 | scroll-padding                   | ui-scroll-pane.scrollPadding           | 0.1           |
 | scroll-z-offset                  | ui-scroll-pane.scrollZOffset           | 0             |
 | handle-color                     | ui-scroll-pane.scrollHandleColor       | #009688       |
+
 
 
 
@@ -266,3 +259,14 @@ npm run build
 <a-entity ui-yoga="margin:0;"></a-entity>
 ```
 
+
+
+
+
+## TODOs:
+
+
+* Need to add touchpad/joystick support for scolling.
+* Need to expose DOM-like events on all the primitives, as well as getters and setters for values etc.
+* Properly document all primitive/component options.
+* Submit to AFRAME registry.
