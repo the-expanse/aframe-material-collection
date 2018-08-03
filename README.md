@@ -48,12 +48,12 @@ npm run build
     </a-entity>
 </a-ui-scroll-pane>
 ```
-## Attributes
+##### Scroll Pane Attributes
 
 | Attribute                        | Component Mapping                      | Default Value |
 | --------                         | -----------------                      | ------------- |
-| width                            | ui-scroll-pane.width                   | 1.2           |
-| height                           | ui-scroll-pane.height                  | 2.5           |
+| width                            | ui-scroll-pane.width                   | 2.5           |
+| height                           | ui-scroll-pane.height                  | 1.2           |
 | scroll-padding                   | ui-scroll-pane.scrollPadding           | 0.1           |
 | scroll-z-offset                  | ui-scroll-pane.scrollZOffset           | 0             |
 | handle-color                     | ui-scroll-pane.scrollHandleColor       | #009688       |
@@ -64,14 +64,45 @@ npm run build
 #### Button
 
 ```HTML
-<a-ui-button text-value="Button"  class="intersectable"></a-ui-button>
+<a-ui-button text-value="Button"></a-ui-button>
 ```
+##### Button Attributes
+
+| Attribute                        | Component Mapping                      | Default Value   |
+| --------                         | -----------------                      | --------------- |
+| width                            | geometry.width                         | 0.5             |
+| height                           | geometry.height                        | 0.175           |
+| color                            | material.color                         | #009688         |
+| transparent                      | material.transparent                   | false           |
+| font-color                       | text.color                             | #ffffff         |
+| text-value                       | text.value                             | <empty>         |
+| wrap-count                       | text.wrapCount                         | 10              |
+| ripple-color                     | ui-ripple.color                        | #ffffff         |
+| ripple-size                      | ui-ripple.size                         | {x:0.5,y:0.175} |
+| ripple-z-index                   | ui-ripple.zIndex                       | 0.001           |
+| disabled                         | ui-btn.disabled                        | false           |
+
 
 #### Floating Action Button
 
 ```HTML
-<a-ui-fab-button  class="intersectable" color="#f44336"></a-ui-fab-button>
+<a-ui-fab-button color="#f44336"></a-ui-fab-button>
 ```
+##### Floating Action Attributes
+
+| Attribute                        | Component Mapping                      | Default Value   |
+| --------                         | -----------------                      | --------------- |
+| width                            | geometry.width                         | 0.5             |
+| height                           | geometry.height                        | 0.175           |
+| color                            | material.color                         | #009688         |
+| transparent                      | material.transparent                   | false           |
+| font-color                       | text.color                             | #ffffff         |
+| text-value                       | text.value                             | <empty>         |
+| wrap-count                       | text.wrapCount                         | 10              |
+| ripple-color                     | ui-ripple.color                        | #ffffff         |
+| ripple-size                      | ui-ripple.size                         | {x:0.5,y:0.175} |
+| ripple-z-index                   | ui-ripple.zIndex                       | 0.001           |
+| disabled                         | ui-btn.disabled                        | false           |
 
 
 #### Small Floating Action Button
@@ -196,7 +227,7 @@ npm run build
 </a-entity>
 ```
 
-## Properties
+##### Scroll Pane Properties
 
 | Property                         | Description                                              | Type        | Default Value |
 | --------                         | -----------------                                        | ----------- | ------------- |

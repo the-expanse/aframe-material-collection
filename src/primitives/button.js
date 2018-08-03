@@ -36,6 +36,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-button', AFRAME.utils.extendDeep
         "font-color":'text.color',
         "ripple-color":'ui-ripple.color',
         "ripple-size":'ui-ripple.size',
+        "ripple-z-index":'ui-ripple.zIndex',
         "text-value": 'text.value',
         "wrap-count":'text.wrapCount',
         disabled:'ui-btn.disabled'
