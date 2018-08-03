@@ -39,7 +39,7 @@ npm run build
 
 
 
-#### Scroll Pane
+### Scroll Pane
 
 ```HTML
 <a-ui-scroll-pane position="0 -0.2 0">
@@ -61,7 +61,7 @@ npm run build
 
 
 
-#### Button
+### Button
 
 ```HTML
 <a-ui-button text-value="Button"></a-ui-button>
@@ -83,7 +83,7 @@ npm run build
 | disabled                         | ui-btn.disabled                        | false           |
 
 
-#### Floating Action Button
+### Floating Action Button
 
 ```HTML
 <a-ui-fab-button color="#f44336"></a-ui-fab-button>
@@ -105,28 +105,43 @@ npm run build
 | disabled                         | ui-btn.disabled                        | false           |
 
 
-#### Small Floating Action Button
+### Small Floating Action Button
 
 ```HTML
 <a-ui-fab-button-small  class="intersectable" color="#2196f3"></a-ui-fab-button-small>
 ```
+##### Small Floating Action Attributes
+
+| Attribute                        | Component Mapping                      | Default Value   |
+| --------                         | -----------------                      | --------------- |
+| width                            | geometry.width                         | 0.5             |
+| height                           | geometry.height                        | 0.175           |
+| color                            | material.color                         | #009688         |
+| transparent                      | material.transparent                   | false           |
+| font-color                       | text.color                             | #ffffff         |
+| text-value                       | text.value                             | <empty>         |
+| wrap-count                       | text.wrapCount                         | 10              |
+| ripple-color                     | ui-ripple.color                        | #ffffff         |
+| ripple-size                      | ui-ripple.size                         | {x:0.5,y:0.175} |
+| ripple-z-index                   | ui-ripple.zIndex                       | 0.001           |
+| disabled                         | ui-btn.disabled                        | false           |
 
 
-#### Switch
+### Switch
 
 ```HTML
 <a-ui-switch class="intersectable"></a-ui-switch>
 ```
 
 
-#### Checkbox
+### Checkbox
 
 ```HTML
 <a-ui-checkbox class="intersectable" indeterminate="true" ></a-ui-checkbox>
 ```
 
 
-#### Radio Group
+### Radio Group
 
 ```HTML
 <a-entity width="1.8">
@@ -136,7 +151,7 @@ npm run build
 ```
 
 
-#### Text Input
+### Text Input
 
 ```HTML
 <a-text font="roboto" baseLine="center" anchor="center" value="Text"
@@ -144,14 +159,14 @@ npm run build
 ```
 
 
-#### Number (float) Input
+### Number (float) Input
 
 ```HTML
 <a-ui-number-input width="1.8" height="0.3"></a-ui-number-input>
 ```
 
 
-#### Integer Input
+### Integer Input
 
 ```HTML
 <a-ui-int-input width="1.8" height="0.3"></a-ui-int-input>
@@ -161,63 +176,56 @@ npm run build
 ## Components
 
 
-#### Button
+### Button
 
 ```HTML
 <a-plane ui-btn width="1.8" height="0.3"></a-plane>
 ```
 
 
-#### Checkbox
+### Checkbox
 
 ```HTML
 <a-entity ui-checkbox></a-entity>
 ```
 
 
-#### Double Click
-
-```HTML
-<a-circle ui-double-click></a-circle>
-```
-
-
-#### Icon
+### Icon
 
 ```HTML
 <a-circle ui-icon="src:/icons/send_white_64dp.png;size:0.1 0.1;"></a-circle>
 ```
 
 
-#### Mouse move - shims the raycaster to provide mouse move events.
+### Mouse move - shims the raycaster to provide mouse move events.
 
 ```HTML
 <a-entity ui-mouse-move></a-entity>
 ```
 
 
-#### Radio
+### Radio
 
 ```HTML
 <a-entity ui-radio></a-entity>
 ```
 
 
-#### Ripple
+### Ripple
 
 ```HTML
 <a-entity ui-ripple="size:0.3 0.3;zIndex:-0.001;color:#f48fb1"></a-entity>
 ```
 
 
-#### Rounded
+### Rounded
 
 ```HTML
 <a-entity ui-rounded="borderRadius:0.05"></a-entity>
 ```
 
 
-#### Scroll Pane
+### Scroll Pane
 
 ```HTML
 <a-entity ui-scroll-pane="scrollPadding:0.1;width:2.4;height: 1.6">
@@ -238,21 +246,21 @@ npm run build
 | scrollHandleColor                | The color of the handle on the scroll bar                | string      | #009688       |
 
 
-#### Switch
+### Switch
 
 ```HTML
 <a-entity ui-switch></a-entity>
 ```
 
 
-#### Text
+### Text
 
 ```HTML
 <a-entity ui-text="width: 1; height: 0.2;"></a-entity>
 ```
 
 
-#### Yoga
+### Yoga
 
 ```HTML
 <a-entity ui-yoga="margin:0;"></a-entity>
