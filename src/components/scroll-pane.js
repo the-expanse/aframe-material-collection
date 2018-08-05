@@ -89,10 +89,10 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
     },
     updateContent(){
         this.setChildClips();
-        this.initialiseYoga(this.container,this.data.width*100);
+        if(typeof Yoga !== 'undefined')this.initialiseYoga(this.container,this.data.width*100);
         this.container.yoga_node.calculateLayout(this.data.width*100, 'auto', Yoga.DIRECTION_LTR);
         this.content_height = Number.NEGATIVE_INFINITY;
-        this.updateYoga(this.container);
+        if(typeof Yoga !== 'undefined')this.updateYoga(this.container);
         this.handleSize = THREE.Math.clamp((this.data.height/this.content_height),0.1,1);
         this.handle.setAttribute('height',this.data.height*this.handleSize);
         this.handle.setAttribute('width',this.handleSize===1?0.00000001:0.1);

@@ -5,6 +5,8 @@ module.exports = {
     entry: {
         "aframe-material-collection": "./src/index.js",
         "aframe-material-collection.min": "./src/index.js",
+        "aframe-yoga-layout": "./src/yoga.js",
+        "aframe-yoga-layout.min": "./src/yoga.js",
     },
     mode:"development",
     devtool: "source-map",

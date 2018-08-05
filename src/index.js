@@ -7,8 +7,6 @@ import {Utils} from "./utils";
 
 let version = require('./../package.json').version;
 console.log('aframe-material-collection version '+version);
-// Yoga
-window.Yoga = require('./vendor/yoga-layout/entry-browser');
 
 if (typeof AFRAME === 'undefined') {
     throw 'aframe-material-collection requires AFRAME to be loaded first. - <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>';
