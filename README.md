@@ -79,6 +79,7 @@ npm run build
 
 * Need to add touchpad/joystick support for scrolling.
 * Need to document yoga layout properties/strategies.
+* Need to improve canvasinput and remove dom dependencies.
 * Need to expose DOM-like events on all the primitives, as well as getters and setters for values etc.
 * Look at [unit testing with Karma](https://github.com/aframevr/aframe/tree/master/tests)
 * Submit to AFRAME registry.
