@@ -61,7 +61,7 @@ npm run build
 <a-ui-switch class="intersectable"></a-ui-switch>
 
 <!-- Checkbox -->
-<a-ui-checkbox class="intersectable" indeterminate="true" ></a-ui-checkbox>
+<a-ui-checkbox class="intersectable" indeterminate="true"></a-ui-checkbox>
 
 <!-- Radio -->
 <a-entity width="1.8">
@@ -82,4 +82,3 @@ npm run build
 * Need to improve canvasinput and remove dom dependencies.
 * Need to expose DOM-like events on all the primitives, as well as getters and setters for values etc.
 * Look at [unit testing with Karma](https://github.com/aframevr/aframe/tree/master/tests)
-* Submit to AFRAME registry.

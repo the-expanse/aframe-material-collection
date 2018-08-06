@@ -93,10 +93,10 @@ module.exports = AFRAME.registerComponent('ui-text', {
         let texture = new THREE.Texture(image);
         texture.needsUpdate = true;
         texture.minFilter = THREE.LinearFilter;
-        texture.wrapS = THREE.ClampToEdgeWrapping;
-        texture.wrapT = THREE.ClampToEdgeWrapping;
-        texture.repeat.set(1,1.4);
-        texture.offset.set(0,-0.2);
+        // texture.wrapS = THREE.ClampToEdgeWrapping;
+        // texture.wrapT = THREE.ClampToEdgeWrapping;
+        // texture.repeat.set(1,1.4);
+        // texture.offset.set(0,-0.2);
         this.textMaterial = new THREE.MeshBasicMaterial({map:texture});
         this.textPlane.material = this.textMaterial;
         // Update clipping planes for the new material.
@@ -131,10 +131,10 @@ module.exports = AFRAME.registerComponent('ui-text', {
         // Set the underline to the focussed state.
         this.underLine.setAttribute('color',this.data.lineFocusColor);
         this.textMaterial.map.minFilter = THREE.LinearFilter;
-        this.textMaterial.map.wrapS = THREE.ClampToEdgeWrapping;
-        this.textMaterial.map.wrapT = THREE.ClampToEdgeWrapping;
-        this.textMaterial.map.repeat.set(1,1.4);
-        this.textMaterial.map.offset.set(0,-0.2);
+        // this.textMaterial.map.wrapS = THREE.ClampToEdgeWrapping;
+        // this.textMaterial.map.wrapT = THREE.ClampToEdgeWrapping;
+        // this.textMaterial.map.repeat.set(1,1.4);
+        // this.textMaterial.map.offset.set(0,-0.2);
         // Set focused flag
         this.is_focussed = true;
         // Add mouse down event handler for blur event to the render dom element.
@@ -193,12 +193,14 @@ module.exports = AFRAME.registerComponent('ui-text', {
             fontFamily: this.data.fontFamily,
             fontColor: this.data.fontColor,
             width:(this.data.width-0.1)*300,
-            padding: 6,
+            padding: 12,
             borderWidth: 0,
+            borderRadius:0,
             backgroundColor: '#fff',
             placeHolder:this.data.placeHolder,
             placeHolderColor:'#cfcfcf',
-            innerShadow:'0px 0px 0px rgba(0, 0, 0, 0.0)',
+            boxShadow: '0px 0px 0px #fff',
+            innerShadow:'0px 0px 0px rgba(255,255,255, 1)',
             value:this.data.value
         };
         this.el.sceneEl.canvas_input = new CanvasInput(input_settings);
