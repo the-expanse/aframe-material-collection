@@ -70,7 +70,7 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
     tweenSize(geometry){
         let _this = this;
         // Start changes
-        UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
+        UI.utils.isChanging(this.el.sceneEl,_this.ripple.uuid);
         new TWEEN.Tween({x:0.00001})
             .to({ x: 1}, this.data.duration)
             .onUpdate(function(){
@@ -81,7 +81,7 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
                 // Reset throttle flag.
                 this.isRippling = false;
                 // Stop changes
-                UI.utils.stoppedChanging(this.el.object3D.uuid);
+                UI.utils.stoppedChanging(_this.ripple.uuid);
             })
             .easing(TWEEN.Easing.Exponential.Out).start();
     },

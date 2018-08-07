@@ -5,10 +5,10 @@ export class Utils{
         AFRAME.registerComponent('ui-is-changing', {
             init() {
                 this.el.sceneEl.addEventListener('ui-changing',()=>{
-                    //console.log('ui-changing');
+                    console.log('ui-changing');
                 });
                 this.el.sceneEl.addEventListener('ui-changing-stopped',()=>{
-                    //console.log('ui-changing-stopped');
+                    console.log('ui-changing-stopped');
                 });
             }
         });
@@ -26,7 +26,8 @@ export class Utils{
         if(has_none){
             if(this.is_changeing){
                 // with a delay to allow render
-                setTimeout(()=>this.scene.emit('ui-changing-stopped'),150);
+                //setTimeout(()=>this.scene.emit('ui-changing-stopped'),150);
+                this.scene.emit('ui-changing-stopped')
             }
             this.is_changeing = false;
         }
