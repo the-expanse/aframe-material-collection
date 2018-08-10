@@ -25,7 +25,7 @@
     <a-sky color="#efefef"></a-sky>
 
     <a-plane id="uiPanelTwo" ui-curved-plane width="6" height="3" position="0 0 -2" side="double" shader="flat" class="intersect"></a-plane>
-    <a-ui-renderer ui-panel="#uiPanelTwo" look-controls-el="#camera">
+    <a-ui-renderer ui-panel="#uiPanelTwo">
 
         <a-entity position="0 0 -0.69" id="uiPanel" >
 
@@ -35,7 +35,7 @@
 
             <a-plane class="intersectable" width="3.4" height="1.7" position="0 0 -0.02" shader="flat" color="#cfcfcf" side="double"></a-plane>
 
-            <a-ui-scroll-pane position="0 -0.1 0" camera-el="#camera">
+            <a-ui-scroll-pane position="0 -0.1 0" look-controls-el="#camera">
                 <a-entity class="container">
                     <!--Introduction-->
                     <a-entity width="2.9">
