@@ -362,8 +362,8 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 child.addEventListener('textfontset',()=>{
 
                     UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
+                    setTimeout(()=>UI.utils.stoppedChanging(this.el.object3D.uuid),100);
                     traverse();
-                    UI.utils.stoppedChanging(this.el.object3D.uuid);
                 })
             }else{
                 traverse();
