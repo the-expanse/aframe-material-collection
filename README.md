@@ -7,7 +7,7 @@ It goes further than providing some reusable components for your UI, but also in
 
 [BASIC DEMO](https://shaneharris.github.io/aframe-material-collection/basic.html)
 
-[SCROLL PANE DEMO](https://shaneharris.github.io/aframe-material-collection/scroll-pane.hmtl)
+[SCROLL PANE DEMO](https://shaneharris.github.io/aframe-material-collection/scroll-pane.html)
 
 [ADVANCED DEMO](https://shaneharris.github.io/aframe-material-collection/)
 
