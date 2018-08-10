@@ -6,8 +6,11 @@ It goes further than providing some reusable components for your UI, but also in
 ## Live Demo
 
 [BASIC DEMO](https://shaneharris.github.io/aframe-material-collection/)
+
 [SCROLL PANE DEMO](https://shaneharris.github.io/aframe-material-collection/)
+
 [ADVANCED DEMO](https://shaneharris.github.io/aframe-material-collection/)
+
 [MANY ELEMENTS DEMO](https://shaneharris.github.io/aframe-material-collection/)
 
 ## Getting Started
