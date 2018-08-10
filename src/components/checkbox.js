@@ -13,7 +13,8 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
         unselectedColor: {default: '#7f7f7f'},
         disabledColor: {default: '#afafaf'},
         indeterminate: {type:'boolean',default: false},
-        disabled:{type:'boolean',default: false}
+        disabled:{type:'boolean',default: false},
+        intersectableClass: {default: 'intersectable'}
     },
     init() {
         this.width = 0.15;
@@ -28,8 +29,9 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
         backing.setAttribute('height',0.105);
         backing.setAttribute('position','0 0 -0.002');
         backing.setAttribute('shader','flat');
-        backing.setAttribute('class','intersectable no-yoga-layout');
-        backing.setAttribute('visible',false);
+        backing.setAttribute('class',this.data.intersectableClass+' no-yoga-layout');
+        backing.setAttribute('opacity',0.0001);
+        backing.setAttribute('transparent',true);
         this.el.appendChild(backing);
         this.clickHandler = ()=>{
             this.data.value = !this.data.value;
@@ -141,13 +143,13 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
     setDisabled(){
         // Check and set the disabled state of the checkbox - add / remove click handler.
         if(this.data.disabled){
-            this.el.removeEventListener('click',this.clickHandler);
+            this.el.removeEventListener('mousedown',this.clickHandler);
             this.topLine.setAttribute('color',this.data.disabledColor);
             this.leftLine.setAttribute('color',this.data.disabledColor);
             this.rightLine.setAttribute('color',this.data.disabledColor);
             this.bottomLine.setAttribute('color',this.data.disabledColor);
         }else{
-            this.el.addEventListener('click',this.clickHandler);
+            this.el.addEventListener('mousedown',this.clickHandler);
             this.topLine.setAttribute('color',this.data.unselectedColor);
             this.leftLine.setAttribute('color',this.data.unselectedColor);
             this.rightLine.setAttribute('color',this.data.value?this.data.selectedColor:this.data.unselectedColor);

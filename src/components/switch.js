@@ -49,6 +49,7 @@ module.exports = AFRAME.registerComponent('ui-switch', {
         this.railEl = document.createElement('a-plane');
         this.railEl.setAttribute('width','0.15');
         this.railEl.setAttribute('height','0.05');
+        this.railEl.setAttribute('shader','flat');
         this.railEl.setAttribute('ui-rounded','borderRadius:0.025');
         this.railEl.setAttribute('color',this.data.railColor);
         this.railEl.setAttribute('class',this.data.intersectableClass+' no-yoga-layout');
@@ -59,16 +60,20 @@ module.exports = AFRAME.registerComponent('ui-switch', {
         this.clickHandler = e=>{
             this.data.value = !this.data.value;
             this.click();
+            // Prevent default behaviour of event
+            if(e.detail.preventDefault){
+                e.detail.preventDefault();
+            }
         };
         this.setDisabled();
     },
     setDisabled(){
         // Add / Remove click handlers based on disabled state.
         if(this.data.disabled){
-            this.handleEl.removeEventListener('click',this.clickHandler);
+            this.handleEl.removeEventListener('mousedown',this.clickHandler);
             this.handleEl.setAttribute('color',this.data.handleDisabledColor);
         }else{
-            this.handleEl.addEventListener('click',this.clickHandler);
+            this.handleEl.addEventListener('mousedown',this.clickHandler);
             this.handleEl.setAttribute('color',this.data.handleColor);
         }
     },

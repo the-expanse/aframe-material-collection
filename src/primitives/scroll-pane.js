@@ -16,6 +16,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-scroll-pane', AFRAME.utils.exten
         height:"ui-scroll-pane.height",
         "scroll-z-offset":"ui-scroll-pane.scrollZOffset",
         "handle-color":"ui-scroll-pane.scrollHandleColor",
-        "scroll-padding":"ui-scroll-pane.scrollPadding"
+        "scroll-padding":"ui-scroll-pane.scrollPadding",
+        "camera-el":"ui-scroll-pane.cameraEl"
     }
 }));

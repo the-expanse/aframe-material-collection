@@ -14,7 +14,8 @@ module.exports = AFRAME.registerComponent('ui-radio', {
         selectedRadius: {type:'number',default: 0.045},
         unselectedColor: {default: '#5f5f5f'},
         disabledColor: {default: '#afafaf'},
-        disabled: {type: 'boolean', default: false}
+        disabled: {type: 'boolean', default: false},
+        intersectableClass: {default: 'intersectable'},
     },
     init() {
         this.width = this.data.size||0.15;
@@ -30,14 +31,14 @@ module.exports = AFRAME.registerComponent('ui-radio', {
         this.el.components.material.material.color = new THREE.Color(this.data.disabled?this.data.disabledColor:this.data.unselectedColor);
         this.el.appendChild(this.filled_circle);
         // Create backing for getting click events.
-        let backing = document.createElement('a-plane');
-        backing.setAttribute('width',0.105);
-        backing.setAttribute('height',0.105);
+        let backing = document.createElement('a-circle');
+        backing.setAttribute('radius',this.data.selectedRadius);
         backing.setAttribute('position','0 0 -0.002');
-        backing.setAttribute('class','intersectable no-yoga-layout');
-        backing.setAttribute('visible',false);
+        backing.setAttribute('class',this.data.intersectableClass+' no-yoga-layout');
         backing.setAttribute('shader','flat');
         backing.setAttribute('segments',6);
+        backing.setAttribute('opacity',0.0001);
+        backing.setAttribute('transparent',true);
         this.el.appendChild(backing);
         // Set this if it is checked.
         if(this.data.selected){
@@ -45,7 +46,7 @@ module.exports = AFRAME.registerComponent('ui-radio', {
         }
         // TODO: need to add play/pause methods for registering/unregistering events.
         if(!this.data.disabled){
-            this.el.addEventListener('click',e=>this.click(e));
+            this.el.addEventListener('mousedown',e=>this.click(e));
         }
     },
     deselect(){

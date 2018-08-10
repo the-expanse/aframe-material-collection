@@ -28,6 +28,7 @@ window.UI = {
     a_ui_int_input: require('./primitives/int-input'),
     a_ui_password_input: require('./primitives/password-input'),
     a_ui_scroll_pane: require('./primitives/scroll-pane'),
+    a_ui_renderer: require('./primitives/renderer'),
 
     // Components
     text: require('./components/text'),
@@ -42,6 +43,8 @@ window.UI = {
     checkbox: require('./components/checkbox'),
     radio: require('./components/radio'),
     border: require('./components/border'),
+    curvedPlane: require('./components/curved-plane'),
+    renderer: require('./components/renderer'),
     yoga_properties: require('./components/yoga'),
 };
 //module.exports = UI;

@@ -21,7 +21,8 @@ module.exports = AFRAME.registerComponent('ui-text', {
         disabled: {type: 'boolean', default: false},
         fontFamily: {default: 'Roboto'},
         fontColor: {default: '#4f4f4f'},
-        placeHolder: {default: 'Text...'}
+        placeHolder: {default: 'Text...'},
+        intersectableClass: {default: 'intersectable'},
     },
     init(){
 
@@ -29,7 +30,7 @@ module.exports = AFRAME.registerComponent('ui-text', {
         this.backing = document.createElement('a-plane');
         this.backing.setAttribute('width',this.data.width);
         this.backing.setAttribute('height',this.data.height);
-        this.backing.setAttribute('class','no-yoga-layout');
+        this.backing.setAttribute('class',this.data.intersectableClass+' no-yoga-layout');
         this.backing.setAttribute('opacity',0);
         this.backing.setAttribute('scale','1 1 0');
         this.el.appendChild(this.backing);
@@ -93,10 +94,6 @@ module.exports = AFRAME.registerComponent('ui-text', {
         let texture = new THREE.Texture(image);
         texture.needsUpdate = true;
         texture.minFilter = THREE.LinearFilter;
-        // texture.wrapS = THREE.ClampToEdgeWrapping;
-        // texture.wrapT = THREE.ClampToEdgeWrapping;
-        // texture.repeat.set(1,1.4);
-        // texture.offset.set(0,-0.2);
         this.textMaterial = new THREE.MeshBasicMaterial({map:texture});
         this.textPlane.material = this.textMaterial;
         // Update clipping planes for the new material.
@@ -108,8 +105,11 @@ module.exports = AFRAME.registerComponent('ui-text', {
         this.el.sceneEl.canvas_input.selectText();
     },
     focus(){
+        // Start Changes
+        UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
         // Reset the global canvas input to this current inputs settings.
         this.resetCanvasInput();
+        //this.el.focus();
         this.el.sceneEl.canvas_input.focus();
         this.el.sceneEl.canvas_input.onkeydown(e=>{
             // Prevent input for integer and float only.
@@ -131,10 +131,6 @@ module.exports = AFRAME.registerComponent('ui-text', {
         // Set the underline to the focussed state.
         this.underLine.setAttribute('color',this.data.lineFocusColor);
         this.textMaterial.map.minFilter = THREE.LinearFilter;
-        // this.textMaterial.map.wrapS = THREE.ClampToEdgeWrapping;
-        // this.textMaterial.map.wrapT = THREE.ClampToEdgeWrapping;
-        // this.textMaterial.map.repeat.set(1,1.4);
-        // this.textMaterial.map.offset.set(0,-0.2);
         // Set focused flag
         this.is_focussed = true;
         // Add mouse down event handler for blur event to the render dom element.
@@ -160,6 +156,8 @@ module.exports = AFRAME.registerComponent('ui-text', {
         this.el.sceneEl.canvas_input.blur();
         // Set the input current value image.
         this.setValue();
+        // Stop Changes
+        UI.utils.stoppedChanging(this.el.object3D.uuid);
     },
     resetCanvasInput(){
         // Set the canvas input to this current inputs settings.

@@ -9,10 +9,12 @@
 module.exports = AFRAME.registerComponent('ui-scroll-pane', {
     schema: {
         height:{type:'number',default:1.2},
-        width:{type:'number',default:2.5},
-        scrollPadding:{type:'number',default:0.1},
+        width:{type:'number',default:2.9},
+        scrollPadding:{type:'number',default:0.05},
         scrollZOffset:{type:'number',default:0},
-        scrollHandleColor:{default:'#009688'}
+        scrollHandleColor:{default:'#009688'},
+        intersectableClass:{default:'intersectable'},
+        cameraEl:{type:'selector'}
     },
     init() {
         // Setup scroll bar and panel backing.
@@ -35,40 +37,56 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             new THREE.Plane( new THREE.Vector3( -1, 0, 0 ), (this.data.width/2) ),
             new THREE.Plane( new THREE.Vector3( 1, 0, 0 ), (this.data.width/2) )
         ];
-        // Get camera element for pause/play for scroll bar dragging.
-        let camera = document.getElementById('camera');
+        // Pause/play camera look controls
+        const playPauseCamera = method=>{
+            if(this.data.cameraEl&&this.data.cameraEl.components["look-controls"]){
+                this.data.cameraEl.components["look-controls"][method]();
+            }
+        };
         // Setup mouse move handler for scrolling and updating scroll handle.
-        let mousemove = e=>this.mouseMove(e);
+        const mousemove = e=>this.mouseMove(e);
         // Start scroll
         this.handle.addEventListener('mousedown',e=>{
             // Pause look controls to allow scrolling
-            if(camera.components["look-controls"])camera.components["look-controls"].pause();
+            playPauseCamera('pause');
             this.isDragging = true;
             // Store the start point offset
             this.handlePos = this.handle.object3D.worldToLocal(e.detail.intersection.point).y;
             this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
             // Start changes
-            UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
+            UI.utils.isChanging(this.el.sceneEl,this.handle.uuid);
+            // Prevent default behaviour of event
+            UI.utils.preventDefault(e);
         });
         // End scroll
-        this.el.sceneEl.addEventListener('mouseup',e=>{
+        const endScroll = e=>{
             if(this.isDragging){
                 this.backgroundPanel.removeEventListener('ui-mousemove',mousemove);
                 // Play look controls once scrolling is finished
-                if(camera.components["look-controls"])camera.components["look-controls"].play();
+                playPauseCamera('play');
                 this.isDragging = false;
                 // Stop changes
-                UI.utils.stoppedChanging(this.el.object3D.uuid);
+                UI.utils.stoppedChanging(this.handle.uuid);
+                UI.utils.stoppedChanging(this.rail.uuid);
+                // Prevent default behaviour of event
+                UI.utils.preventDefault(e);
             }
-        });
-        // Handle clicks on rail to scroll
+        };
+        this.backgroundPanel.addEventListener('mouseup',endScroll);
+        this.backgroundPanel.addEventListener('mouseleave',endScroll);
+        // // Handle clicks on rail to scroll
         this.rail.addEventListener('mousedown',e=>{
+
+            UI.utils.isChanging(this.el.sceneEl,this.rail.uuid);
             // Pause look controls
-            camera.components["look-controls"].pause();
             this.isDragging = true;
+            // Reset handle pos to center of handle
+            this.handlePos = 0;
             // Scroll immediately and register mouse move events.
             this.scroll(this.rail.object3D.worldToLocal(e.detail.intersection.point).y);
             this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
+            // Prevent default behaviour of event
+            UI.utils.preventDefault(e);
         });
 
         // Setup content clips after the scene is loaded to be able to access all entity materials
@@ -102,7 +120,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
     },
     mouseMove(e){
         if(this.isDragging){
-            let pos = this.backgroundPanel.object3D.worldToLocal(e.detail.intersection.point);
+            let pos = this.rail.object3D.worldToLocal(e.detail.intersection.point);
             this.scroll(pos.y-this.handlePos);
         }
     },
@@ -116,7 +134,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+scroll_pos+' '+(this.data.scrollZOffset+0.0005));
     },
     setupMouseWheelScroll(){
-        this.el.addEventListener('ui-mousewheel',e=>{
+        this.backgroundPanel.addEventListener('ui-mousewheel',e=>{
             if(this.handleSize!==1){
                 // Start changes
                 UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
@@ -129,17 +147,18 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
     setupElements(){
         // Setup background with mouse input to catch mouse move events when not exactly over the scroll bar.
         this.backgroundPanel = document.createElement('a-plane');
-        this.backgroundPanel.setAttribute('class','background intersectable');
+        this.backgroundPanel.setAttribute('class','background '+this.data.intersectableClass);
         this.backgroundPanel.setAttribute('width',this.data.width+1);
         this.backgroundPanel.setAttribute('height',this.data.height+1);
         this.backgroundPanel.setAttribute('position','0 0 -0.013');
-        this.backgroundPanel.setAttribute('visible',false);
+        this.backgroundPanel.setAttribute('opacity',0.0001);
+        this.backgroundPanel.setAttribute('transparent',true);
 
         this.el.appendChild(this.backgroundPanel);
 
         // Add scroll bar rail.
         this.rail = document.createElement('a-plane');
-        this.rail.setAttribute('class','rail');
+        this.rail.setAttribute('class','rail '+this.data.intersectableClass);
         this.rail.setAttribute('width',0.1);
         this.rail.setAttribute('height',this.data.height);
         this.rail.setAttribute('shader','flat');
@@ -147,7 +166,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
 
         // Add scroll bar handle.
         this.handle = document.createElement('a-plane');
-        this.handle.setAttribute('class','handle intersectable');
+        this.handle.setAttribute('class','handle '+this.data.intersectableClass);
         this.handle.setAttribute('width',0.1);
         this.handle.setAttribute('height',this.data.height);
         this.handle.setAttribute('color',this.data.scrollHandleColor);
@@ -341,7 +360,10 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             if(child.components.text){
                 // Wait for the font to load first.
                 child.addEventListener('textfontset',()=>{
+
+                    UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
                     traverse();
+                    UI.utils.stoppedChanging(this.el.object3D.uuid);
                 })
             }else{
                 traverse();

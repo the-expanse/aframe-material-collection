@@ -2,16 +2,6 @@ export class Utils{
     constructor(){
         this.changesDetected = {};
         this.is_changeing = false;
-        AFRAME.registerComponent('ui-is-changing', {
-            init() {
-                this.el.sceneEl.addEventListener('ui-changing',()=>{
-                    console.log('ui-changing');
-                });
-                this.el.sceneEl.addEventListener('ui-changing-stopped',()=>{
-                    console.log('ui-changing-stopped');
-                });
-            }
-        });
     }
     isFirstOrLastChange(){
         let has_none = true;
@@ -25,11 +15,18 @@ export class Utils{
         }
         if(has_none){
             if(this.is_changeing){
-                // with a delay to allow render
-                //setTimeout(()=>this.scene.emit('ui-changing-stopped'),150);
-                this.scene.emit('ui-changing-stopped')
+                let oldAfterRender = this.scene.object3D.onAfterRender;
+                this.scene.object3D.onAfterRender = ()=>{
+                    this.scene.emit('ui-changing-stopped');
+                    this.scene.object3D.onAfterRender = oldAfterRender;
+                }
             }
             this.is_changeing = false;
+        }
+    }
+    preventDefault(e){
+        if(e.detail.preventDefault && typeof e.detail.preventDefault === "function"){
+            e.detail.preventDefault();
         }
     }
     isChanging(scene,ref){

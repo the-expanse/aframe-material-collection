@@ -6,6 +6,9 @@
  * @author Shane Harris
  */
 module.exports = AFRAME.registerComponent('ui-mouse-shim', {
+    schema:{
+        fps:{type:'number',default:60}
+    },
     init(){
         if (!this.el.components.raycaster) {
             throw 'ui-mouse-move component needs the raycaster component to be added.'
@@ -17,7 +20,9 @@ module.exports = AFRAME.registerComponent('ui-mouse-shim', {
         this.emitMouseEvent('ui-mousewheel',e);
     },
     tick() {
-       this.emitMouseEvent('ui-mousemove');
+        if(new Date().getTime()-this.lastMouseMoveTime<(1000/this.data.fps))return;
+        this.emitMouseEvent('ui-mousemove');
+        this.lastMouseMoveTime = new Date().getTime();
     },
     emitMouseEvent(eventType,event){
         // Get current intersections from raycaster component.
