@@ -52,15 +52,23 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         // Set last render time
         this.lastRenderTime = 0;
         this.isFrozen = false;
-        this.backdrop.object3D.scale.set(0.000001,0.000001,0.000001);
     },
-    openBackDrop(){
+    openBackDrop(value){
+        if(this.isFrozen===value||this.isAnimatingBackground)return;
+        this.isAnimatingBackground = true;
+        let fromScale = this.isFrozen?1:0.000001;
         let toScale = this.isFrozen?0.000001:1;
+        let _this = this;
         UI.utils.isChanging(this.el.sceneEl,this.backdrop.uuid);
-        new TWEEN.Tween(this.backdrop.object3D.scale)
-            .to(new THREE.Vector3(toScale,toScale,toScale), 250)
+        new TWEEN.Tween({x:fromScale})
+            .to({x:toScale}, 250)
+            .onUpdate(function(){
+                console.log(this.x+' '+this.x+' '+this.x);
+                _this.backdrop.setAttribute('scale',this.x+' '+this.x+' '+this.x);
+            })
             .onComplete(()=>{
-                this.isFrozen = !this.isFrozen;
+                this.isFrozen = value;
+                this.isAnimatingBackground = false;
                 // Stop changes
                 UI.utils.stoppedChanging(this.backdrop.uuid);
             })
@@ -75,6 +83,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         this.backdrop.setAttribute('position',{x:0,y:0,z:-0.2});
         this.backdrop.setAttribute('width',1);
         this.backdrop.setAttribute('height',1);
+        this.backdrop.setAttribute('scale','0.000001 0.000001 0.000001');
         this.el.appendChild(this.backdrop);
     },
     play(){
@@ -96,7 +105,6 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         this.meshEl.addEventListener('click',this.click);
         this.meshEl.addEventListener('ui-mousemove',this.mousemove);
         this.meshEl.addEventListener('ui-mousewheel',this.mousewheel);
-        this.blurMode = false;
     },
     pause(){
         this.meshEl.removeEventListener('mousedown',this.mousedown);
@@ -104,7 +112,6 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         this.meshEl.removeEventListener('click',this.click);
         this.meshEl.removeEventListener('ui-mousemove',this.mousemove);
         this.meshEl.removeEventListener('ui-mousewheel',this.mousewheel);
-        this.blurMode = true;
     },
     setupUIPanel(){
         let uiPanel = document.createElement('a-plane');
@@ -190,9 +197,6 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         this.el.object3D.traverse(child=>{
             child.updateMatrixWorld();
         });
-        if(this.blurMode){
-            this.composer.addPass( new THREE.RenderPass( this.el.object3D, this.camera ) );
-        }
         this.el.sceneEl.renderer.render(this.el.object3D,this.camera,this.renderTarget);
         this.lastRenderTime = new Date().getTime();
         if(!this.isRendering){
