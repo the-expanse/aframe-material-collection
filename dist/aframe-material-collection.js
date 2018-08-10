@@ -88,7 +88,7 @@
 /* 0 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.2.10","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.2.11","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 1 */
@@ -435,7 +435,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-scroll-pane', AFRAME.utils.exten
         "scroll-z-offset":"ui-scroll-pane.scrollZOffset",
         "handle-color":"ui-scroll-pane.scrollHandleColor",
         "scroll-padding":"ui-scroll-pane.scrollPadding",
-        "camera-el":"ui-scroll-pane.cameraEl"
+        "look-controls-el":"ui-scroll-pane.cameraEl"
     }
 }));
 
@@ -1433,8 +1433,8 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 child.addEventListener('textfontset',()=>{
 
                     UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
+                    setTimeout(()=>UI.utils.stoppedChanging(this.el.object3D.uuid),100);
                     traverse();
-                    UI.utils.stoppedChanging(this.el.object3D.uuid);
                 })
             }else{
                 traverse();
