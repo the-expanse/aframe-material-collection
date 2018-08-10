@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 36);
+/******/ 	return __webpack_require__(__webpack_require__.s = 28);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -434,12 +434,40 @@ module.exports = AFRAME.registerPrimitive('a-ui-scroll-pane', AFRAME.utils.exten
         height:"ui-scroll-pane.height",
         "scroll-z-offset":"ui-scroll-pane.scrollZOffset",
         "handle-color":"ui-scroll-pane.scrollHandleColor",
-        "scroll-padding":"ui-scroll-pane.scrollPadding"
+        "scroll-padding":"ui-scroll-pane.scrollPadding",
+        "camera-el":"ui-scroll-pane.cameraEl"
     }
 }));
 
 /***/ }),
 /* 12 */
+/***/ (function(module, exports) {
+
+/* global AFRAME */
+/**
+ * Renderer Primitive for aframe-material-collection.
+ * @namespace aframe-material-collection
+ * @primitive a-ui-renderer
+ * @author Shane Harris
+ */
+module.exports = AFRAME.registerPrimitive('a-ui-renderer', AFRAME.utils.extendDeep({}, AFRAME.primitives.getMeshMixin(), {
+    defaultComponents: {
+        "ui-renderer":{}
+    },
+    mappings: {
+        "ui-panel":"ui-renderer.uiPanel",
+        "look-controls-el":"ui-renderer.lookControlsEl",
+        "panel-position":"ui-renderer.panelPosition",
+        "panel-size":"ui-renderer.panelSize",
+        "render-resolution":"ui-renderer.renderResolution",
+        "debug-raycaster":"ui-renderer.debugRaycaster",
+        "fps":"ui-renderer.fps",
+        "intersectable-class":"ui-renderer.intersectableClass",
+    }
+}));
+
+/***/ }),
+/* 13 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -465,7 +493,8 @@ module.exports = AFRAME.registerComponent('ui-text', {
         disabled: {type: 'boolean', default: false},
         fontFamily: {default: 'Roboto'},
         fontColor: {default: '#4f4f4f'},
-        placeHolder: {default: 'Text...'}
+        placeHolder: {default: 'Text...'},
+        intersectableClass: {default: 'intersectable'},
     },
     init(){
 
@@ -473,7 +502,7 @@ module.exports = AFRAME.registerComponent('ui-text', {
         this.backing = document.createElement('a-plane');
         this.backing.setAttribute('width',this.data.width);
         this.backing.setAttribute('height',this.data.height);
-        this.backing.setAttribute('class','no-yoga-layout');
+        this.backing.setAttribute('class',this.data.intersectableClass+' no-yoga-layout');
         this.backing.setAttribute('opacity',0);
         this.backing.setAttribute('scale','1 1 0');
         this.el.appendChild(this.backing);
@@ -537,10 +566,6 @@ module.exports = AFRAME.registerComponent('ui-text', {
         let texture = new THREE.Texture(image);
         texture.needsUpdate = true;
         texture.minFilter = THREE.LinearFilter;
-        // texture.wrapS = THREE.ClampToEdgeWrapping;
-        // texture.wrapT = THREE.ClampToEdgeWrapping;
-        // texture.repeat.set(1,1.4);
-        // texture.offset.set(0,-0.2);
         this.textMaterial = new THREE.MeshBasicMaterial({map:texture});
         this.textPlane.material = this.textMaterial;
         // Update clipping planes for the new material.
@@ -552,8 +577,11 @@ module.exports = AFRAME.registerComponent('ui-text', {
         this.el.sceneEl.canvas_input.selectText();
     },
     focus(){
+        // Start Changes
+        UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
         // Reset the global canvas input to this current inputs settings.
         this.resetCanvasInput();
+        //this.el.focus();
         this.el.sceneEl.canvas_input.focus();
         this.el.sceneEl.canvas_input.onkeydown(e=>{
             // Prevent input for integer and float only.
@@ -575,10 +603,6 @@ module.exports = AFRAME.registerComponent('ui-text', {
         // Set the underline to the focussed state.
         this.underLine.setAttribute('color',this.data.lineFocusColor);
         this.textMaterial.map.minFilter = THREE.LinearFilter;
-        // this.textMaterial.map.wrapS = THREE.ClampToEdgeWrapping;
-        // this.textMaterial.map.wrapT = THREE.ClampToEdgeWrapping;
-        // this.textMaterial.map.repeat.set(1,1.4);
-        // this.textMaterial.map.offset.set(0,-0.2);
         // Set focused flag
         this.is_focussed = true;
         // Add mouse down event handler for blur event to the render dom element.
@@ -604,6 +628,8 @@ module.exports = AFRAME.registerComponent('ui-text', {
         this.el.sceneEl.canvas_input.blur();
         // Set the input current value image.
         this.setValue();
+        // Stop Changes
+        UI.utils.stoppedChanging(this.el.object3D.uuid);
     },
     resetCanvasInput(){
         // Set the canvas input to this current inputs settings.
@@ -652,7 +678,7 @@ module.exports = AFRAME.registerComponent('ui-text', {
 });
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN */
@@ -747,7 +773,7 @@ module.exports = AFRAME.registerComponent('ui-btn', {
 });
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -772,7 +798,7 @@ module.exports = AFRAME.registerComponent('ui-icon', {
 });
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -811,7 +837,7 @@ module.exports = AFRAME.registerComponent('ui-rounded', {
 });
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN,THREE */
@@ -916,7 +942,7 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
 });
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN,THREE */
@@ -970,6 +996,7 @@ module.exports = AFRAME.registerComponent('ui-switch', {
         this.railEl = document.createElement('a-plane');
         this.railEl.setAttribute('width','0.15');
         this.railEl.setAttribute('height','0.05');
+        this.railEl.setAttribute('shader','flat');
         this.railEl.setAttribute('ui-rounded','borderRadius:0.025');
         this.railEl.setAttribute('color',this.data.railColor);
         this.railEl.setAttribute('class',this.data.intersectableClass+' no-yoga-layout');
@@ -980,16 +1007,20 @@ module.exports = AFRAME.registerComponent('ui-switch', {
         this.clickHandler = e=>{
             this.data.value = !this.data.value;
             this.click();
+            // Prevent default behaviour of event
+            if(e.detail.preventDefault){
+                e.detail.preventDefault();
+            }
         };
         this.setDisabled();
     },
     setDisabled(){
         // Add / Remove click handlers based on disabled state.
         if(this.data.disabled){
-            this.handleEl.removeEventListener('click',this.clickHandler);
+            this.handleEl.removeEventListener('mousedown',this.clickHandler);
             this.handleEl.setAttribute('color',this.data.handleDisabledColor);
         }else{
-            this.handleEl.addEventListener('click',this.clickHandler);
+            this.handleEl.addEventListener('mousedown',this.clickHandler);
             this.handleEl.setAttribute('color',this.data.handleColor);
         }
     },
@@ -1035,7 +1066,7 @@ module.exports = AFRAME.registerComponent('ui-switch', {
 });
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -1049,10 +1080,12 @@ module.exports = AFRAME.registerComponent('ui-switch', {
 module.exports = AFRAME.registerComponent('ui-scroll-pane', {
     schema: {
         height:{type:'number',default:1.2},
-        width:{type:'number',default:2.5},
-        scrollPadding:{type:'number',default:0.1},
+        width:{type:'number',default:2.9},
+        scrollPadding:{type:'number',default:0.05},
         scrollZOffset:{type:'number',default:0},
-        scrollHandleColor:{default:'#009688'}
+        scrollHandleColor:{default:'#009688'},
+        intersectableClass:{default:'intersectable'},
+        cameraEl:{type:'selector'}
     },
     init() {
         // Setup scroll bar and panel backing.
@@ -1075,40 +1108,56 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             new THREE.Plane( new THREE.Vector3( -1, 0, 0 ), (this.data.width/2) ),
             new THREE.Plane( new THREE.Vector3( 1, 0, 0 ), (this.data.width/2) )
         ];
-        // Get camera element for pause/play for scroll bar dragging.
-        let camera = document.getElementById('camera');
+        // Pause/play camera look controls
+        const playPauseCamera = method=>{
+            if(this.data.cameraEl&&this.data.cameraEl.components["look-controls"]){
+                this.data.cameraEl.components["look-controls"][method]();
+            }
+        };
         // Setup mouse move handler for scrolling and updating scroll handle.
-        let mousemove = e=>this.mouseMove(e);
+        const mousemove = e=>this.mouseMove(e);
         // Start scroll
         this.handle.addEventListener('mousedown',e=>{
             // Pause look controls to allow scrolling
-            if(camera.components["look-controls"])camera.components["look-controls"].pause();
+            playPauseCamera('pause');
             this.isDragging = true;
             // Store the start point offset
             this.handlePos = this.handle.object3D.worldToLocal(e.detail.intersection.point).y;
             this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
             // Start changes
-            UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
+            UI.utils.isChanging(this.el.sceneEl,this.handle.uuid);
+            // Prevent default behaviour of event
+            UI.utils.preventDefault(e);
         });
         // End scroll
-        this.el.sceneEl.addEventListener('mouseup',e=>{
+        const endScroll = e=>{
             if(this.isDragging){
                 this.backgroundPanel.removeEventListener('ui-mousemove',mousemove);
                 // Play look controls once scrolling is finished
-                if(camera.components["look-controls"])camera.components["look-controls"].play();
+                playPauseCamera('play');
                 this.isDragging = false;
                 // Stop changes
-                UI.utils.stoppedChanging(this.el.object3D.uuid);
+                UI.utils.stoppedChanging(this.handle.uuid);
+                UI.utils.stoppedChanging(this.rail.uuid);
+                // Prevent default behaviour of event
+                UI.utils.preventDefault(e);
             }
-        });
-        // Handle clicks on rail to scroll
+        };
+        this.backgroundPanel.addEventListener('mouseup',endScroll);
+        this.backgroundPanel.addEventListener('mouseleave',endScroll);
+        // // Handle clicks on rail to scroll
         this.rail.addEventListener('mousedown',e=>{
+
+            UI.utils.isChanging(this.el.sceneEl,this.rail.uuid);
             // Pause look controls
-            camera.components["look-controls"].pause();
             this.isDragging = true;
+            // Reset handle pos to center of handle
+            this.handlePos = 0;
             // Scroll immediately and register mouse move events.
             this.scroll(this.rail.object3D.worldToLocal(e.detail.intersection.point).y);
             this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
+            // Prevent default behaviour of event
+            UI.utils.preventDefault(e);
         });
 
         // Setup content clips after the scene is loaded to be able to access all entity materials
@@ -1142,7 +1191,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
     },
     mouseMove(e){
         if(this.isDragging){
-            let pos = this.backgroundPanel.object3D.worldToLocal(e.detail.intersection.point);
+            let pos = this.rail.object3D.worldToLocal(e.detail.intersection.point);
             this.scroll(pos.y-this.handlePos);
         }
     },
@@ -1156,7 +1205,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+scroll_pos+' '+(this.data.scrollZOffset+0.0005));
     },
     setupMouseWheelScroll(){
-        this.el.addEventListener('ui-mousewheel',e=>{
+        this.backgroundPanel.addEventListener('ui-mousewheel',e=>{
             if(this.handleSize!==1){
                 // Start changes
                 UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
@@ -1169,17 +1218,18 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
     setupElements(){
         // Setup background with mouse input to catch mouse move events when not exactly over the scroll bar.
         this.backgroundPanel = document.createElement('a-plane');
-        this.backgroundPanel.setAttribute('class','background intersectable');
+        this.backgroundPanel.setAttribute('class','background '+this.data.intersectableClass);
         this.backgroundPanel.setAttribute('width',this.data.width+1);
         this.backgroundPanel.setAttribute('height',this.data.height+1);
         this.backgroundPanel.setAttribute('position','0 0 -0.013');
-        this.backgroundPanel.setAttribute('visible',false);
+        this.backgroundPanel.setAttribute('opacity',0.0001);
+        this.backgroundPanel.setAttribute('transparent',true);
 
         this.el.appendChild(this.backgroundPanel);
 
         // Add scroll bar rail.
         this.rail = document.createElement('a-plane');
-        this.rail.setAttribute('class','rail');
+        this.rail.setAttribute('class','rail '+this.data.intersectableClass);
         this.rail.setAttribute('width',0.1);
         this.rail.setAttribute('height',this.data.height);
         this.rail.setAttribute('shader','flat');
@@ -1187,7 +1237,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
 
         // Add scroll bar handle.
         this.handle = document.createElement('a-plane');
-        this.handle.setAttribute('class','handle intersectable');
+        this.handle.setAttribute('class','handle '+this.data.intersectableClass);
         this.handle.setAttribute('width',0.1);
         this.handle.setAttribute('height',this.data.height);
         this.handle.setAttribute('color',this.data.scrollHandleColor);
@@ -1381,7 +1431,10 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             if(child.components.text){
                 // Wait for the font to load first.
                 child.addEventListener('textfontset',()=>{
+
+                    UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
                     traverse();
+                    UI.utils.stoppedChanging(this.el.object3D.uuid);
                 })
             }else{
                 traverse();
@@ -1393,7 +1446,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
 });
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -1404,6 +1457,9 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
  * @author Shane Harris
  */
 module.exports = AFRAME.registerComponent('ui-mouse-shim', {
+    schema:{
+        fps:{type:'number',default:60}
+    },
     init(){
         if (!this.el.components.raycaster) {
             throw 'ui-mouse-move component needs the raycaster component to be added.'
@@ -1415,7 +1471,9 @@ module.exports = AFRAME.registerComponent('ui-mouse-shim', {
         this.emitMouseEvent('ui-mousewheel',e);
     },
     tick() {
-       this.emitMouseEvent('ui-mousemove');
+        if(new Date().getTime()-this.lastMouseMoveTime<(1000/this.data.fps))return;
+        this.emitMouseEvent('ui-mousemove');
+        this.lastMouseMoveTime = new Date().getTime();
     },
     emitMouseEvent(eventType,event){
         // Get current intersections from raycaster component.
@@ -1429,7 +1487,7 @@ module.exports = AFRAME.registerComponent('ui-mouse-shim', {
 });
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -1446,7 +1504,7 @@ module.exports = AFRAME.registerComponent('ui-double-click', {
     init() {
         let last_click = 0;
         // Add click event for listening for two clicks within the specified timespan.
-        this.el.addEventListener('click',e=>{
+        this.el.addEventListener('mousedown',e=>{
             let now = new Date().getTime();
             if(now-last_click<this.data.timeout){
                 this.el.emit('dblclick',e);
@@ -1460,7 +1518,7 @@ module.exports = AFRAME.registerComponent('ui-double-click', {
 });
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN */
@@ -1478,7 +1536,8 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
         unselectedColor: {default: '#7f7f7f'},
         disabledColor: {default: '#afafaf'},
         indeterminate: {type:'boolean',default: false},
-        disabled:{type:'boolean',default: false}
+        disabled:{type:'boolean',default: false},
+        intersectableClass: {default: 'intersectable'}
     },
     init() {
         this.width = 0.15;
@@ -1493,8 +1552,9 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
         backing.setAttribute('height',0.105);
         backing.setAttribute('position','0 0 -0.002');
         backing.setAttribute('shader','flat');
-        backing.setAttribute('class','intersectable no-yoga-layout');
-        backing.setAttribute('visible',false);
+        backing.setAttribute('class',this.data.intersectableClass+' no-yoga-layout');
+        backing.setAttribute('opacity',0.0001);
+        backing.setAttribute('transparent',true);
         this.el.appendChild(backing);
         this.clickHandler = ()=>{
             this.data.value = !this.data.value;
@@ -1606,13 +1666,13 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
     setDisabled(){
         // Check and set the disabled state of the checkbox - add / remove click handler.
         if(this.data.disabled){
-            this.el.removeEventListener('click',this.clickHandler);
+            this.el.removeEventListener('mousedown',this.clickHandler);
             this.topLine.setAttribute('color',this.data.disabledColor);
             this.leftLine.setAttribute('color',this.data.disabledColor);
             this.rightLine.setAttribute('color',this.data.disabledColor);
             this.bottomLine.setAttribute('color',this.data.disabledColor);
         }else{
-            this.el.addEventListener('click',this.clickHandler);
+            this.el.addEventListener('mousedown',this.clickHandler);
             this.topLine.setAttribute('color',this.data.unselectedColor);
             this.leftLine.setAttribute('color',this.data.unselectedColor);
             this.rightLine.setAttribute('color',this.data.value?this.data.selectedColor:this.data.unselectedColor);
@@ -1631,7 +1691,7 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
 });
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN */
@@ -1650,7 +1710,8 @@ module.exports = AFRAME.registerComponent('ui-radio', {
         selectedRadius: {type:'number',default: 0.045},
         unselectedColor: {default: '#5f5f5f'},
         disabledColor: {default: '#afafaf'},
-        disabled: {type: 'boolean', default: false}
+        disabled: {type: 'boolean', default: false},
+        intersectableClass: {default: 'intersectable'},
     },
     init() {
         this.width = this.data.size||0.15;
@@ -1666,14 +1727,14 @@ module.exports = AFRAME.registerComponent('ui-radio', {
         this.el.components.material.material.color = new THREE.Color(this.data.disabled?this.data.disabledColor:this.data.unselectedColor);
         this.el.appendChild(this.filled_circle);
         // Create backing for getting click events.
-        let backing = document.createElement('a-plane');
-        backing.setAttribute('width',0.105);
-        backing.setAttribute('height',0.105);
+        let backing = document.createElement('a-circle');
+        backing.setAttribute('radius',this.data.selectedRadius);
         backing.setAttribute('position','0 0 -0.002');
-        backing.setAttribute('class','intersectable no-yoga-layout');
-        backing.setAttribute('visible',false);
+        backing.setAttribute('class',this.data.intersectableClass+' no-yoga-layout');
         backing.setAttribute('shader','flat');
         backing.setAttribute('segments',6);
+        backing.setAttribute('opacity',0.0001);
+        backing.setAttribute('transparent',true);
         this.el.appendChild(backing);
         // Set this if it is checked.
         if(this.data.selected){
@@ -1681,7 +1742,7 @@ module.exports = AFRAME.registerComponent('ui-radio', {
         }
         // TODO: need to add play/pause methods for registering/unregistering events.
         if(!this.data.disabled){
-            this.el.addEventListener('click',e=>this.click(e));
+            this.el.addEventListener('mousedown',e=>this.click(e));
         }
     },
     deselect(){
@@ -1732,7 +1793,7 @@ module.exports = AFRAME.registerComponent('ui-radio', {
 });
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -1783,7 +1844,218 @@ module.exports = AFRAME.registerComponent('ui-border', {
 });
 
 /***/ }),
-/* 24 */
+/* 25 */
+/***/ (function(module, exports) {
+
+/* global AFRAME */
+/**
+ * A curved-plane component to curve a plane primitive.
+ * @namespace aframe-material-collection
+ * @component ui-curved-plane
+ * @author Shane Harris
+ */
+
+module.exports = AFRAME.registerComponent('ui-curved-plane', {
+    schema: {
+        depth:{type:'number',default:0.03}
+    },
+    init(){
+        let mesh = this.el.getObject3D('mesh');
+        let width = this.el.getAttribute('width');
+        let height = this.el.getAttribute('height');
+        let browser_pane = new THREE.PlaneGeometry(width, height, 5, 1);
+        let curve = new THREE.CubicBezierCurve3(
+            browser_pane.vertices[0],
+            new THREE.Vector3(0.375*width, 0, -this.data.depth*width ),
+            new THREE.Vector3(0.625*width, 0, -this.data.depth*width ),
+            browser_pane.vertices[(browser_pane.vertices.length/2) - 1]
+        );
+        let planePoints = curve.getPoints(Math.abs(browser_pane.vertices.length/2)-1);
+        for (let edgeI = 1; edgeI < 3; edgeI++) {
+            for (let pointI = 0; pointI < planePoints.length; pointI++) {
+                browser_pane.vertices[(edgeI === 2 ? planePoints.length + pointI : pointI)].z = planePoints[pointI].z;
+            }
+        }
+        mesh.geometry = browser_pane;
+    }
+});
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports) {
+
+/* global AFRAME */
+/**
+ * A component to render the UI to a flat plane, removing the objects from the scene and rendering them separately to a
+ * render target.
+ * @namespace aframe-material-collection
+ * @component ui-renderer
+ * @author Shane Harris
+ */
+module.exports = AFRAME.registerComponent('ui-renderer', {
+    schema: {
+        uiPanel: {type: 'selector'},
+        lookControlsEl: {type: 'selector'},
+        panelPosition:{type:'vec3',default:{x:0,y:1.6,z:-1}},
+        panelSize:{type:'vec2',default:{x:6,y:3}},
+        renderResolution:{type:'vec2',default:{x:2048,y:1024}},
+        debugRaycaster:{type:'boolean',default: false},
+        fps:{type:'number',default:45},
+        intersectableClass:{default:'intersectable'}
+    },
+    init() {
+        if(!this.data.uiPanel){
+            this.meshEl = this.setupUIPanel();
+        }else{
+            this.meshEl = this.data.uiPanel;
+        }
+        // Remove this object from the scene to be rendered separately.
+        this.el.object3D.parent.remove(this.el.object3D);
+        // Setup fixed camera nd render target.
+        this.camera = new THREE.PerspectiveCamera( 100, 2, 0.1, 1000 );
+        // Setup render target
+        this.renderTarget = new THREE.WebGLRenderTarget(this.data.renderResolution.x,this.data.renderResolution.y, { antialias: true } );
+        // Set the texture to the ui panel mesh.
+        this.meshEl.getObject3D('mesh').material.map = this.renderTarget.texture;
+        // Listen for change events to enable rendering.
+        this.isRendering = true;
+        this.stoppedRendering = false;
+        // Listen for change events to enable/disable rendering
+        this.el.sceneEl.addEventListener('ui-changing',()=>{
+            this.stoppedRendering = false;
+            this.isRendering = true;
+        });
+        this.el.sceneEl.addEventListener('ui-changing-stopped',()=>{
+            this.isRendering = false;
+        });
+        // Setup raycaster for relaying mouse/keyboard events
+        this.raycaster = new THREE.Raycaster();
+        this.helper = new THREE.Mesh(new THREE.SphereGeometry(0.01),new THREE.MeshBasicMaterial({color:'#ff0000'}));
+        // Add cursor helper to object
+        if(this.data.debugRaycaster)this.el.object3D.add(this.helper);
+        // Set last render time
+        this.lastRenderTime = 0;
+    },
+    play(){
+        this.lastMouseMoveTime = 0;
+        // Register event listeners
+        // Mousedown and mouseup do not have the correct intersection point. Use last mouse move event if available instead.
+        // TODO: raise issue with aframe / submit PR;
+        this.click = e=>this.mouseEvent('click',this.lastMoveEvent||e);
+        this.mousedown = e=>this.mouseEvent('mousedown',this.lastMoveEvent||e);
+        this.mouseup = e=>this.mouseEvent('mouseup',this.lastMoveEvent||e);
+        this.mousewheel = e=>this.mouseEvent('ui-mousewheel',e.detail.evt);
+        this.mousemove = e=>{
+            // Save mousemove event for mousedown/mouseup events.
+            this.lastMoveEvent = e;
+            this.mouseEvent('ui-mousemove',e);
+        };
+        this.meshEl.addEventListener('mousedown',this.mousedown);
+        this.meshEl.addEventListener('mouseup',this.mouseup);
+        this.meshEl.addEventListener('click',this.click);
+        this.meshEl.addEventListener('ui-mousemove',this.mousemove);
+        this.meshEl.addEventListener('ui-mousewheel',this.mousewheel);
+    },
+    pause(){
+        this.meshEl.removeEventListener('mousedown',this.mousedown);
+        this.meshEl.removeEventListener('mouseup',this.mouseup);
+        this.meshEl.removeEventListener('click',this.click);
+        this.meshEl.removeEventListener('ui-mousemove',this.mousemove);
+        this.meshEl.removeEventListener('ui-mousewheel',this.mousewheel);
+    },
+    setupUIPanel(){
+        let uiPanel = document.createElement('a-plane');
+        uiPanel.setAttribute('position',this.data.panelPosition);
+        uiPanel.setAttribute('width',this.data.panelSize.x);
+        uiPanel.setAttribute('height',this.data.panelSize.y);
+        this.el.sceneEl.appendChild(uiPanel);
+        return uiPanel;
+    },
+    mouseEvent(type,e){
+        let mouse = {x:0,y:0};
+        if(e.detail.intersection){
+            let localPoint = this.el.object3D.worldToLocal(e.detail.intersection.point);
+            mouse = {
+                x:localPoint.x/this.meshEl.getAttribute('width')*2,
+                y:localPoint.y/this.meshEl.getAttribute('height')*2
+            };
+        }
+        if(type==='ui-mousewheel'&&e.detail.evt){
+            mouse.deltaY = e.detail.deltaY;
+            mouse.deltaX = e.detail.deltaX;
+        }
+        if(type==='mousedown'&&this.lookControlsEl&&this.lookControlsEl.components['look-controls']){
+            this.lookControlsEl.components['look-controls'].pause()
+        }
+        if(type==='mouseup'&&this.lookControlsEl&&this.lookControlsEl.components['look-controls']){
+            this.lookControlsEl.components['look-controls'].play()
+        }
+        this.raycastIntersections(e,mouse,type);
+    },
+    raycastIntersections(e,mouse,type){
+        if(!this.camera)return;
+        this.raycaster.setFromCamera( mouse, this.camera );
+        // this.helper.setDirection(this.raycaster.ray.direction);
+        let intersections = this.raycaster.intersectObjects( this.el.object3D.children, true );
+        this.prevIntersectionEls = this.prevIntersectionEls||[];
+        let intersectionEls = [];
+        if(intersections.length&&this.data.debugRaycaster){
+            let intersectionPoint = intersections[0].point;
+            if(intersections[0].object===this.helper&&intersections.length>1){
+                intersectionPoint = intersections[1].point;
+            }
+            this.helper.position.copy(intersectionPoint);
+            this.helper.position.x-=0.03;
+        }
+        let defaultPrevented = false;
+        if(intersections.length&&type==="mousewheel"){
+            return this.el.sceneEl.renderer.domElement.emit('ui-mousewheel',{evt:e})
+        }
+        for(let i = 0;i < intersections.length; i++){
+            let intersection = intersections[i];
+            // Only emit events on objecst with an element attached
+            if(intersection.object.el&&intersection.object.el.classList.contains(this.data.intersectableClass)){
+                let currentEvent = {intersection:intersection,evt:e,preventDefault:()=>{defaultPrevented=true}};
+                // If this is the first time weve seen this element then emit the mouseenter event.
+                if(this.prevIntersectionEls.indexOf(intersection.object.el)===-1&&!defaultPrevented){
+                    intersection.object.el.emit('mouseenter',currentEvent);
+                }
+                // Emit the mouse event received
+                if(!defaultPrevented){
+                    intersection.object.el.emit(type,currentEvent);
+                }
+                // Store the intersection on the element.
+                intersection.object.el.intersection = intersection;
+                // Add the current el to the list to check against previous intersection els.
+                intersectionEls.push(intersection.object.el);
+            }
+        }
+        // Find any intersections that have disappeared to emit the mouse leave event.
+        for(let i = 0;i < this.prevIntersectionEls.length; i++){
+            let intersectionEl = this.prevIntersectionEls[i];
+            if(intersectionEls.indexOf(intersectionEl)===-1){
+                intersectionEl.emit('mouseleave',{intersection:intersectionEl.intersection});
+            }
+        }
+        // Store the current intersected elements for the next iteration.
+        this.prevIntersectionEls = intersectionEls;
+    },
+    tick(){
+        if(new Date().getTime()-this.lastRenderTime<(1000/this.data.fps)&&this.isRendering)return;
+        if(this.stoppedRendering)return;
+        this.el.object3D.traverse(child=>{
+            child.updateMatrixWorld();
+        });
+        this.el.sceneEl.renderer.render(this.el.object3D,this.camera,this.renderTarget);
+        this.lastRenderTime = new Date().getTime();
+        if(!this.isRendering){
+            this.stoppedRendering = true;
+        }
+    }
+});
+
+/***/ }),
+/* 27 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,Yoga */
@@ -2023,18 +2295,7 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
 });
 
 /***/ }),
-/* 25 */,
-/* 26 */,
-/* 27 */,
-/* 28 */,
-/* 29 */,
-/* 30 */,
-/* 31 */,
-/* 32 */,
-/* 33 */,
-/* 34 */,
-/* 35 */,
-/* 36 */
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2045,16 +2306,6 @@ class Utils{
     constructor(){
         this.changesDetected = {};
         this.is_changeing = false;
-        AFRAME.registerComponent('ui-is-changing', {
-            init() {
-                this.el.sceneEl.addEventListener('ui-changing',()=>{
-                    console.log('ui-changing');
-                });
-                this.el.sceneEl.addEventListener('ui-changing-stopped',()=>{
-                    console.log('ui-changing-stopped');
-                });
-            }
-        });
     }
     isFirstOrLastChange(){
         let has_none = true;
@@ -2068,11 +2319,18 @@ class Utils{
         }
         if(has_none){
             if(this.is_changeing){
-                // with a delay to allow render
-                //setTimeout(()=>this.scene.emit('ui-changing-stopped'),150);
-                this.scene.emit('ui-changing-stopped')
+                let oldAfterRender = this.scene.object3D.onAfterRender;
+                this.scene.object3D.onAfterRender = ()=>{
+                    this.scene.emit('ui-changing-stopped');
+                    this.scene.object3D.onAfterRender = oldAfterRender;
+                }
             }
             this.is_changeing = false;
+        }
+    }
+    preventDefault(e){
+        if(e.detail.preventDefault && typeof e.detail.preventDefault === "function"){
+            e.detail.preventDefault();
         }
     }
     isChanging(scene,ref){
@@ -2118,21 +2376,24 @@ window.UI = {
     a_ui_int_input: __webpack_require__(9),
     a_ui_password_input: __webpack_require__(10),
     a_ui_scroll_pane: __webpack_require__(11),
+    a_ui_renderer: __webpack_require__(12),
 
     // Components
-    text: __webpack_require__(12),
-    btn: __webpack_require__(13),
-    icon: __webpack_require__(14),
-    rounded: __webpack_require__(15),
-    ripple: __webpack_require__(16),
-    ui_switch: __webpack_require__(17),
-    scroll_pane: __webpack_require__(18),
-    mouse_shim: __webpack_require__(19),
-    double_click: __webpack_require__(20),
-    checkbox: __webpack_require__(21),
-    radio: __webpack_require__(22),
-    border: __webpack_require__(23),
-    yoga_properties: __webpack_require__(24),
+    text: __webpack_require__(13),
+    btn: __webpack_require__(14),
+    icon: __webpack_require__(15),
+    rounded: __webpack_require__(16),
+    ripple: __webpack_require__(17),
+    ui_switch: __webpack_require__(18),
+    scroll_pane: __webpack_require__(19),
+    mouse_shim: __webpack_require__(20),
+    double_click: __webpack_require__(21),
+    checkbox: __webpack_require__(22),
+    radio: __webpack_require__(23),
+    border: __webpack_require__(24),
+    curvedPlane: __webpack_require__(25),
+    renderer: __webpack_require__(26),
+    yoga_properties: __webpack_require__(27),
 };
 //module.exports = UI;
 
