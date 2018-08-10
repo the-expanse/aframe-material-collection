@@ -88,7 +88,7 @@
 /* 0 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.2.18","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.2.19","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 1 */
@@ -1900,6 +1900,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         intersectableClass:{default:'intersectable'}
     },
     init() {
+        this.setupBackDrop();
         if(!this.data.uiPanel){
             this.meshEl = this.setupUIPanel();
         }else{
@@ -1931,6 +1932,31 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         if(this.data.debugRaycaster)this.el.object3D.add(this.helper);
         // Set last render time
         this.lastRenderTime = 0;
+        this.isFrozen = false;
+        this.backdrop.object3D.scale.set(0.000001,0.000001,0.000001);
+    },
+    openBackDrop(){
+        let toScale = this.isFrozen?0.000001:1;
+        UI.utils.isChanging(this.el.sceneEl,this.backdrop.uuid);
+        new TWEEN.Tween(this.backdrop.object3D.scale)
+            .to(new THREE.Vector3(toScale,toScale,toScale), 250)
+            .onComplete(()=>{
+                this.isFrozen = !this.isFrozen;
+                // Stop changes
+                UI.utils.stoppedChanging(this.backdrop.uuid);
+            })
+            .easing(TWEEN.Easing.Exponential.Out).start();
+    },
+    setupBackDrop(){
+        this.backdrop = document.createElement('a-plane');
+        this.backdrop.setAttribute('transparent',true);
+        this.backdrop.setAttribute('opacity',0.9);
+        this.backdrop.setAttribute('color','#000');
+        this.backdrop.setAttribute('shader','flat');
+        this.backdrop.setAttribute('position',{x:0,y:0,z:-0.2});
+        this.backdrop.setAttribute('width',1);
+        this.backdrop.setAttribute('height',1);
+        this.el.appendChild(this.backdrop);
     },
     play(){
         this.lastMouseMoveTime = 0;
@@ -1951,6 +1977,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         this.meshEl.addEventListener('click',this.click);
         this.meshEl.addEventListener('ui-mousemove',this.mousemove);
         this.meshEl.addEventListener('ui-mousewheel',this.mousewheel);
+        this.blurMode = false;
     },
     pause(){
         this.meshEl.removeEventListener('mousedown',this.mousedown);
@@ -1958,6 +1985,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         this.meshEl.removeEventListener('click',this.click);
         this.meshEl.removeEventListener('ui-mousemove',this.mousemove);
         this.meshEl.removeEventListener('ui-mousewheel',this.mousewheel);
+        this.blurMode = true;
     },
     setupUIPanel(){
         let uiPanel = document.createElement('a-plane');
@@ -2004,9 +2032,6 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
             this.helper.position.x-=0.03;
         }
         let defaultPrevented = false;
-        // if(intersections.length&&type==="mousewheel"){
-        //     return this.el.sceneEl.renderer.domElement.emit('ui-mousewheel',{evt:e})
-        // }
         for(let i = 0;i < intersections.length; i++){
             let intersection = intersections[i];
             // Only emit events on objecst with an element attached
@@ -2017,6 +2042,9 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
                     intersection.object.el.emit('mouseenter',currentEvent);
                 }
                 // Emit the mouse event received
+                if(type==="ui-mousewheel"){
+                    console.log(type,defaultPrevented,{el:intersection.object.el});
+                }
                 if(!defaultPrevented){
                     intersection.object.el.emit(type,currentEvent);
                 }
@@ -2037,11 +2065,15 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         this.prevIntersectionEls = intersectionEls;
     },
     tick(){
+        if(this.isFrozen)return;
         if(new Date().getTime()-this.lastRenderTime<(1000/this.data.fps)&&this.isRendering)return;
         if(this.stoppedRendering)return;
         this.el.object3D.traverse(child=>{
             child.updateMatrixWorld();
         });
+        if(this.blurMode){
+            this.composer.addPass( new THREE.RenderPass( this.el.object3D, this.camera ) );
+        }
         this.el.sceneEl.renderer.render(this.el.object3D,this.camera,this.renderTarget);
         this.lastRenderTime = new Date().getTime();
         if(!this.isRendering){
