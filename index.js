@@ -1,1 +1,4 @@
-module.exports = require('./src');
+module.exports = {
+    yoga:require('./src/yoga'),
+    app:require('./src'),
+};
