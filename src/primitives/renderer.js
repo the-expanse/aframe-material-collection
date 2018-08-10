@@ -12,6 +12,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-renderer', AFRAME.utils.extendDe
     mappings: {
         "ui-panel":"ui-renderer.uiPanel",
         "look-controls-el":"ui-renderer.lookControlsEl",
+        "look-controls-component":"ui-renderer.lookControlsComponent",
         "panel-position":"ui-renderer.panelPosition",
         "panel-size":"ui-renderer.panelSize",
         "render-resolution":"ui-renderer.renderResolution",

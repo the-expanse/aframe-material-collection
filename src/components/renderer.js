@@ -10,6 +10,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
     schema: {
         uiPanel: {type: 'selector'},
         lookControlsEl: {type: 'selector'},
+        lookControlsComponent:{default:'look-controls'},
         panelPosition:{type:'vec3',default:{x:0,y:1.6,z:-1}},
         panelSize:{type:'vec2',default:{x:6,y:3}},
         renderResolution:{type:'vec2',default:{x:2048,y:1024}},
@@ -99,10 +100,10 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
             mouse.deltaX = e.detail.deltaX;
         }
         if(type==='mousedown'&&this.lookControlsEl&&this.lookControlsEl.components['look-controls']){
-            this.lookControlsEl.components['look-controls'].pause()
+            this.lookControlsEl.components[this.data.lookControlsComponent].pause()
         }
         if(type==='mouseup'&&this.lookControlsEl&&this.lookControlsEl.components['look-controls']){
-            this.lookControlsEl.components['look-controls'].play()
+            this.lookControlsEl.components[this.data.lookControlsComponent].play()
         }
         this.raycastIntersections(e,mouse,type);
     },

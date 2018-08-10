@@ -14,7 +14,8 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         scrollZOffset:{type:'number',default:0},
         scrollHandleColor:{default:'#009688'},
         intersectableClass:{default:'intersectable'},
-        cameraEl:{type:'selector'}
+        cameraEl:{type:'selector'},
+        lookControlsComponent:{default:'look-controls'},
     },
     init() {
         // Setup scroll bar and panel backing.
@@ -39,8 +40,8 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         ];
         // Pause/play camera look controls
         const playPauseCamera = method=>{
-            if(this.data.cameraEl&&this.data.cameraEl.components["look-controls"]){
-                this.data.cameraEl.components["look-controls"][method]();
+            if(this.data.cameraEl&&this.data.cameraEl.components[this.data.lookControlsComponent]){
+                this.data.cameraEl.components[this.data.lookControlsComponent][method]();
             }
         };
         // Setup mouse move handler for scrolling and updating scroll handle.

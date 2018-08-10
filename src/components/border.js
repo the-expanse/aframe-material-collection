@@ -9,8 +9,9 @@ module.exports = AFRAME.registerComponent('ui-border', {
     schema: {
         borderRadius: {type: 'number', default: 0.01},
         curveSegments:{type: 'int', default: 1},
-        borderWidth:{type: 'int', default: 3},
-        color:{default:'#aaa'}
+        borderWidth:{type: 'int', default: 0.015},
+        color:{default:"#8f8f8f"},
+        numberOfPoints:{type:'int',default:180}
     },
     init() {
         let mesh = this.el.getObject3D('mesh');
@@ -28,19 +29,9 @@ module.exports = AFRAME.registerComponent('ui-border', {
             ctx.quadraticCurveTo( x, y, x, y + radius );
         } )( roundedRectShape, -mesh.geometry.metadata.parameters.width/2, -mesh.geometry.metadata.parameters.height/2, mesh.geometry.metadata.parameters.width, mesh.geometry.metadata.parameters.height, this.data.borderRadius );
 
-        roundedRectShape.autoClose = true;
-        // Update the geometry.
-
-
-        //new Line(new BufferGeometry().setFromPoints( roundedRectShape.getPoints() )
-        // mesh.geometry = ;
-        // mesh.material = ;
-        //new BufferGeometry().setFromPoints( roundedRectShape.getPoints() )
-        this.el.setObject3D('mesh',new THREE.Line(
-                new THREE.BufferGeometry().setFromPoints(roundedRectShape.getPoints()),
-                new THREE.LineBasicMaterial( { color: this.data.color, linewidth: 10 } )
-            )
-        );
+        let points = roundedRectShape.getSpacedPoints(this.data.numberOfPoints);
+        let geometryPoints = new THREE.BufferGeometry().setFromPoints( points );
+        this.el.setObject3D('mesh',new THREE.Points( geometryPoints, new THREE.PointsMaterial( { color: this.data.color, size: this.data.borderWidth } ) ));
 
     }
 });
