@@ -88,7 +88,7 @@
 /* 0 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.2.11","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.2.16","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 1 */
@@ -435,7 +435,8 @@ module.exports = AFRAME.registerPrimitive('a-ui-scroll-pane', AFRAME.utils.exten
         "scroll-z-offset":"ui-scroll-pane.scrollZOffset",
         "handle-color":"ui-scroll-pane.scrollHandleColor",
         "scroll-padding":"ui-scroll-pane.scrollPadding",
-        "look-controls-el":"ui-scroll-pane.cameraEl"
+        "look-controls-el":"ui-scroll-pane.cameraEl",
+        "look-controls-component":"ui-scroll-pane.lookControlsComponent"
     }
 }));
 
@@ -457,6 +458,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-renderer', AFRAME.utils.extendDe
     mappings: {
         "ui-panel":"ui-renderer.uiPanel",
         "look-controls-el":"ui-renderer.lookControlsEl",
+        "look-controls-component":"ui-renderer.lookControlsComponent",
         "panel-position":"ui-renderer.panelPosition",
         "panel-size":"ui-renderer.panelSize",
         "render-resolution":"ui-renderer.renderResolution",
@@ -1085,7 +1087,8 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         scrollZOffset:{type:'number',default:0},
         scrollHandleColor:{default:'#009688'},
         intersectableClass:{default:'intersectable'},
-        cameraEl:{type:'selector'}
+        cameraEl:{type:'selector'},
+        lookControlsComponent:{default:'look-controls'},
     },
     init() {
         // Setup scroll bar and panel backing.
@@ -1110,8 +1113,8 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         ];
         // Pause/play camera look controls
         const playPauseCamera = method=>{
-            if(this.data.cameraEl&&this.data.cameraEl.components["look-controls"]){
-                this.data.cameraEl.components["look-controls"][method]();
+            if(this.data.cameraEl&&this.data.cameraEl.components[this.data.lookControlsComponent]){
+                this.data.cameraEl.components[this.data.lookControlsComponent][method]();
             }
         };
         // Setup mouse move handler for scrolling and updating scroll handle.
@@ -1807,8 +1810,9 @@ module.exports = AFRAME.registerComponent('ui-border', {
     schema: {
         borderRadius: {type: 'number', default: 0.01},
         curveSegments:{type: 'int', default: 1},
-        borderWidth:{type: 'int', default: 3},
-        color:{default:'#aaa'}
+        borderWidth:{type: 'int', default: 0.015},
+        color:{default:"#8f8f8f"},
+        numberOfPoints:{type:'int',default:180}
     },
     init() {
         let mesh = this.el.getObject3D('mesh');
@@ -1826,19 +1830,9 @@ module.exports = AFRAME.registerComponent('ui-border', {
             ctx.quadraticCurveTo( x, y, x, y + radius );
         } )( roundedRectShape, -mesh.geometry.metadata.parameters.width/2, -mesh.geometry.metadata.parameters.height/2, mesh.geometry.metadata.parameters.width, mesh.geometry.metadata.parameters.height, this.data.borderRadius );
 
-        roundedRectShape.autoClose = true;
-        // Update the geometry.
-
-
-        //new Line(new BufferGeometry().setFromPoints( roundedRectShape.getPoints() )
-        // mesh.geometry = ;
-        // mesh.material = ;
-        //new BufferGeometry().setFromPoints( roundedRectShape.getPoints() )
-        this.el.setObject3D('mesh',new THREE.Line(
-                new THREE.BufferGeometry().setFromPoints(roundedRectShape.getPoints()),
-                new THREE.LineBasicMaterial( { color: this.data.color, linewidth: 10 } )
-            )
-        );
+        let points = roundedRectShape.getSpacedPoints(this.data.numberOfPoints);
+        let geometryPoints = new THREE.BufferGeometry().setFromPoints( points );
+        this.el.setObject3D('mesh',new THREE.Points( geometryPoints, new THREE.PointsMaterial( { color: this.data.color, size: this.data.borderWidth } ) ));
 
     }
 });
@@ -1896,6 +1890,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
     schema: {
         uiPanel: {type: 'selector'},
         lookControlsEl: {type: 'selector'},
+        lookControlsComponent:{default:'look-controls'},
         panelPosition:{type:'vec3',default:{x:0,y:1.6,z:-1}},
         panelSize:{type:'vec2',default:{x:6,y:3}},
         renderResolution:{type:'vec2',default:{x:2048,y:1024}},
@@ -1985,10 +1980,10 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
             mouse.deltaX = e.detail.deltaX;
         }
         if(type==='mousedown'&&this.lookControlsEl&&this.lookControlsEl.components['look-controls']){
-            this.lookControlsEl.components['look-controls'].pause()
+            this.lookControlsEl.components[this.data.lookControlsComponent].pause()
         }
         if(type==='mouseup'&&this.lookControlsEl&&this.lookControlsEl.components['look-controls']){
-            this.lookControlsEl.components['look-controls'].play()
+            this.lookControlsEl.components[this.data.lookControlsComponent].play()
         }
         this.raycastIntersections(e,mouse,type);
     },
