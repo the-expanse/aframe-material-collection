@@ -65,7 +65,6 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
             new TWEEN.Tween({x:fromScale})
                 .to({x:toScale}, 250)
                 .onUpdate(function(){
-                    console.log(this.x+' '+this.x+' '+this.x);
                     _this.backdrop.setAttribute('scale',this.x+' '+this.x+' '+this.x);
                 })
                 .onComplete(()=>{
