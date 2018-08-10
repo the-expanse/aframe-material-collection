@@ -17,6 +17,7 @@ It goes further than providing some reusable components for your UI, but also in
 
 #### CDN for browser
 ```HTML
+<script src="https://cdn.rawgit.com/shaneharris/CanvasInput/master/CanvasInput.js"></script>
 <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
 <!-- Include yoga layout for scroll pane layouts after aframe -->
 <script src="https://unpkg.com/aframe-material-collection/dist/aframe-yoga-layout.min.js"></script>
