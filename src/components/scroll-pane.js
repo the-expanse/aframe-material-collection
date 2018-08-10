@@ -142,6 +142,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 this.scroll(this.handle.getAttribute('position').y+(-e.detail.evt.deltaY/800));
                 // Stop changes
                 UI.utils.stoppedChanging(this.el.object3D.uuid);
+                UI.utils.preventDefault(e);
             }
         });
     },

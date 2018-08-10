@@ -88,7 +88,7 @@
 /* 0 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.2.17","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.2.18","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 1 */
@@ -1215,6 +1215,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 this.scroll(this.handle.getAttribute('position').y+(-e.detail.evt.deltaY/800));
                 // Stop changes
                 UI.utils.stoppedChanging(this.el.object3D.uuid);
+                UI.utils.preventDefault(e);
             }
         });
     },
@@ -2003,9 +2004,9 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
             this.helper.position.x-=0.03;
         }
         let defaultPrevented = false;
-        if(intersections.length&&type==="mousewheel"){
-            return this.el.sceneEl.renderer.domElement.emit('ui-mousewheel',{evt:e})
-        }
+        // if(intersections.length&&type==="mousewheel"){
+        //     return this.el.sceneEl.renderer.domElement.emit('ui-mousewheel',{evt:e})
+        // }
         for(let i = 0;i < intersections.length; i++){
             let intersection = intersections[i];
             // Only emit events on objecst with an element attached

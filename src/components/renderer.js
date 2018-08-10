@@ -123,9 +123,9 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
             this.helper.position.x-=0.03;
         }
         let defaultPrevented = false;
-        if(intersections.length&&type==="mousewheel"){
-            return this.el.sceneEl.renderer.domElement.emit('ui-mousewheel',{evt:e})
-        }
+        // if(intersections.length&&type==="mousewheel"){
+        //     return this.el.sceneEl.renderer.domElement.emit('ui-mousewheel',{evt:e})
+        // }
         for(let i = 0;i < intersections.length; i++){
             let intersection = intersections[i];
             // Only emit events on objecst with an element attached
