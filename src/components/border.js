@@ -9,7 +9,7 @@ module.exports = AFRAME.registerComponent('ui-border', {
     schema: {
         borderRadius: {type: 'number', default: 0.01},
         curveSegments:{type: 'int', default: 1},
-        borderWidth:{type: 'int', default: 0.015},
+        borderWidth:{type: 'number', default: 0.015},
         color:{default:"#8f8f8f"},
         numberOfPoints:{type:'int',default:180}
     },
