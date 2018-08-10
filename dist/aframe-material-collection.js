@@ -88,7 +88,7 @@
 /* 0 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.2.20","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.2.21","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 1 */
@@ -1935,25 +1935,29 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         this.isFrozen = false;
     },
     openBackDrop(value){
-        if(this.isFrozen===value||this.isAnimatingBackground)return;
-        this.isAnimatingBackground = true;
-        let fromScale = this.isFrozen?1:0.000001;
-        let toScale = this.isFrozen?0.000001:1;
+
         let _this = this;
-        UI.utils.isChanging(this.el.sceneEl,this.backdrop.uuid);
-        new TWEEN.Tween({x:fromScale})
-            .to({x:toScale}, 250)
-            .onUpdate(function(){
-                console.log(this.x+' '+this.x+' '+this.x);
-                _this.backdrop.setAttribute('scale',this.x+' '+this.x+' '+this.x);
-            })
-            .onComplete(()=>{
-                this.isFrozen = value;
-                this.isAnimatingBackground = false;
-                // Stop changes
-                UI.utils.stoppedChanging(this.backdrop.uuid);
-            })
-            .easing(TWEEN.Easing.Exponential.Out).start();
+        return new Promise(resolve=>{
+            if(_this.isFrozen===value||_this.isAnimatingBackground)resolve();
+            _this.isAnimatingBackground = true;
+            let fromScale = _this.isFrozen?1:0.000001;
+            let toScale = _this.isFrozen?0.000001:1;
+            UI.utils.isChanging(_this.el.sceneEl,_this.backdrop.uuid);
+            new TWEEN.Tween({x:fromScale})
+                .to({x:toScale}, 250)
+                .onUpdate(function(){
+                    console.log(this.x+' '+this.x+' '+this.x);
+                    _this.backdrop.setAttribute('scale',this.x+' '+this.x+' '+this.x);
+                })
+                .onComplete(()=>{
+                    _this.isFrozen = value;
+                    _this.isAnimatingBackground = false;
+                    // Stop changes
+                    UI.utils.stoppedChanging(this.backdrop.uuid);
+                    resolve(this);
+                })
+                .easing(TWEEN.Easing.Exponential.Out).start();
+        });
     },
     setupBackDrop(){
         this.backdrop = document.createElement('a-plane');
@@ -2049,9 +2053,6 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
                     intersection.object.el.emit('mouseenter',currentEvent);
                 }
                 // Emit the mouse event received
-                if(type==="ui-mousewheel"){
-                    console.log(type,defaultPrevented,{el:intersection.object.el});
-                }
                 if(!defaultPrevented){
                     intersection.object.el.emit(type,currentEvent);
                 }
