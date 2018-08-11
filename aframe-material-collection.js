@@ -1004,7 +1004,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.content_clips[2].applyMatrix4(this.el.object3D.matrixWorld);
         this.content_clips[3].applyMatrix4(this.el.object3D.matrixWorld);
     },
-    setContent(body){
+    setContent(body,noAutoReload){
         if(this.container) {
             // Remove all children in the container and all yoga nodes
             for(let i =0; i < this.container.children.length; i++){
@@ -1019,11 +1019,11 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 let loadedWrapper = document.createElement('a-entity');
                 loadedWrapper.insertAdjacentHTML('afterbegin',body);
                 loadedWrapper.addEventListener('loaded',e=>{
+                    // Trigger an update to redraw scrollbars and fire change events.
+                    if(!noAutoReload)this.updateContent();
                     resolve(loadedWrapper);
                 });
                 this.container.appendChild(loadedWrapper);
-                // Trigger an update to redraw scrollbars and fire change events.
-                this.updateContent();
             })
         }
     },
@@ -2079,7 +2079,7 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
 /* 21 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.2.28","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.3.1","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 22 */
