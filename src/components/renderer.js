@@ -52,10 +52,6 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         // Set last render time
         this.lastRenderTime = 0;
         this.isFrozen = false;
-        setTimeout(()=>this.pauseRender(),4000);
-        setTimeout(()=> {
-            this.playRender();
-        },8000);
     },
     pauseRender(){
         return this.playRender(true)
