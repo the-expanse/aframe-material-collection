@@ -14,7 +14,6 @@ module.exports = AFRAME.registerComponent('ui-border', {
         numberOfPoints:{type:'int',default:180}
     },
     init() {
-        if(this.el.components['ui-border'].isInit)return;
         let mesh = this.el.getObject3D('mesh');
         let roundedRectShape = new THREE.Shape();
         // Draw the Rounded rectangle shape centered in the object - from three.js shapes example.
@@ -33,6 +32,5 @@ module.exports = AFRAME.registerComponent('ui-border', {
         let points = roundedRectShape.getSpacedPoints(this.data.numberOfPoints);
         let geometryPoints = new THREE.BufferGeometry().setFromPoints( points );
         this.el.setObject3D('mesh',new THREE.Points( geometryPoints, new THREE.PointsMaterial( { color: this.data.color, size: this.data.borderWidth } ) ));
-        this.isInit = true;
     }
 });

@@ -10,13 +10,11 @@ module.exports = AFRAME.registerComponent('ui-mouse-shim', {
         fps:{type:'number',default:60}
     },
     init(){
-        if(this.el.components['ui-mouse-shim'].isInit)return;
         if (!this.el.components.raycaster) {
             throw 'ui-mouse-move component needs the raycaster component to be added.'
         }
         // Add support for mouse wheel
         this.el.sceneEl.renderer.domElement.addEventListener( 'mousewheel', this.onMouseWheel.bind(this), false);
-        this.isInit = true;
     },
     onMouseWheel(e){
         this.emitMouseEvent('ui-mousewheel',e);

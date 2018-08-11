@@ -11,7 +11,6 @@ module.exports = AFRAME.registerComponent('ui-modal', {
         main:{type:'selector'}
     },
     init(){
-        if(this.el.components['ui-modal'].isInit)return;
         if(this.data.modal&&this.data.main){
             // Get the modal panel to be able to animate its scale on open/close.
             this.modalPanel = document.querySelector(this.data.modal.getAttribute('ui-panel'));
@@ -42,7 +41,6 @@ module.exports = AFRAME.registerComponent('ui-modal', {
                 }
             });
         }
-        this.isInit = true;
     },
     tweenModalScale(from,to){
         return new Promise(r=>{

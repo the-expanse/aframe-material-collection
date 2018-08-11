@@ -11,7 +11,6 @@ module.exports = AFRAME.registerComponent('ui-curved-plane', {
         depth:{type:'number',default:0.03}
     },
     init(){
-        if(this.el.components['ui-curved-plane'].isInit)return;
         let mesh = this.el.getObject3D('mesh');
         let width = this.el.getAttribute('width');
         let height = this.el.getAttribute('height');
@@ -29,6 +28,5 @@ module.exports = AFRAME.registerComponent('ui-curved-plane', {
             }
         }
         mesh.geometry = browser_pane;
-        this.isInit = true;
     }
 });

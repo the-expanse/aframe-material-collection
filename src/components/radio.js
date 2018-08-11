@@ -18,7 +18,6 @@ module.exports = AFRAME.registerComponent('ui-radio', {
         intersectableClass: {default: 'intersectable'},
     },
     init() {
-        if(this.el.components['ui-radio'].isInit)return;
         this.width = this.data.size||0.15;
         this.height = this.data.size||0.15;
         // Create center circle for checked state.
@@ -49,7 +48,6 @@ module.exports = AFRAME.registerComponent('ui-radio', {
         if(!this.data.disabled){
             this.el.addEventListener('mousedown',e=>this.click(e));
         }
-        this.isInit = true;
     },
     deselect(){
         // Deselect this radio with a scale animation on the circle.

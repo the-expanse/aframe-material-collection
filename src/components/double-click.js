@@ -10,7 +10,6 @@ module.exports = AFRAME.registerComponent('ui-double-click', {
         timeout:{type:'int',default:200}
     },
     init() {
-        if(this.el.components['ui-double-click'].isInit)return;
         let last_click = 0;
         // Add click event for listening for two clicks within the specified timespan.
         this.el.addEventListener('mousedown',e=>{
@@ -22,7 +21,6 @@ module.exports = AFRAME.registerComponent('ui-double-click', {
                 e.preventDefault();
             }
             last_click = now;
-        })
-        this.isInit = true;
+        });
     }
 });

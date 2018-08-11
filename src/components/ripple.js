@@ -19,7 +19,6 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
         segments:{type:'int',default:6}
     },
     init(){
-        if(this.el.components['ui-ripple'].isInit)return;
         // Setup circle geometry for ripple effect
         this.rippleGeometry = new THREE.CircleGeometry(Math.max(this.data.size.x,this.data.size.y),this.data.segments);
         this.ripple = new THREE.Mesh(this.rippleGeometry.clone(),new THREE.MeshBasicMaterial({color:this.data.color,transparent:true, opacity:0.4,alphaTest:0.1}));
@@ -37,7 +36,6 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
                 new THREE.Plane( new THREE.Vector3( 1, 0, 0 ), (this.data.size.x/2) )
             ];
         }
-        this.isInit = true;
     },
     click(e){
         if(this.isRippling){

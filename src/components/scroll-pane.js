@@ -18,7 +18,6 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         lookControlsComponent:{default:'look-controls'},
     },
     init() {
-        if(this.el.components['ui-scroll-pane'].isInit)return;
         // Setup scroll bar and panel backing.
         this.setupElements();
         // Grab content container.
@@ -100,7 +99,6 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             this.el.emit('scroll-pane-loaded');
         });
         this.setupMouseWheelScroll();
-        this.isInit = true;
     },
     updateContentClips(){
         this.content_clips[0].applyMatrix4(this.el.object3D.matrixWorld);
@@ -132,6 +130,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         }
     },
     updateContent(){
+        UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
         this.container.object3D.position.y = this.data.height/2;
         this.setChildClips();
         if(typeof Yoga !== 'undefined')this.initialiseYoga(this.container,this.data.width*100);
@@ -144,6 +143,10 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.rail.setAttribute('width',this.handleSize===1?0.00000001:0.1);
         this.rail.setAttribute('color',this.handleSize===1?'#efefef':'#fff');
         this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+(this.data.height-(this.data.height*this.handleSize))/2+' '+(this.data.scrollZOffset+0.0005));
+        this.container.lastChild.addEventListener('loaded',()=>{
+            // Add delay when content is updated
+            setTimeout(()=>UI.utils.stoppedChanging(this.el.object3D.uuid),500);
+        });
     },
     mouseMove(e){
         if(this.isDragging){
@@ -388,11 +391,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             if(child.components.text){
                 // Wait for the font to load first.
                 child.addEventListener('textfontset',()=>{
-
-                    UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
                     traverse();
-
-                    setTimeout(()=>UI.utils.stoppedChanging(this.el.object3D.uuid),200);
                 })
             }else{
                 traverse();
