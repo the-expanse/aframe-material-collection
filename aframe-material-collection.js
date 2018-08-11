@@ -496,6 +496,7 @@ module.exports = AFRAME.registerComponent('ui-text', {
     },
     init(){
 
+        if(this.el.components['ui-text'].isInit)return;
         // Setup text input box.
         this.backing = document.createElement('a-plane');
         this.backing.setAttribute('width',this.data.width);
@@ -525,6 +526,7 @@ module.exports = AFRAME.registerComponent('ui-text', {
         // Handle the blur event for setting the input value.
         this.blurHandler = ()=>this.blur();
         this.setValue();
+        this.isInit = true;
     },
     tick(){
         // If this element is focused then render the canvas input.
@@ -698,6 +700,7 @@ module.exports = AFRAME.registerComponent('ui-btn', {
       // TODO: handle updates to the button state, disabled flag here.
     },
     init() {
+        if(this.el.components['ui-btn'].isInit)return;
         // Store the current button z value for animating mouse events
         this.defaultZ = this.el.object3D.position.z;
         // register input events for interaction
@@ -707,6 +710,7 @@ module.exports = AFRAME.registerComponent('ui-btn', {
             this.el.addEventListener('mouseup', e=>this.mouseUp(e));
             this.el.addEventListener('mouseleave', e=>this.mouseLeave(e));
         }
+        this.isInit = true;
     },
     mouseEnter(e){
         const _this = this;
@@ -808,6 +812,7 @@ module.exports = AFRAME.registerComponent('ui-switch', {
         }
     },
     init() {
+        if(this.el.components['ui-switch'].isInit)return;
         this.width = 0.3;
         this.height = 0.1;
         // Setup handle circle entity.
@@ -842,6 +847,7 @@ module.exports = AFRAME.registerComponent('ui-switch', {
             }
         };
         this.setDisabled();
+        this.isInit = true;
     },
     setDisabled(){
         // Add / Remove click handlers based on disabled state.
@@ -918,6 +924,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         lookControlsComponent:{default:'look-controls'},
     },
     init() {
+        if(this.el.components['ui-scroll-pane'].isInit)return;
         // Setup scroll bar and panel backing.
         this.setupElements();
         // Grab content container.
@@ -999,6 +1006,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             this.el.emit('scroll-pane-loaded');
         });
         this.setupMouseWheelScroll();
+        this.isInit = true;
     },
     updateContentClips(){
         this.content_clips[0].applyMatrix4(this.el.object3D.matrixWorld);
@@ -1324,6 +1332,7 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
         intersectableClass: {default: 'intersectable'}
     },
     init() {
+        if(this.el.components['ui-checkbox'].isInit)return;
         this.width = 0.15;
         this.height = 0.15;
         this.container = document.createElement('a-entity');
@@ -1348,6 +1357,7 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
         this.setSelected();
         this.setDisabled();
         this.setTransform(1);
+        this.isInit = true;
     },
     updateSchema(){
         if(this.data){
@@ -1498,6 +1508,7 @@ module.exports = AFRAME.registerComponent('ui-radio', {
         intersectableClass: {default: 'intersectable'},
     },
     init() {
+        if(this.el.components['ui-radio'].isInit)return;
         this.width = this.data.size||0.15;
         this.height = this.data.size||0.15;
         // Create center circle for checked state.
@@ -1528,6 +1539,7 @@ module.exports = AFRAME.registerComponent('ui-radio', {
         if(!this.data.disabled){
             this.el.addEventListener('mousedown',e=>this.click(e));
         }
+        this.isInit = true;
     },
     deselect(){
         // Deselect this radio with a scale animation on the circle.
@@ -1593,6 +1605,7 @@ module.exports = AFRAME.registerComponent('ui-curved-plane', {
         depth:{type:'number',default:0.03}
     },
     init(){
+        if(this.el.components['ui-curved-plane'].isInit)return;
         let mesh = this.el.getObject3D('mesh');
         let width = this.el.getAttribute('width');
         let height = this.el.getAttribute('height');
@@ -1610,6 +1623,7 @@ module.exports = AFRAME.registerComponent('ui-curved-plane', {
             }
         }
         mesh.geometry = browser_pane;
+        this.isInit = true;
     }
 });
 
@@ -1638,6 +1652,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         intersectableClass:{default:'intersectable'}
     },
     init() {
+        if(this.el.components['ui-renderer'].isInit)return;
         this.setupBackDrop();
         if(!this.data.uiPanel){
             this.meshEl = this.setupUIPanel();
@@ -1671,6 +1686,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         // Set last render time
         this.lastRenderTime = 0;
         this.isFrozen = false;
+        this.isInit = true;
     },
     pauseRender(){
         return this.playRender(true)
@@ -1926,7 +1942,9 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
         heightPercent:{default: 'default'},
     },
     init(){
+        if(this.el.components['ui-yoga'].isInit)return;
         this.setProperties();
+        this.isInit = true;
     },
     updateSchema(){
         this.setProperties();
@@ -2107,9 +2125,11 @@ module.exports = AFRAME.registerComponent('ui-icon', {
         color:{default:'#fff'}
     },
     init() {
+        if(this.el.components['ui-icon'].isInit)return;
         this.icon = new THREE.Mesh(new THREE.PlaneGeometry(this.data.size.x,this.data.size.y),new THREE.MeshBasicMaterial({color:this.data.color,alphaTest:0.4,transparent:true,map:new THREE.TextureLoader().load(this.data.src)}));
         this.icon.position.set(0,0,this.data.zIndex);
         this.el.object3D.add(this.icon);
+        this.isInit = true;
     }
 });
 
@@ -2131,6 +2151,7 @@ module.exports = AFRAME.registerComponent('ui-rounded', {
         curveSegments:{type: 'int', default: 1},
     },
     init() {
+        if(this.el.components['ui-rounded'].isInit)return;
         let mesh = this.el.getObject3D('mesh');
         let roundedRectShape = new THREE.Shape();
         // Draw the Rounded rectangle shape centered in the object - from three.js shapes example.
@@ -2149,6 +2170,7 @@ module.exports = AFRAME.registerComponent('ui-rounded', {
         mesh.geometry = new THREE.ShapeGeometry(roundedRectShape,this.data.curveSegments);
         // Emit rounded-loaded event once the geometry has been updated.
         this.el.emit('rounded-loaded', null, false);
+        this.isInit = true;
     }
 });
 
@@ -2177,6 +2199,7 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
         segments:{type:'int',default:6}
     },
     init(){
+        if(this.el.components['ui-ripple'].isInit)return;
         // Setup circle geometry for ripple effect
         this.rippleGeometry = new THREE.CircleGeometry(Math.max(this.data.size.x,this.data.size.y),this.data.segments);
         this.ripple = new THREE.Mesh(this.rippleGeometry.clone(),new THREE.MeshBasicMaterial({color:this.data.color,transparent:true, opacity:0.4,alphaTest:0.1}));
@@ -2194,6 +2217,7 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
                 new THREE.Plane( new THREE.Vector3( 1, 0, 0 ), (this.data.size.x/2) )
             ];
         }
+        this.isInit = true;
     },
     click(e){
         if(this.isRippling){
@@ -2273,11 +2297,13 @@ module.exports = AFRAME.registerComponent('ui-mouse-shim', {
         fps:{type:'number',default:60}
     },
     init(){
+        if(this.el.components['ui-mouse-shim'].isInit)return;
         if (!this.el.components.raycaster) {
             throw 'ui-mouse-move component needs the raycaster component to be added.'
         }
         // Add support for mouse wheel
         this.el.sceneEl.renderer.domElement.addEventListener( 'mousewheel', this.onMouseWheel.bind(this), false);
+        this.isInit = true;
     },
     onMouseWheel(e){
         this.emitMouseEvent('ui-mousewheel',e);
@@ -2314,6 +2340,7 @@ module.exports = AFRAME.registerComponent('ui-double-click', {
         timeout:{type:'int',default:200}
     },
     init() {
+        if(this.el.components['ui-double-click'].isInit)return;
         let last_click = 0;
         // Add click event for listening for two clicks within the specified timespan.
         this.el.addEventListener('mousedown',e=>{
@@ -2326,6 +2353,7 @@ module.exports = AFRAME.registerComponent('ui-double-click', {
             }
             last_click = now;
         })
+        this.isInit = true;
     }
 });
 
@@ -2349,6 +2377,7 @@ module.exports = AFRAME.registerComponent('ui-border', {
         numberOfPoints:{type:'int',default:180}
     },
     init() {
+        if(this.el.components['ui-border'].isInit)return;
         let mesh = this.el.getObject3D('mesh');
         let roundedRectShape = new THREE.Shape();
         // Draw the Rounded rectangle shape centered in the object - from three.js shapes example.
@@ -2367,7 +2396,7 @@ module.exports = AFRAME.registerComponent('ui-border', {
         let points = roundedRectShape.getSpacedPoints(this.data.numberOfPoints);
         let geometryPoints = new THREE.BufferGeometry().setFromPoints( points );
         this.el.setObject3D('mesh',new THREE.Points( geometryPoints, new THREE.PointsMaterial( { color: this.data.color, size: this.data.borderWidth } ) ));
-
+        this.isInit = true;
     }
 });
 
@@ -2388,6 +2417,7 @@ module.exports = AFRAME.registerComponent('ui-modal', {
         main:{type:'selector'}
     },
     init(){
+        if(this.el.components['ui-modal'].isInit)return;
         if(this.data.modal&&this.data.main){
             // Get the modal panel to be able to animate its scale on open/close.
             this.modalPanel = document.querySelector(this.data.modal.getAttribute('ui-panel'));
@@ -2418,6 +2448,7 @@ module.exports = AFRAME.registerComponent('ui-modal', {
                 }
             });
         }
+        this.isInit = true;
     },
     tweenModalScale(from,to){
         return new Promise(r=>{
