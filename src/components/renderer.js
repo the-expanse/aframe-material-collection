@@ -210,7 +210,12 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         this.el.object3D.traverse(child=>{
             child.updateMatrixWorld();
         });
-        this.el.sceneEl.renderer.render(this.el.object3D,this.camera,this.renderTarget);
+        let renderer = this.el.sceneEl.renderer;
+        let vrModeEnabled = renderer.vr.enabled;
+        renderer.vr.enabled = false;
+        renderer.render(this.el.object3D,this.camera,this.renderTarget);
+        renderer.vr.enabled = vrModeEnabled;
+        //this.el.sceneEl.renderer.render(this.el.object3D,this.camera,this.renderTarget);
         this.lastRenderTime = new Date().getTime();
         if(!this.isRendering){
             this.stoppedRendering = true;
