@@ -106,7 +106,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.content_clips[2].applyMatrix4(this.el.object3D.matrixWorld);
         this.content_clips[3].applyMatrix4(this.el.object3D.matrixWorld);
     },
-    setContent(body){
+    setContent(body,noAutoReload){
         if(this.container) {
             // Remove all children in the container and all yoga nodes
             for(let i =0; i < this.container.children.length; i++){
@@ -121,11 +121,11 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 let loadedWrapper = document.createElement('a-entity');
                 loadedWrapper.insertAdjacentHTML('afterbegin',body);
                 loadedWrapper.addEventListener('loaded',e=>{
+                    // Trigger an update to redraw scrollbars and fire change events.
+                    if(!noAutoReload)this.updateContent();
                     resolve(loadedWrapper);
                 });
                 this.container.appendChild(loadedWrapper);
-                // Trigger an update to redraw scrollbars and fire change events.
-                this.updateContent();
             })
         }
     },
