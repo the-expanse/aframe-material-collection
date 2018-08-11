@@ -81,14 +81,14 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 28);
+/******/ 	return __webpack_require__(__webpack_require__.s = 29);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.2.25","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.2.26","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 1 */
@@ -1879,6 +1879,68 @@ module.exports = AFRAME.registerComponent('ui-curved-plane', {
 /* 26 */
 /***/ (function(module, exports) {
 
+/* global AFRAME,THREE */
+/**
+ * Modal Component for aframe-material-collection.
+ * @namespace aframe-material-collection
+ * @component ui-modal
+ * @author Shane Harris
+ */
+module.exports = AFRAME.registerComponent('ui-modal', {
+    schema: {
+        modal:{type:'selector'},
+        main:{type:'selector'}
+    },
+    init(){
+        if(this.data.modal&&this.data.main){
+            // Get the modal panel to be able to animate its scale on open/close.
+            this.modalPanel = document.querySelector(this.data.modal.getAttribute('ui-panel'));
+            let mainComponents = this.data.main.components;
+            let modalComponents = this.data.modal.components;
+            // Pause rendering of modal until opened.
+            if(modalComponents&&modalComponents['ui-renderer']){
+                modalComponents['ui-renderer'].pause();
+            }
+            // Setup close listeners for anything with the class close-modal.
+            let close_buttons = this.data.modal.querySelectorAll('.close-modal');
+            for(let i = 0; i < close_buttons.length; i++ ){
+                let close_button = close_buttons[i];
+                close_button.addEventListener('mousedown',()=>{
+                    // Pause the modal rendering and play the main rendering again.
+                    modalComponents['ui-renderer'].pause();
+                    mainComponents['ui-renderer'].playRender();
+                    this.tweenModalScale(1,0.0000001);
+                });
+            }
+            // Add click handler for opening the modal, pause the main render screen and play the modal renderer
+            this.el.addEventListener('mousedown',()=>{
+                if(mainComponents&&mainComponents['ui-renderer']){
+                    mainComponents['ui-renderer'].pauseRender();
+                    this.tweenModalScale(0.0000001,1);
+                    modalComponents['ui-renderer'].play();
+                }
+            });
+        }
+    },
+    tweenModalScale(from,to){
+        return new Promise(r=>{
+            let _this = this;
+            new TWEEN.Tween({x:from})
+                .to({x:to}, 250)
+                .onUpdate(function(){
+                    if(_this.modalPanel)
+                        _this.modalPanel.setAttribute('scale',this.x+' '+this.x+' '+this.x);
+                })
+                .onComplete(r)
+                .easing(TWEEN.Easing.Exponential.Out).start();
+        });
+    }
+});
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports) {
+
 /* global AFRAME */
 /**
  * A component to render the UI to a flat plane, removing the objects from the scene and rendering them separately to a
@@ -2100,7 +2162,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
 });
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,Yoga */
@@ -2340,7 +2402,7 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
 });
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2437,8 +2499,9 @@ window.UI = {
     radio: __webpack_require__(23),
     border: __webpack_require__(24),
     curvedPlane: __webpack_require__(25),
-    renderer: __webpack_require__(26),
-    yoga_properties: __webpack_require__(27),
+    modal: __webpack_require__(26),
+    renderer: __webpack_require__(27),
+    yoga_properties: __webpack_require__(28),
 };
 //module.exports = UI;
 
