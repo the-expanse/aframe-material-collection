@@ -19,6 +19,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         intersectableClass:{default:'intersectable'}
     },
     init() {
+        if(this.el.components['ui-renderer'].isInit)return;
         this.setupBackDrop();
         if(!this.data.uiPanel){
             this.meshEl = this.setupUIPanel();
@@ -52,6 +53,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         // Set last render time
         this.lastRenderTime = 0;
         this.isFrozen = false;
+        this.isInit = true;
     },
     pauseRender(){
         return this.playRender(true)

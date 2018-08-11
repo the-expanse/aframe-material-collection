@@ -26,6 +26,7 @@ module.exports = AFRAME.registerComponent('ui-text', {
     },
     init(){
 
+        if(this.el.components['ui-text'].isInit)return;
         // Setup text input box.
         this.backing = document.createElement('a-plane');
         this.backing.setAttribute('width',this.data.width);
@@ -55,6 +56,7 @@ module.exports = AFRAME.registerComponent('ui-text', {
         // Handle the blur event for setting the input value.
         this.blurHandler = ()=>this.blur();
         this.setValue();
+        this.isInit = true;
     },
     tick(){
         // If this element is focused then render the canvas input.

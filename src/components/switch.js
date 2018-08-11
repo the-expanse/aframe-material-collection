@@ -32,6 +32,7 @@ module.exports = AFRAME.registerComponent('ui-switch', {
         }
     },
     init() {
+        if(this.el.components['ui-switch'].isInit)return;
         this.width = 0.3;
         this.height = 0.1;
         // Setup handle circle entity.
@@ -66,6 +67,7 @@ module.exports = AFRAME.registerComponent('ui-switch', {
             }
         };
         this.setDisabled();
+        this.isInit = true;
     },
     setDisabled(){
         // Add / Remove click handlers based on disabled state.

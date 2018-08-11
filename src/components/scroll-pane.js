@@ -18,6 +18,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         lookControlsComponent:{default:'look-controls'},
     },
     init() {
+        if(this.el.components['ui-scroll-pane'].isInit)return;
         // Setup scroll bar and panel backing.
         this.setupElements();
         // Grab content container.
@@ -99,6 +100,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             this.el.emit('scroll-pane-loaded');
         });
         this.setupMouseWheelScroll();
+        this.isInit = true;
     },
     updateContentClips(){
         this.content_clips[0].applyMatrix4(this.el.object3D.matrixWorld);

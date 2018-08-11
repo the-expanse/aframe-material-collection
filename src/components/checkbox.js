@@ -17,6 +17,7 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
         intersectableClass: {default: 'intersectable'}
     },
     init() {
+        if(this.el.components['ui-checkbox'].isInit)return;
         this.width = 0.15;
         this.height = 0.15;
         this.container = document.createElement('a-entity');
@@ -41,6 +42,7 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
         this.setSelected();
         this.setDisabled();
         this.setTransform(1);
+        this.isInit = true;
     },
     updateSchema(){
         if(this.data){

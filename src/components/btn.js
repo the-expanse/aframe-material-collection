@@ -17,6 +17,7 @@ module.exports = AFRAME.registerComponent('ui-btn', {
       // TODO: handle updates to the button state, disabled flag here.
     },
     init() {
+        if(this.el.components['ui-btn'].isInit)return;
         // Store the current button z value for animating mouse events
         this.defaultZ = this.el.object3D.position.z;
         // register input events for interaction
@@ -26,6 +27,7 @@ module.exports = AFRAME.registerComponent('ui-btn', {
             this.el.addEventListener('mouseup', e=>this.mouseUp(e));
             this.el.addEventListener('mouseleave', e=>this.mouseLeave(e));
         }
+        this.isInit = true;
     },
     mouseEnter(e){
         const _this = this;

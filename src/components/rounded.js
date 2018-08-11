@@ -12,6 +12,7 @@ module.exports = AFRAME.registerComponent('ui-rounded', {
         curveSegments:{type: 'int', default: 1},
     },
     init() {
+        if(this.el.components['ui-rounded'].isInit)return;
         let mesh = this.el.getObject3D('mesh');
         let roundedRectShape = new THREE.Shape();
         // Draw the Rounded rectangle shape centered in the object - from three.js shapes example.
@@ -30,5 +31,6 @@ module.exports = AFRAME.registerComponent('ui-rounded', {
         mesh.geometry = new THREE.ShapeGeometry(roundedRectShape,this.data.curveSegments);
         // Emit rounded-loaded event once the geometry has been updated.
         this.el.emit('rounded-loaded', null, false);
+        this.isInit = true;
     }
 });
