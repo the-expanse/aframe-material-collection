@@ -14,6 +14,7 @@ module.exports = AFRAME.registerComponent('ui-modal', {
         if(this.data.modal&&this.data.main){
             // Get the modal panel to be able to animate its scale on open/close.
             this.modalPanel = document.querySelector(this.data.modal.getAttribute('ui-panel'));
+
             let mainComponents = this.data.main.components;
             let modalComponents = this.data.modal.components;
             // Pause rendering of modal until opened.

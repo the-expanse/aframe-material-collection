@@ -106,7 +106,31 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.content_clips[2].applyMatrix4(this.el.object3D.matrixWorld);
         this.content_clips[3].applyMatrix4(this.el.object3D.matrixWorld);
     },
+    setContent(body){
+        if(this.container) {
+            // Remove all children in the container and all yoga nodes
+            for(let i =0; i < this.container.children.length; i++){
+                let child = this.container.children[i];
+                if (this.container.yoga_node&&child.yoga_node) {
+                    this.container.yoga_node.removeChild(child.yoga_node);
+                }
+                this.container.removeChild(child);
+            }
+            // Set the content in the scroll pane.
+            return new Promise(resolve=>{
+                let loadedWrapper = document.createElement('a-entity');
+                loadedWrapper.insertAdjacentHTML('afterbegin',body);
+                loadedWrapper.addEventListener('loaded',e=>{
+                    resolve(loadedWrapper);
+                });
+                this.container.appendChild(loadedWrapper);
+                // Trigger an update to redraw scrollbars and fire change events.
+                this.updateContent();
+            })
+        }
+    },
     updateContent(){
+        this.container.object3D.position.y = this.data.height/2;
         this.setChildClips();
         if(typeof Yoga !== 'undefined')this.initialiseYoga(this.container,this.data.width*100);
         this.container.yoga_node.calculateLayout(this.data.width*100, 'auto', Yoga.DIRECTION_LTR);
