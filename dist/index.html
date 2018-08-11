@@ -37,17 +37,29 @@
                 <a-entity class="container">
                     <!--Introduction-->
                     <a-entity width="1.8">
-                        <a-text font="roboto" baseLine="center" value="Introduction"
-                                color="#212121" anchor="center" wrap-count="24" width="1.9" height="0.5"></a-text>
+                        <a-text font="roboto" baseLine="center" value="Modal Popup"
+                                color="#212121" anchor="center" wrap-count="28" width="1.9" height="0.15"></a-text>
 
-                        <a-text font="roboto" baseLine="center" value="Here we have some material UI based primitives and components for use in your aframe projects."
-                                anchor="center" color="#515151" wrap-count="40" width="1.9" height="0.15"></a-text>
+                        <a-text font="roboto" baseLine="center" value="This modal's content is rendered separately from the rest of the scene - only when its opened."
+                                anchor="center" color="#515151" wrap-count="40" width="1.9" height="0.2"></a-text>
 
-                        <a-text id="getwidth" font="roboto" baseLine="center" anchor="center" value="Scroll Pane"
-                                color="#212121" wrap-count="24" width="1.9" height="0.5"></a-text>
+                        <a-text font="roboto" baseLine="center" value="Backdrop"
+                                color="#212121" anchor="center" wrap-count="28" width="1.9" height="0.15"></a-text>
 
-                        <a-text font="roboto" baseLine="center" value="All of these primitive elements are enclosed inside a scroll pane. Elements out of view are automatically clipped."
-                                anchor="center" color="#515151" wrap-count="40" width="1.9" height="0.15"></a-text>
+                        <a-text font="roboto" baseLine="center" value="The backdrop is created by pausing the underlying renderer - this means it does not render or respond to input while the modal is opened. It also has a nice fade animation on the backdrop before rendering is paused."
+                                anchor="center" color="#515151" wrap-count="40" width="1.9" height="0.45"></a-text>
+
+
+                        <a-entity width="1.3">
+                            <!--Flat Button-->
+                            <a-ui-button class="intersectable close-modal" text-value="Close" transparent="true"
+                                         font-color="#009688" color="white" ripple-color="#009688"></a-ui-button>
+                        </a-entity>
+
+                        <a-entity width="0.3">
+                            <!--Button-->
+                            <a-ui-button class="intersectable close-modal" text-value="OK" ></a-ui-button>
+                        </a-entity>
                     </a-entity>
                 </a-entity>
             </a-ui-scroll-pane>
