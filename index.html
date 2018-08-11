@@ -28,7 +28,8 @@
     <a-plane id="modalPanel" ui-curved-plane width="3.5" height="2" scale="0.0001 0.0001 0.0001" position="0 0 -1.7" side="double" shader="flat" class="intersect"></a-plane>
 
     <a-ui-renderer id="modalRenderer" ui-panel="#modalPanel">
-        <a-entity geometry="primitive:plane;width:2;height:1;" material="side:double;shader:flat;" position="0 0 -0.495">
+        <a-entity geometry="primitive:plane;width:3;height:1.9;" material="side:double;shader:flat;" position="0 0 -0.495">
+
             <a-plane width="0.15" height="0.15" position="1.105 0.515 0.001" color="#fff" shader="flat"
                      class="intersectable close-modal">
                 <a-plane src="icons/close_white_18dp.png" width="0.08" height="0.08" shader="flat" transparent="true" color="#4db6ac"></a-plane>
@@ -150,8 +151,6 @@
                             <!--Floating Action Button Disabled-->
                             <a-ui-fab-button-small class="intersectable" disabled="true"
                                                    color="#afafaf" ripple-color="#afafaf"></a-ui-fab-button-small>
-
-
 
 
                             <a-text font="roboto" baseLine="center" value="Modal"
