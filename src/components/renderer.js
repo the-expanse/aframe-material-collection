@@ -53,10 +53,10 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         this.lastRenderTime = 0;
         this.isFrozen = false;
     },
-    pauseRender(){
-        return this.playRender(true)
+    pauseRender(time){
+        return this.playRender(time,true)
     },
-    playRender(isPaused){
+    playRender(time,isPaused){
         let _this = this;
         return new Promise(resolve=>{
             if(_this.isFrozen===isPaused||_this.isAnimatingBackground)return resolve();
@@ -64,7 +64,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
             if(!_this.isFrozen)this.backdrop.setAttribute('scale','1 1 1');
             let fromScale = _this.isFrozen?0.9:0.000001;
             let toScale = _this.isFrozen?0.000001:0.9;
-            let duration = _this.isFrozen?350:500;
+            let duration = _this.isFrozen?time||350:time||500;
             if(_this.isFrozen){
                 _this.isFrozen = isPaused;
                 _this.play();
@@ -78,13 +78,13 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
                 .onComplete(()=>{
                     _this.isFrozen = isPaused;
                     _this.isAnimatingBackground = false;
-                    // Stop changes
-                    UI.utils.stoppedChanging(this.backdrop.uuid);
                     if(_this.isFrozen){
                         _this.pause();
                     }else{
                         this.backdrop.setAttribute('scale','0.000001 0.000001 0.000001');
                     }
+                    // Stop changes
+                    UI.utils.stoppedChanging(this.backdrop.uuid);
                     resolve();
                 })
                 .easing(TWEEN.Easing.Exponential.Out).start();
