@@ -44,6 +44,7 @@ window.UI = {
     radio: require('./components/radio'),
     border: require('./components/border'),
     curvedPlane: require('./components/curved-plane'),
+    modal: require('./components/modal'),
     renderer: require('./components/renderer'),
     yoga_properties: require('./components/yoga'),
 };
