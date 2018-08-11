@@ -52,27 +52,44 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         // Set last render time
         this.lastRenderTime = 0;
         this.isFrozen = false;
+        setTimeout(()=>this.pauseRender(),4000);
+        setTimeout(()=> {
+            this.playRender();
+        },8000);
     },
-    openBackDrop(value){
-
+    pauseRender(){
+        return this.playRender(true)
+    },
+    playRender(isPaused){
         let _this = this;
         return new Promise(resolve=>{
-            if(_this.isFrozen===value||_this.isAnimatingBackground)resolve();
+            if(_this.isFrozen===isPaused||_this.isAnimatingBackground)return resolve();
             _this.isAnimatingBackground = true;
-            let fromScale = _this.isFrozen?1:0.000001;
-            let toScale = _this.isFrozen?0.000001:1;
+            if(!_this.isFrozen)this.backdrop.setAttribute('scale','1 1 1');
+            let fromScale = _this.isFrozen?0.9:0.000001;
+            let toScale = _this.isFrozen?0.000001:0.9;
+            let duration = _this.isFrozen?350:500;
+            if(_this.isFrozen){
+                _this.isFrozen = isPaused;
+                _this.play();
+            }
             UI.utils.isChanging(_this.el.sceneEl,_this.backdrop.uuid);
             new TWEEN.Tween({x:fromScale})
-                .to({x:toScale}, 250)
+                .to({x:toScale}, duration)
                 .onUpdate(function(){
-                    _this.backdrop.setAttribute('scale',this.x+' '+this.x+' '+this.x);
+                    _this.backdrop.setAttribute('opacity',this.x);
                 })
                 .onComplete(()=>{
-                    _this.isFrozen = value;
+                    _this.isFrozen = isPaused;
                     _this.isAnimatingBackground = false;
                     // Stop changes
                     UI.utils.stoppedChanging(this.backdrop.uuid);
-                    resolve(this);
+                    if(_this.isFrozen){
+                        _this.pause();
+                    }else{
+                        this.backdrop.setAttribute('scale','0.000001 0.000001 0.000001');
+                    }
+                    resolve();
                 })
                 .easing(TWEEN.Easing.Exponential.Out).start();
         });
@@ -80,7 +97,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
     setupBackDrop(){
         this.backdrop = document.createElement('a-plane');
         this.backdrop.setAttribute('transparent',true);
-        this.backdrop.setAttribute('opacity',0.9);
+        this.backdrop.setAttribute('opacity',0.000001);
         this.backdrop.setAttribute('color','#000');
         this.backdrop.setAttribute('shader','flat');
         this.backdrop.setAttribute('position',{x:0,y:0,z:-0.2});
