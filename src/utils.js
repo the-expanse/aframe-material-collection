@@ -1,27 +1,17 @@
 export class Utils{
     constructor(){
-        this.changesDetected = {};
+        this.changesDetected = [];
         this.is_changeing = false;
     }
     isFirstOrLastChange(){
-        let has_none = true;
-        for (let o in this.changesDetected) {
-            if(!this.is_changeing){
-                this.scene.emit('ui-changing');
-            }
-            has_none = false;
+        if(!this.is_changeing&&this.changesDetected.length){
+            this.scene.emit('ui-changing');
             this.is_changeing = true;
-            break;
-        }
-        if(has_none){
+        }else if(this.is_changeing&&!this.changesDetected.length){
             if(this.is_changeing){
-                let oldAfterRender = this.scene.object3D.onAfterRender;
-                this.scene.object3D.onAfterRender = ()=>{
-                    this.scene.emit('ui-changing-stopped');
-                    this.scene.object3D.onAfterRender = oldAfterRender;
-                }
+                this.scene.emit('ui-changing-stopped');
+                this.is_changeing = false;
             }
-            this.is_changeing = false;
         }
     }
     preventDefault(e){
@@ -30,14 +20,20 @@ export class Utils{
         }
     }
     isChanging(scene,ref){
-        this.scene = this.scene||scene;
-        this.changesDetected[ref] = 0;
-        this.isFirstOrLastChange();
+        console.warn(ref);
+        let index = this.changesDetected.indexOf(ref);
+        if(index===-1){
+            this.scene = this.scene||scene;
+            this.changesDetected.push(ref);
+            this.isFirstOrLastChange();
+        }
     }
     stoppedChanging(ref){
-        if(ref in this.changesDetected){
-            delete this.changesDetected[ref];
+        let index = this.changesDetected.indexOf(ref);
+        if(index>-1){
+            this.changesDetected.splice(index, 1)
         }
+        console.log(this.changesDetected,ref);
         this.isFirstOrLastChange();
     }
 }

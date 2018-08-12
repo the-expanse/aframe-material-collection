@@ -7,7 +7,7 @@
  */
 module.exports = AFRAME.registerComponent('ui-mouse-shim', {
     schema:{
-        fps:{type:'number',default:60}
+        fps:{type:'number',default:45}
     },
     init(){
         if (!this.el.components.raycaster) {

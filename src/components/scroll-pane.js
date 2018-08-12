@@ -55,7 +55,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             this.handlePos = this.handle.object3D.worldToLocal(e.detail.intersection.point).y;
             this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
             // Start changes
-            UI.utils.isChanging(this.el.sceneEl,this.handle.uuid);
+            UI.utils.isChanging(this.el.sceneEl,this.handle.object3D.uuid);
             // Prevent default behaviour of event
             UI.utils.preventDefault(e);
         });
@@ -67,8 +67,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 playPauseCamera('play');
                 this.isDragging = false;
                 // Stop changes
-                UI.utils.stoppedChanging(this.handle.uuid);
-                UI.utils.stoppedChanging(this.rail.uuid);
+                UI.utils.stoppedChanging(this.handle.object3D.uuid);
                 // Prevent default behaviour of event
                 UI.utils.preventDefault(e);
             }
@@ -78,7 +77,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         // // Handle clicks on rail to scroll
         this.rail.addEventListener('mousedown',e=>{
 
-            UI.utils.isChanging(this.el.sceneEl,this.rail.uuid);
+            UI.utils.isChanging(this.el.sceneEl,this.handle.object3D.uuid);
             // Pause look controls
             this.isDragging = true;
             // Reset handle pos to center of handle
@@ -130,7 +129,8 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         }
     },
     updateContent(){
-        UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
+        this.currentUuid = THREE.Math.generateUUID();
+        UI.utils.isChanging(this.el.sceneEl,this.currentUuid);
         this.container.object3D.position.y = this.data.height/2;
         this.setChildClips();
         if(typeof Yoga !== 'undefined')this.initialiseYoga(this.container,this.data.width*100);
@@ -143,10 +143,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.rail.setAttribute('width',this.handleSize===1?0.00000001:0.1);
         this.rail.setAttribute('color',this.handleSize===1?'#efefef':'#fff');
         this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+(this.data.height-(this.data.height*this.handleSize))/2+' '+(this.data.scrollZOffset+0.0005));
-        this.container.lastChild.addEventListener('loaded',()=>{
-            // Add delay when content is updated
-            setTimeout(()=>UI.utils.stoppedChanging(this.el.object3D.uuid),500);
-        });
+
     },
     mouseMove(e){
         if(this.isDragging){
@@ -168,7 +165,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             if(this.handleSize!==1){
                 // Start changes
                 UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
-                this.scroll(this.handle.getAttribute('position').y+(-e.detail.evt.deltaY/800));
+                this.scroll(this.handle.getAttribute('position').y+(e.detail.evt.deltaY<0?0.1:-0.1));
                 // Stop changes
                 UI.utils.stoppedChanging(this.el.object3D.uuid);
                 UI.utils.preventDefault(e);
@@ -391,7 +388,9 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             if(child.components.text){
                 // Wait for the font to load first.
                 child.addEventListener('textfontset',()=>{
+                    clearTimeout(this.fontRenderTimeout);
                     traverse();
+                    this.fontRenderTimeout = setTimeout(()=>UI.utils.stoppedChanging(this.currentUuid),500);
                 })
             }else{
                 traverse();

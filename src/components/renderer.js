@@ -34,14 +34,16 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         // Set the texture to the ui panel mesh.
         this.meshEl.getObject3D('mesh').material.map = this.renderTarget.texture;
         // Listen for change events to enable rendering.
-        this.isRendering = true;
         this.stoppedRendering = false;
+        this.isRendering = true;
         // Listen for change events to enable/disable rendering
         this.el.sceneEl.addEventListener('ui-changing',()=>{
+            //console.log(JSON.stringify(new Date()),'ui-changing');
             this.stoppedRendering = false;
             this.isRendering = true;
         });
         this.el.sceneEl.addEventListener('ui-changing-stopped',()=>{
+            //console.log(JSON.stringify(new Date()),'ui-changing-stopped');
             this.isRendering = false;
         });
         // Setup raycaster for relaying mouse/keyboard events
@@ -182,6 +184,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
                 // If this is the first time weve seen this element then emit the mouseenter event.
                 if(this.prevIntersectionEls.indexOf(intersection.object.el)===-1&&!defaultPrevented){
                     intersection.object.el.emit('mouseenter',currentEvent);
+                    console.log(intersection.object.el.tagName,intersection.object.uuid)
                 }
                 // Emit the mouse event received
                 if(!defaultPrevented){
@@ -203,20 +206,20 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         // Store the current intersected elements for the next iteration.
         this.prevIntersectionEls = intersectionEls;
     },
-    tick(){
-        if(this.isFrozen)return;
-        if(new Date().getTime()-this.lastRenderTime<(1000/this.data.fps)&&this.isRendering)return;
-        if(this.stoppedRendering)return;
+    tick(delta){
+        if(this.isFrozen||this.stoppedRendering)return;
+        if(delta-this.lastRenderTime<(1000/this.data.fps)&&this.isRendering)return;
         this.el.object3D.traverse(child=>{
             child.updateMatrixWorld();
         });
+
         let renderer = this.el.sceneEl.renderer;
         let vrModeEnabled = renderer.vr.enabled;
         renderer.vr.enabled = false;
         renderer.render(this.el.object3D,this.camera,this.renderTarget);
         renderer.vr.enabled = vrModeEnabled;
-        //this.el.sceneEl.renderer.render(this.el.object3D,this.camera,this.renderTarget);
-        this.lastRenderTime = new Date().getTime();
+        //console.log('render');
+        this.lastRenderTime = delta;
         if(!this.isRendering){
             this.stoppedRendering = true;
         }

@@ -37,6 +37,7 @@ module.exports = AFRAME.registerComponent('ui-btn', {
         });
         // Propagate event on parent element.
         this.el.emit('ui-mouse-enter',e);
+        UI.utils.preventDefault(e);
     },
     mouseLeave(e){
         // Ignore mouse leave event if the button was clicked - mouse up already resets to default state.
@@ -47,12 +48,14 @@ module.exports = AFRAME.registerComponent('ui-btn', {
         this.resetAnimation(this.defaultZ+this.data.hoverHeight);
         // Propagate event on parent element.
         this.el.emit('ui-mouse-leave',e);
+        UI.utils.preventDefault(e);
     },
     mouseUp(e){
         this.is_clicked = true;
         // Reset button state from pressed
         this.resetAnimation(this.defaultZ+this.data.activeHeight);
         this.el.emit('ui-mouse-up',e);
+        UI.utils.preventDefault(e);
     },
     mouseDown(e){
         const _this = this;
@@ -64,6 +67,7 @@ module.exports = AFRAME.registerComponent('ui-btn', {
         });
         // Propagate event on parent element.
         this.el.emit('ui-mouse-down',e);
+        UI.utils.preventDefault(e);
     },
     resetAnimation(start_z){
         let _this = this;
@@ -77,12 +81,12 @@ module.exports = AFRAME.registerComponent('ui-btn', {
         let _this = this;
         // Start changes
         UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
+        setTimeout(()=>UI.utils.stoppedChanging(_this.el.object3D.uuid),this.data.duration);
         return new TWEEN.Tween({x:from})
             .to({ x: to}, this.data.duration)
             .onUpdate(callback)
             .onComplete(function(){
                 // Stop changes
-                UI.utils.stoppedChanging(_this.el.object3D.uuid);
                 return complete.call(this);
             })
             .easing(TWEEN.Easing.Exponential.Out).start();
