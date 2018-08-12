@@ -20,7 +20,6 @@ export class Utils{
         }
     }
     isChanging(scene,ref){
-        console.warn(ref);
         let index = this.changesDetected.indexOf(ref);
         if(index===-1){
             this.scene = this.scene||scene;
@@ -33,7 +32,6 @@ export class Utils{
         if(index>-1){
             this.changesDetected.splice(index, 1)
         }
-        console.log(this.changesDetected,ref);
         this.isFirstOrLastChange();
     }
 }

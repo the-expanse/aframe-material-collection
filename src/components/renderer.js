@@ -184,7 +184,6 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
                 // If this is the first time weve seen this element then emit the mouseenter event.
                 if(this.prevIntersectionEls.indexOf(intersection.object.el)===-1&&!defaultPrevented){
                     intersection.object.el.emit('mouseenter',currentEvent);
-                    console.log(intersection.object.el.tagName,intersection.object.uuid)
                 }
                 // Emit the mouse event received
                 if(!defaultPrevented){
