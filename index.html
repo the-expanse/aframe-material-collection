@@ -25,47 +25,47 @@
     <a-sky color="#efefef"></a-sky>
 
 
-    <!--<a-plane id="modalPanel" ui-curved-plane width="3.5" height="2" scale="0.0001 0.0001 0.0001" position="0 0 -1.7" side="double" shader="flat" class="intersect"></a-plane>-->
+    <a-plane id="modalPanel" ui-curved-plane width="3.5" height="2" scale="0.0001 0.0001 0.0001" position="0 0 -1.7" side="double" shader="flat" class="intersect"></a-plane>
 
-    <!--<a-ui-renderer id="modalRenderer" ui-panel="#modalPanel">-->
-        <!--<a-entity geometry="primitive:plane;width:4.222;height:1.9;" material="side:double;shader:flat;" position="0 0 -0.495">-->
+    <a-ui-renderer id="modalRenderer" ui-panel="#modalPanel">
+        <a-entity geometry="primitive:plane;width:4.222;height:1.9;" material="side:double;shader:flat;" position="0 0 -0.495">
 
-            <!--<a-plane width="0.15" height="0.15" position="1.105 0.515 0.001" color="#fff" shader="flat"-->
-                     <!--class="intersectable close-modal">-->
-                <!--<a-plane src="icons/close_white_18dp.png" width="0.08" height="0.08" shader="flat" transparent="true" color="#4db6ac"></a-plane>-->
-            <!--</a-plane>-->
-            <!--<a-ui-scroll-pane id="modalContent" handle-color="#4db6ac" position="0 -0.05 0.01" width="2" height="0.9" look-controls-el="#camera" look-controls-component="">-->
-                <!--<a-entity class="container">-->
-                    <!--&lt;!&ndash;Introduction&ndash;&gt;-->
-                    <!--<a-entity width="1.8">-->
-                        <!--<a-text font="roboto" baseLine="center" value="Modal Popup"-->
-                                <!--color="#212121" anchor="center" wrap-count="28" width="1.9" height="0.15"></a-text>-->
+            <a-plane width="0.15" height="0.15" position="1.105 0.515 0.001" color="#fff" shader="flat"
+                     class="intersectable close-modal">
+                <a-plane src="icons/close_white_18dp.png" width="0.08" height="0.08" shader="flat" transparent="true" color="#4db6ac"></a-plane>
+            </a-plane>
+            <a-ui-scroll-pane id="modalContent" handle-color="#4db6ac" position="0 -0.05 0.01" width="2" height="0.9" look-controls-el="#camera" look-controls-component="">
+                <a-entity class="container">
+                    <!--Introduction-->
+                    <a-entity width="1.8">
+                        <a-text font="roboto" baseLine="center" value="Modal Popup"
+                                color="#212121" anchor="center" wrap-count="28" width="1.9" height="0.15"></a-text>
 
-                        <!--<a-text font="roboto" baseLine="center" value="This modal's content is rendered separately from the rest of the scene - only when its opened."-->
-                                <!--anchor="center" color="#515151" wrap-count="40" width="1.9" height="0.2"></a-text>-->
+                        <a-text font="roboto" baseLine="center" value="This modal's content is rendered separately from the rest of the scene - only when its opened."
+                                anchor="center" color="#515151" wrap-count="40" width="1.9" height="0.2"></a-text>
 
-                        <!--<a-text font="roboto" baseLine="center" value="Backdrop"-->
-                                <!--color="#212121" anchor="center" wrap-count="28" width="1.9" height="0.15"></a-text>-->
+                        <a-text font="roboto" baseLine="center" value="Backdrop"
+                                color="#212121" anchor="center" wrap-count="28" width="1.9" height="0.15"></a-text>
 
-                        <!--<a-text font="roboto" baseLine="center" value="The backdrop is created by pausing the underlying renderer - this means it does not render or respond to input while the modal is opened. It also has a nice fade animation on the backdrop before rendering is paused."-->
-                                <!--anchor="center" color="#515151" wrap-count="40" width="1.9" height="0.45"></a-text>-->
+                        <a-text font="roboto" baseLine="center" value="The backdrop is created by pausing the underlying renderer - this means it does not render or respond to input while the modal is opened. It also has a nice fade animation on the backdrop before rendering is paused."
+                                anchor="center" color="#515151" wrap-count="40" width="1.9" height="0.45"></a-text>
 
 
-                        <!--<a-entity width="1.3">-->
-                            <!--&lt;!&ndash;Flat Button&ndash;&gt;-->
-                            <!--<a-ui-button class="intersectable close-modal" text-value="Close" transparent="true"-->
-                                         <!--font-color="#009688" color="white" ripple-color="#009688"></a-ui-button>-->
-                        <!--</a-entity>-->
+                        <a-entity width="1.3">
+                            <!--Flat Button-->
+                            <a-ui-button class="intersectable close-modal" text-value="Close" transparent="true"
+                                         font-color="#009688" color="white" ripple-color="#009688"></a-ui-button>
+                        </a-entity>
 
-                        <!--<a-entity width="0.3">-->
-                            <!--&lt;!&ndash;Button&ndash;&gt;-->
-                            <!--<a-ui-button class="intersectable close-modal" text-value="OK" ></a-ui-button>-->
-                        <!--</a-entity>-->
-                    <!--</a-entity>-->
-                <!--</a-entity>-->
-            <!--</a-ui-scroll-pane>-->
-        <!--</a-entity>-->
-    <!--</a-ui-renderer>-->
+                        <a-entity width="0.3">
+                            <!--Button-->
+                            <a-ui-button class="intersectable close-modal" text-value="OK" ></a-ui-button>
+                        </a-entity>
+                    </a-entity>
+                </a-entity>
+            </a-ui-scroll-pane>
+        </a-entity>
+    </a-ui-renderer>
 
     <a-plane id="uiPanelTwo" ui-curved-plane width="6" height="3" position="0 0 -2" side="double" shader="flat" class="intersect"></a-plane>
     <a-ui-renderer id="mainRenderer" ui-panel="#uiPanelTwo">
@@ -156,9 +156,9 @@
                             <a-text font="roboto" baseLine="center" value="Modal"
                                     color="#212121" anchor="center" wrap-count="25" width="1.25" height="0.15"></a-text>
 
-                            <!--&lt;!&ndash;Modal Button&ndash;&gt;-->
-                            <!--<a-ui-button class="intersectable" text-value="Open Modal" wrap-count="12"-->
-                                         <!--ui-modal="modal:#modalRenderer;main:#mainRenderer;"></a-ui-button>-->
+                            <!--Modal Button-->
+                            <a-ui-button class="intersectable" text-value="Open Modal" wrap-count="12"
+                                         ui-modal="modal:#modalRenderer;main:#mainRenderer;"></a-ui-button>
 
                         </a-entity>
 
