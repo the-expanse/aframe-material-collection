@@ -31,6 +31,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.rail.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' 0 '+(this.data.scrollZOffset+0.0002));
         this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' 0 '+(this.data.scrollZOffset+0.0005));
         this.el.sceneEl.renderer.localClippingEnabled = true;
+
         // Setup content clips.
         this.content_clips = [
             new THREE.Plane( new THREE.Vector3( 0, 1, 0 ), (this.data.height/2) ),
@@ -90,20 +91,26 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         });
 
         // Setup content clips after the scene is loaded to be able to access all entity materials
-        this.el.sceneEl.addEventListener('loaded',()=>{
-            // update content clips world positions from this current element.
-            this.el.sceneEl.object3D.updateMatrixWorld();
-            this.updateContentClips();
-            this.updateContent();
-            this.el.emit('scroll-pane-loaded');
-        });
+
+        // update content clips world positions from this current element.
+
+        this.updateContent();
+        this.el.emit('scroll-pane-loaded');
         this.setupMouseWheelScroll();
     },
     updateContentClips(){
+        this.el.sceneEl.object3D.updateMatrixWorld();
+        // update content clips world positions from this current element.
+        this.content_clips[0].set(new THREE.Vector3( 0, 1, 0 ), (this.data.height/2));
+        this.content_clips[1].set(new THREE.Vector3( 0, -1, 0 ), (this.data.height/2));
+        this.content_clips[2].set(new THREE.Vector3( -1, 0, 0 ), (this.data.width/2));
+        this.content_clips[3].set(new THREE.Vector3( 1, 0, 0 ), (this.data.width/2));
+        //this.el.sceneEl.object3D.updateMatrixWorld();
         this.content_clips[0].applyMatrix4(this.el.object3D.matrixWorld);
         this.content_clips[1].applyMatrix4(this.el.object3D.matrixWorld);
         this.content_clips[2].applyMatrix4(this.el.object3D.matrixWorld);
         this.content_clips[3].applyMatrix4(this.el.object3D.matrixWorld);
+
     },
     setContent(body,noAutoReload){
         if(this.container) {
@@ -129,10 +136,11 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         }
     },
     updateContent(){
+        this.updateContentClips();
         this.currentUuid = THREE.Math.generateUUID();
         UI.utils.isChanging(this.el.sceneEl,this.currentUuid);
-        this.container.object3D.position.y = this.data.height/2;
         this.setChildClips();
+        this.container.object3D.position.y = this.data.height/2;
         if(typeof Yoga !== 'undefined')this.initialiseYoga(this.container,this.data.width*100);
         this.container.yoga_node.calculateLayout(this.data.width*100, 'auto', Yoga.DIRECTION_LTR);
         this.content_height = Number.NEGATIVE_INFINITY;
@@ -179,7 +187,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.backgroundPanel.setAttribute('width',this.data.width+1);
         this.backgroundPanel.setAttribute('height',this.data.height+1);
         this.backgroundPanel.setAttribute('position','0 0 -0.013');
-        this.backgroundPanel.setAttribute('opacity',0.0001);
+        this.backgroundPanel.setAttribute('opacity',0.0001);//
         this.backgroundPanel.setAttribute('transparent',true);
 
         this.el.appendChild(this.backgroundPanel);
@@ -389,8 +397,8 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 // Wait for the font to load first.
                 child.addEventListener('textfontset',()=>{
                     clearTimeout(this.fontRenderTimeout);
-                    traverse();
                     this.fontRenderTimeout = setTimeout(()=>UI.utils.stoppedChanging(this.currentUuid),500);
+                    traverse();
                 })
             }else{
                 traverse();

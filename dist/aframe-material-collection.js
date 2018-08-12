@@ -88,7 +88,7 @@
 /* 0 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.3.10","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.3.12","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 1 */
@@ -724,7 +724,6 @@ module.exports = AFRAME.registerComponent('ui-btn', {
         });
         // Propagate event on parent element.
         this.el.emit('ui-mouse-enter',e);
-        UI.utils.preventDefault(e);
     },
     mouseLeave(e){
         // Ignore mouse leave event if the button was clicked - mouse up already resets to default state.
@@ -735,14 +734,12 @@ module.exports = AFRAME.registerComponent('ui-btn', {
         this.resetAnimation(this.defaultZ+this.data.hoverHeight);
         // Propagate event on parent element.
         this.el.emit('ui-mouse-leave',e);
-        UI.utils.preventDefault(e);
     },
     mouseUp(e){
         this.is_clicked = true;
         // Reset button state from pressed
         this.resetAnimation(this.defaultZ+this.data.activeHeight);
         this.el.emit('ui-mouse-up',e);
-        UI.utils.preventDefault(e);
     },
     mouseDown(e){
         const _this = this;
@@ -754,7 +751,6 @@ module.exports = AFRAME.registerComponent('ui-btn', {
         });
         // Propagate event on parent element.
         this.el.emit('ui-mouse-down',e);
-        UI.utils.preventDefault(e);
     },
     resetAnimation(start_z){
         let _this = this;
@@ -768,12 +764,12 @@ module.exports = AFRAME.registerComponent('ui-btn', {
         let _this = this;
         // Start changes
         UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
-        setTimeout(()=>UI.utils.stoppedChanging(_this.el.object3D.uuid),this.data.duration);
         return new TWEEN.Tween({x:from})
             .to({ x: to}, this.data.duration)
             .onUpdate(callback)
             .onComplete(function(){
                 // Stop changes
+                UI.utils.stoppedChanging(_this.el.object3D.uuid)
                 return complete.call(this);
             })
             .easing(TWEEN.Easing.Exponential.Out).start();
@@ -1110,6 +1106,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.rail.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' 0 '+(this.data.scrollZOffset+0.0002));
         this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' 0 '+(this.data.scrollZOffset+0.0005));
         this.el.sceneEl.renderer.localClippingEnabled = true;
+
         // Setup content clips.
         this.content_clips = [
             new THREE.Plane( new THREE.Vector3( 0, 1, 0 ), (this.data.height/2) ),
@@ -1169,20 +1166,26 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         });
 
         // Setup content clips after the scene is loaded to be able to access all entity materials
-        this.el.sceneEl.addEventListener('loaded',()=>{
-            // update content clips world positions from this current element.
-            this.el.sceneEl.object3D.updateMatrixWorld();
-            this.updateContentClips();
-            this.updateContent();
-            this.el.emit('scroll-pane-loaded');
-        });
+
+        // update content clips world positions from this current element.
+
+        this.updateContent();
+        this.el.emit('scroll-pane-loaded');
         this.setupMouseWheelScroll();
     },
     updateContentClips(){
+        this.el.sceneEl.object3D.updateMatrixWorld();
+        // update content clips world positions from this current element.
+        this.content_clips[0].set(new THREE.Vector3( 0, 1, 0 ), (this.data.height/2));
+        this.content_clips[1].set(new THREE.Vector3( 0, -1, 0 ), (this.data.height/2));
+        this.content_clips[2].set(new THREE.Vector3( -1, 0, 0 ), (this.data.width/2));
+        this.content_clips[3].set(new THREE.Vector3( 1, 0, 0 ), (this.data.width/2));
+        //this.el.sceneEl.object3D.updateMatrixWorld();
         this.content_clips[0].applyMatrix4(this.el.object3D.matrixWorld);
         this.content_clips[1].applyMatrix4(this.el.object3D.matrixWorld);
         this.content_clips[2].applyMatrix4(this.el.object3D.matrixWorld);
         this.content_clips[3].applyMatrix4(this.el.object3D.matrixWorld);
+
     },
     setContent(body,noAutoReload){
         if(this.container) {
@@ -1208,10 +1211,11 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         }
     },
     updateContent(){
+        this.updateContentClips();
         this.currentUuid = THREE.Math.generateUUID();
         UI.utils.isChanging(this.el.sceneEl,this.currentUuid);
-        this.container.object3D.position.y = this.data.height/2;
         this.setChildClips();
+        this.container.object3D.position.y = this.data.height/2;
         if(typeof Yoga !== 'undefined')this.initialiseYoga(this.container,this.data.width*100);
         this.container.yoga_node.calculateLayout(this.data.width*100, 'auto', Yoga.DIRECTION_LTR);
         this.content_height = Number.NEGATIVE_INFINITY;
@@ -1258,7 +1262,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.backgroundPanel.setAttribute('width',this.data.width+1);
         this.backgroundPanel.setAttribute('height',this.data.height+1);
         this.backgroundPanel.setAttribute('position','0 0 -0.013');
-        this.backgroundPanel.setAttribute('opacity',0.0001);
+        this.backgroundPanel.setAttribute('opacity',0.0001);//
         this.backgroundPanel.setAttribute('transparent',true);
 
         this.el.appendChild(this.backgroundPanel);
@@ -1468,8 +1472,8 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 // Wait for the font to load first.
                 child.addEventListener('textfontset',()=>{
                     clearTimeout(this.fontRenderTimeout);
-                    traverse();
                     this.fontRenderTimeout = setTimeout(()=>UI.utils.stoppedChanging(this.currentUuid),500);
+                    traverse();
                 })
             }else{
                 traverse();
