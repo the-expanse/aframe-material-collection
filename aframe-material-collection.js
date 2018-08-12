@@ -1673,10 +1673,10 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         this.lastRenderTime = 0;
         this.isFrozen = false;
     },
-    pauseRender(){
-        return this.playRender(true)
+    pauseRender(time){
+        return this.playRender(time,true)
     },
-    playRender(isPaused){
+    playRender(time,isPaused){
         let _this = this;
         return new Promise(resolve=>{
             if(_this.isFrozen===isPaused||_this.isAnimatingBackground)return resolve();
@@ -1684,7 +1684,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
             if(!_this.isFrozen)this.backdrop.setAttribute('scale','1 1 1');
             let fromScale = _this.isFrozen?0.9:0.000001;
             let toScale = _this.isFrozen?0.000001:0.9;
-            let duration = _this.isFrozen?350:500;
+            let duration = _this.isFrozen?time||350:time||500;
             if(_this.isFrozen){
                 _this.isFrozen = isPaused;
                 _this.play();
@@ -1698,13 +1698,13 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
                 .onComplete(()=>{
                     _this.isFrozen = isPaused;
                     _this.isAnimatingBackground = false;
-                    // Stop changes
-                    UI.utils.stoppedChanging(this.backdrop.uuid);
                     if(_this.isFrozen){
                         _this.pause();
                     }else{
                         this.backdrop.setAttribute('scale','0.000001 0.000001 0.000001');
                     }
+                    // Stop changes
+                    UI.utils.stoppedChanging(this.backdrop.uuid);
                     resolve();
                 })
                 .easing(TWEEN.Easing.Exponential.Out).start();
@@ -2087,7 +2087,7 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
 /* 21 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.3.6","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.3.8","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 22 */
@@ -2278,7 +2278,7 @@ module.exports = AFRAME.registerComponent('ui-mouse-shim', {
             throw 'ui-mouse-move component needs the raycaster component to be added.'
         }
         // Add support for mouse wheel
-        this.el.sceneEl.renderer.domElement.addEventListener( 'mousewheel', this.onMouseWheel.bind(this), false);
+        this.el.sceneEl.renderer.domElement.addEventListener( 'wheel', this.onMouseWheel.bind(this), false);
     },
     onMouseWheel(e){
         this.emitMouseEvent('ui-mousewheel',e);
