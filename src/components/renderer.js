@@ -15,7 +15,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         panelSize:{type:'vec2',default:{x:6,y:3}},
         renderResolution:{type:'vec2',default:{x:2048,y:1024}},
         debugRaycaster:{type:'boolean',default: false},
-        fps:{type:'number',default:45},
+        fps:{type:'number',default:60},
         intersectableClass:{default:'intersectable'}
     },
     init() {
