@@ -86,12 +86,6 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module) {
-
-module.exports = {"name":"aframe-material-collection","version":"0.3.12","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -140,7 +134,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-button', AFRAME.utils.extendDeep
 }));
 
 /***/ }),
-/* 2 */
+/* 1 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -180,7 +174,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-fab-button', AFRAME.utils.extend
 }));
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -219,7 +213,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-fab-button-small', AFRAME.utils.
 }));
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -240,7 +234,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-switch', AFRAME.utils.extendDeep
 }));
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -270,7 +264,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-checkbox', AFRAME.utils.extendDe
 }));
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -308,7 +302,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-radio', AFRAME.utils.extendDeep(
 }));
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -334,7 +328,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-text-input', AFRAME.utils.extend
 }));
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -361,7 +355,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-number-input', AFRAME.utils.exte
 }));
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -388,7 +382,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-int-input', AFRAME.utils.extendD
 }));
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -415,7 +409,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-password-input', AFRAME.utils.ex
 }));
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -443,7 +437,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-scroll-pane', AFRAME.utils.exten
 }));
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -471,7 +465,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-renderer', AFRAME.utils.extendDe
 }));
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -682,7 +676,7 @@ module.exports = AFRAME.registerComponent('ui-text', {
 });
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN */
@@ -777,176 +771,7 @@ module.exports = AFRAME.registerComponent('ui-btn', {
 });
 
 /***/ }),
-/* 15 */
-/***/ (function(module, exports) {
-
-/* global AFRAME,THREE */
-/**
- * A component to load an icon and set some defaults for positioning and transparency.
- * @namespace aframe-material-collection
- * @component ui-icon
- * @author Shane Harris
- */
-module.exports = AFRAME.registerComponent('ui-icon', {
-    schema: {
-        src: {default: 'icons/send_white_64dp.png'},
-        size:{type:'vec2',default:{x:0.1,y:0.1}},
-        zIndex:{type:'number',default:0.003},
-        color:{default:'#fff'}
-    },
-    init() {
-        this.icon = new THREE.Mesh(new THREE.PlaneGeometry(this.data.size.x,this.data.size.y),new THREE.MeshBasicMaterial({color:this.data.color,alphaTest:0.4,transparent:true,map:new THREE.TextureLoader().load(this.data.src)}));
-        this.icon.position.set(0,0,this.data.zIndex);
-        this.el.object3D.add(this.icon);
-    }
-});
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports) {
-
-/* global AFRAME,THREE */
-/**
- * Rounded corners Component for aframe-material-collection. Expects an a-plane entity.
- * @namespace aframe-material-collection
- * @component ui-rounded
- * @author Shane Harris
- */
-
-module.exports = AFRAME.registerComponent('ui-rounded', {
-    schema: {
-        borderRadius: {type: 'number', default: 0.01},
-        curveSegments:{type: 'int', default: 1},
-    },
-    init() {
-        let mesh = this.el.getObject3D('mesh');
-        let roundedRectShape = new THREE.Shape();
-        // Draw the Rounded rectangle shape centered in the object - from three.js shapes example.
-        ( function roundedRect( ctx, x, y, width, height, radius ) {
-            ctx.moveTo( x, y + radius );
-            ctx.lineTo( x, y + height - radius );
-            ctx.quadraticCurveTo( x, y + height, x + radius, y + height );
-            ctx.lineTo( x + width - radius, y + height );
-            ctx.quadraticCurveTo( x + width, y + height, x + width, y + height - radius );
-            ctx.lineTo( x + width, y + radius );
-            ctx.quadraticCurveTo( x + width, y, x + width - radius, y );
-            ctx.lineTo( x + radius, y );
-            ctx.quadraticCurveTo( x, y, x, y + radius );
-        } )( roundedRectShape, -mesh.geometry.metadata.parameters.width/2, -mesh.geometry.metadata.parameters.height/2, mesh.geometry.metadata.parameters.width, mesh.geometry.metadata.parameters.height, this.data.borderRadius );
-        // Update the geometry.
-        mesh.geometry = new THREE.ShapeGeometry(roundedRectShape,this.data.curveSegments);
-        // Emit rounded-loaded event once the geometry has been updated.
-        this.el.emit('rounded-loaded', null, false);
-    }
-});
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports) {
-
-/* global AFRAME,TWEEN,THREE */
-/**
- * Ripple Component for aframe-material-collection. Add a ripple to an entity with options for controlling
- * clamping the animation and offsetting the ripple z position to place on top or bottom
- * @namespace aframe-material-collection
- * @component ui-ripple
- * @author Shane Harris
- */
-
-module.exports = AFRAME.registerComponent('ui-ripple',{
-    schema:{
-        color: {default: '#fff'},
-        duration:{type:'int',default:1000},
-        fadeDuration:{type:'int',default:750},
-        fadeDelay:{type:'int',default:250},
-        clampToSquare:{type:'boolean',default:false},
-        size:{type:'vec2',default:{x:1,y:1}},
-        zIndex:{type:'number',default:-0.001},
-        segments:{type:'int',default:6}
-    },
-    init(){
-        // Setup circle geometry for ripple effect
-        this.rippleGeometry = new THREE.CircleGeometry(Math.max(this.data.size.x,this.data.size.y),this.data.segments);
-        this.ripple = new THREE.Mesh(this.rippleGeometry.clone(),new THREE.MeshBasicMaterial({color:this.data.color,transparent:true, opacity:0.4,alphaTest:0.1}));
-        this.ripple.scale.set(0.00001,0.00001,0.00001);
-        this.el.object3D.add(this.ripple);
-        this.el.addEventListener('mousedown',this.click.bind(this));
-        this.ripple.position.set(0,0,this.data.zIndex);
-        // Set clipping planes if clamping to square
-        if(this.data.clampToSquare){
-
-            this.content_clips = [
-                new THREE.Plane( new THREE.Vector3( 0, 1, 0 ), (this.data.size.y/2) ),
-                new THREE.Plane( new THREE.Vector3( 0, -1, 0 ), (this.data.size.y/2) ),
-                new THREE.Plane( new THREE.Vector3( -1, 0, 0 ), (this.data.size.x/2) ),
-                new THREE.Plane( new THREE.Vector3( 1, 0, 0 ), (this.data.size.x/2) )
-            ];
-        }
-    },
-    click(e){
-        if(this.isRippling){
-            // Throttle clicks.
-            return e.preventDefault();
-        }
-        this.isRippling = true;
-        // Set clipping planes if clamping to square
-        if(this.data.clampToSquare){
-            this.setRippleClips(this.ripple.material);
-        }
-        // Animate the size of the circle ripple from the center of the entity.
-        this.tweenSize(this.ripple.geometry);
-        // Fade the circle out as it ripples.
-        this.tweenOpacity(this.ripple.material);
-    },
-    setRippleClips(){
-        // update content clips world positions from this current element.
-        this.content_clips[0].set(new THREE.Vector3( 0, 1, 0 ), (this.data.size.y/2));
-        this.content_clips[1].set(new THREE.Vector3( 0, -1, 0 ), (this.data.size.y/2));
-        this.content_clips[2].set(new THREE.Vector3( -1, 0, 0 ), (this.data.size.x/2));
-        this.content_clips[3].set(new THREE.Vector3( 1, 0, 0 ), (this.data.size.x/2));
-        //this.el.sceneEl.object3D.updateMatrixWorld();
-        this.content_clips[0].applyMatrix4(this.el.object3D.matrixWorld);
-        this.content_clips[1].applyMatrix4(this.el.object3D.matrixWorld);
-        this.content_clips[2].applyMatrix4(this.el.object3D.matrixWorld);
-        this.content_clips[3].applyMatrix4(this.el.object3D.matrixWorld);
-        this.ripple.material.clippingPlanes = this.el._content_clips?this.el._content_clips.concat(this.content_clips):this.content_clips;
-        this.ripple.material.clipShadows = true;
-        this.ripple.material.needsUpdate = true;
-    },
-    tweenSize(geometry){
-        let _this = this;
-        // Start changes
-        UI.utils.isChanging(this.el.sceneEl,_this.ripple.uuid);
-        new TWEEN.Tween({x:0.00001})
-            .to({ x: 1}, this.data.duration)
-            .onUpdate(function(){
-                _this.ripple.scale.set(this.x,this.x,this.x);
-            })
-            .onComplete(()=>{
-                _this.ripple.scale.set(0.00001,0.00001,0.00001);
-                // Reset throttle flag.
-                this.isRippling = false;
-                // Stop changes
-                UI.utils.stoppedChanging(_this.ripple.uuid);
-            })
-            .easing(TWEEN.Easing.Exponential.Out).start();
-    },
-    tweenOpacity(material){
-        new TWEEN.Tween({x:0.4})
-            .to({ x: 0}, this.data.fadeDuration)
-            .delay(this.data.fadeDelay)
-            .onUpdate(function(){
-                material.opacity = this.x;
-            })
-            .onComplete(()=>{
-                material.opacity = 0.4;
-            })
-            .easing(TWEEN.Easing.Exponential.Out).start();
-    }
-});
-
-/***/ }),
-/* 18 */
+/* 14 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN,THREE */
@@ -1070,7 +895,7 @@ module.exports = AFRAME.registerComponent('ui-switch', {
 });
 
 /***/ }),
-/* 19 */
+/* 15 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -1485,79 +1310,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
 });
 
 /***/ }),
-/* 20 */
-/***/ (function(module, exports) {
-
-/* global AFRAME */
-/**
- * A component shim the mouse move event for the AFRAME cursor raycaster.
- * @namespace aframe-material-collection
- * @component ui-mouse-shim
- * @author Shane Harris
- */
-module.exports = AFRAME.registerComponent('ui-mouse-shim', {
-    schema:{
-        fps:{type:'number',default:45}
-    },
-    init(){
-        if (!this.el.components.raycaster) {
-            throw 'ui-mouse-move component needs the raycaster component to be added.'
-        }
-        // Add support for mouse wheel
-        this.el.sceneEl.renderer.domElement.addEventListener( 'wheel', this.onMouseWheel.bind(this), false);
-    },
-    onMouseWheel(e){
-        this.emitMouseEvent('ui-mousewheel',e);
-    },
-    tick() {
-        if(new Date().getTime()-this.lastMouseMoveTime<(1000/this.data.fps))return;
-        this.emitMouseEvent('ui-mousemove');
-        this.lastMouseMoveTime = new Date().getTime();
-    },
-    emitMouseEvent(eventType,event){
-        // Get current intersections from raycaster component.
-        this.el.components.raycaster.intersections.forEach(intersection=>{
-            if(intersection.object.el){
-                // Emit custom mouse move event ont he intersected element.
-                intersection.object.el.emit(eventType,{cursorEl:this.el,intersection:intersection,evt:event})
-            }
-        });
-    }
-});
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports) {
-
-/* global AFRAME */
-/**
- * Checkbox A simple component to listen for two click events in quick succession.
- * @namespace aframe-material-collection
- * @component ui-double-click
- * @author Shane Harris
- */
-module.exports = AFRAME.registerComponent('ui-double-click', {
-    schema:{
-        timeout:{type:'int',default:200}
-    },
-    init() {
-        let last_click = 0;
-        // Add click event for listening for two clicks within the specified timespan.
-        this.el.addEventListener('mousedown',e=>{
-            let now = new Date().getTime();
-            if(now-last_click<this.data.timeout){
-                this.el.emit('dblclick',e);
-                // Reset last click
-                last_click = 0;
-                e.preventDefault();
-            }
-            last_click = now;
-        });
-    }
-});
-
-/***/ }),
-/* 22 */
+/* 16 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN */
@@ -1730,7 +1483,7 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
 });
 
 /***/ }),
-/* 23 */
+/* 17 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN */
@@ -1832,48 +1585,7 @@ module.exports = AFRAME.registerComponent('ui-radio', {
 });
 
 /***/ }),
-/* 24 */
-/***/ (function(module, exports) {
-
-/* global AFRAME,THREE */
-/**
- * Rounded borders Component for aframe-material-collection. Expects an a-plane entity.
- * @namespace aframe-material-collection
- * @component ui-border
- * @author Shane Harris
- */
-module.exports = AFRAME.registerComponent('ui-border', {
-    schema: {
-        borderRadius: {type: 'number', default: 0.01},
-        curveSegments:{type: 'int', default: 1},
-        borderWidth:{type: 'number', default: 0.015},
-        color:{default:"#8f8f8f"},
-        numberOfPoints:{type:'int',default:180}
-    },
-    init() {
-        let mesh = this.el.getObject3D('mesh');
-        let roundedRectShape = new THREE.Shape();
-        // Draw the Rounded rectangle shape centered in the object - from three.js shapes example.
-        ( function roundedRect( ctx, x, y, width, height, radius ) {
-            ctx.moveTo( x, y + radius );
-            ctx.lineTo( x, y + height - radius );
-            ctx.quadraticCurveTo( x, y + height, x + radius, y + height );
-            ctx.lineTo( x + width - radius, y + height );
-            ctx.quadraticCurveTo( x + width, y + height, x + width, y + height - radius );
-            ctx.lineTo( x + width, y + radius );
-            ctx.quadraticCurveTo( x + width, y, x + width - radius, y );
-            ctx.lineTo( x + radius, y );
-            ctx.quadraticCurveTo( x, y, x, y + radius );
-        } )( roundedRectShape, -mesh.geometry.metadata.parameters.width/2, -mesh.geometry.metadata.parameters.height/2, mesh.geometry.metadata.parameters.width, mesh.geometry.metadata.parameters.height, this.data.borderRadius );
-
-        let points = roundedRectShape.getSpacedPoints(this.data.numberOfPoints);
-        let geometryPoints = new THREE.BufferGeometry().setFromPoints( points );
-        this.el.setObject3D('mesh',new THREE.Points( geometryPoints, new THREE.PointsMaterial( { color: this.data.color, size: this.data.borderWidth } ) ));
-    }
-});
-
-/***/ }),
-/* 25 */
+/* 18 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -1910,70 +1622,7 @@ module.exports = AFRAME.registerComponent('ui-curved-plane', {
 });
 
 /***/ }),
-/* 26 */
-/***/ (function(module, exports) {
-
-/* global AFRAME,THREE */
-/**
- * Modal Component for aframe-material-collection.
- * @namespace aframe-material-collection
- * @component ui-modal
- * @author Shane Harris
- */
-module.exports = AFRAME.registerComponent('ui-modal', {
-    schema: {
-        modal:{type:'selector'},
-        main:{type:'selector'}
-    },
-    init(){
-        if(this.data.modal&&this.data.main){
-            // Get the modal panel to be able to animate its scale on open/close.
-            this.modalPanel = document.querySelector(this.data.modal.getAttribute('ui-panel'));
-
-            let mainComponents = this.data.main.components;
-            let modalComponents = this.data.modal.components;
-            // Pause rendering of modal until opened.
-            if(modalComponents&&modalComponents['ui-renderer']){
-                modalComponents['ui-renderer'].pause();
-            }
-            // Setup close listeners for anything with the class close-modal.
-            let close_buttons = this.data.modal.querySelectorAll('.close-modal');
-            for(let i = 0; i < close_buttons.length; i++ ){
-                let close_button = close_buttons[i];
-                close_button.addEventListener('mousedown',()=>{
-                    // Pause the modal rendering and play the main rendering again.
-                    modalComponents['ui-renderer'].pause();
-                    mainComponents['ui-renderer'].playRender();
-                    this.tweenModalScale(1,0.0000001);
-                });
-            }
-            // Add click handler for opening the modal, pause the main render screen and play the modal renderer
-            this.el.addEventListener('mousedown',()=>{
-                if(mainComponents&&mainComponents['ui-renderer']){
-                    mainComponents['ui-renderer'].pauseRender();
-                    this.tweenModalScale(0.0000001,1);
-                    modalComponents['ui-renderer'].play();
-                }
-            });
-        }
-    },
-    tweenModalScale(from,to){
-        return new Promise(r=>{
-            let _this = this;
-            new TWEEN.Tween({x:from})
-                .to({x:to}, 250)
-                .onUpdate(function(){
-                    if(_this.modalPanel)
-                        _this.modalPanel.setAttribute('scale',this.x+' '+this.x+' '+this.x);
-                })
-                .onComplete(r)
-                .easing(TWEEN.Easing.Exponential.Out).start();
-        });
-    }
-});
-
-/***/ }),
-/* 27 */
+/* 19 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -2204,7 +1853,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
 });
 
 /***/ }),
-/* 28 */
+/* 20 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,Yoga */
@@ -2444,6 +2093,357 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
 });
 
 /***/ }),
+/* 21 */
+/***/ (function(module) {
+
+module.exports = {"name":"aframe-material-collection","version":"0.3.12","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports) {
+
+/* global AFRAME,THREE */
+/**
+ * A component to load an icon and set some defaults for positioning and transparency.
+ * @namespace aframe-material-collection
+ * @component ui-icon
+ * @author Shane Harris
+ */
+module.exports = AFRAME.registerComponent('ui-icon', {
+    schema: {
+        src: {default: 'icons/send_white_64dp.png'},
+        size:{type:'vec2',default:{x:0.1,y:0.1}},
+        zIndex:{type:'number',default:0.003},
+        color:{default:'#fff'}
+    },
+    init() {
+        this.icon = new THREE.Mesh(new THREE.PlaneGeometry(this.data.size.x,this.data.size.y),new THREE.MeshBasicMaterial({color:this.data.color,alphaTest:0.4,transparent:true,map:new THREE.TextureLoader().load(this.data.src)}));
+        this.icon.position.set(0,0,this.data.zIndex);
+        this.el.object3D.add(this.icon);
+    }
+});
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports) {
+
+/* global AFRAME,THREE */
+/**
+ * Rounded corners Component for aframe-material-collection. Expects an a-plane entity.
+ * @namespace aframe-material-collection
+ * @component ui-rounded
+ * @author Shane Harris
+ */
+
+module.exports = AFRAME.registerComponent('ui-rounded', {
+    schema: {
+        borderRadius: {type: 'number', default: 0.01},
+        curveSegments:{type: 'int', default: 1},
+    },
+    init() {
+        let mesh = this.el.getObject3D('mesh');
+        let roundedRectShape = new THREE.Shape();
+        // Draw the Rounded rectangle shape centered in the object - from three.js shapes example.
+        ( function roundedRect( ctx, x, y, width, height, radius ) {
+            ctx.moveTo( x, y + radius );
+            ctx.lineTo( x, y + height - radius );
+            ctx.quadraticCurveTo( x, y + height, x + radius, y + height );
+            ctx.lineTo( x + width - radius, y + height );
+            ctx.quadraticCurveTo( x + width, y + height, x + width, y + height - radius );
+            ctx.lineTo( x + width, y + radius );
+            ctx.quadraticCurveTo( x + width, y, x + width - radius, y );
+            ctx.lineTo( x + radius, y );
+            ctx.quadraticCurveTo( x, y, x, y + radius );
+        } )( roundedRectShape, -mesh.geometry.metadata.parameters.width/2, -mesh.geometry.metadata.parameters.height/2, mesh.geometry.metadata.parameters.width, mesh.geometry.metadata.parameters.height, this.data.borderRadius );
+        // Update the geometry.
+        mesh.geometry = new THREE.ShapeGeometry(roundedRectShape,this.data.curveSegments);
+        // Emit rounded-loaded event once the geometry has been updated.
+        this.el.emit('rounded-loaded', null, false);
+    }
+});
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports) {
+
+/* global AFRAME,TWEEN,THREE */
+/**
+ * Ripple Component for aframe-material-collection. Add a ripple to an entity with options for controlling
+ * clamping the animation and offsetting the ripple z position to place on top or bottom
+ * @namespace aframe-material-collection
+ * @component ui-ripple
+ * @author Shane Harris
+ */
+
+module.exports = AFRAME.registerComponent('ui-ripple',{
+    schema:{
+        color: {default: '#fff'},
+        duration:{type:'int',default:1000},
+        fadeDuration:{type:'int',default:750},
+        fadeDelay:{type:'int',default:250},
+        clampToSquare:{type:'boolean',default:false},
+        size:{type:'vec2',default:{x:1,y:1}},
+        zIndex:{type:'number',default:-0.001},
+        segments:{type:'int',default:6}
+    },
+    init(){
+        // Setup circle geometry for ripple effect
+        this.rippleGeometry = new THREE.CircleGeometry(Math.max(this.data.size.x,this.data.size.y),this.data.segments);
+        this.ripple = new THREE.Mesh(this.rippleGeometry.clone(),new THREE.MeshBasicMaterial({color:this.data.color,transparent:true, opacity:0.4,alphaTest:0.1}));
+        this.ripple.scale.set(0.00001,0.00001,0.00001);
+        this.el.object3D.add(this.ripple);
+        this.el.addEventListener('mousedown',this.click.bind(this));
+        this.ripple.position.set(0,0,this.data.zIndex);
+        // Set clipping planes if clamping to square
+        if(this.data.clampToSquare){
+
+            this.content_clips = [
+                new THREE.Plane( new THREE.Vector3( 0, 1, 0 ), (this.data.size.y/2) ),
+                new THREE.Plane( new THREE.Vector3( 0, -1, 0 ), (this.data.size.y/2) ),
+                new THREE.Plane( new THREE.Vector3( -1, 0, 0 ), (this.data.size.x/2) ),
+                new THREE.Plane( new THREE.Vector3( 1, 0, 0 ), (this.data.size.x/2) )
+            ];
+        }
+    },
+    click(e){
+        if(this.isRippling){
+            // Throttle clicks.
+            return e.preventDefault();
+        }
+        this.isRippling = true;
+        // Set clipping planes if clamping to square
+        if(this.data.clampToSquare){
+            this.setRippleClips(this.ripple.material);
+        }
+        // Animate the size of the circle ripple from the center of the entity.
+        this.tweenSize(this.ripple.geometry);
+        // Fade the circle out as it ripples.
+        this.tweenOpacity(this.ripple.material);
+    },
+    setRippleClips(){
+        // update content clips world positions from this current element.
+        this.content_clips[0].set(new THREE.Vector3( 0, 1, 0 ), (this.data.size.y/2));
+        this.content_clips[1].set(new THREE.Vector3( 0, -1, 0 ), (this.data.size.y/2));
+        this.content_clips[2].set(new THREE.Vector3( -1, 0, 0 ), (this.data.size.x/2));
+        this.content_clips[3].set(new THREE.Vector3( 1, 0, 0 ), (this.data.size.x/2));
+        //this.el.sceneEl.object3D.updateMatrixWorld();
+        this.content_clips[0].applyMatrix4(this.el.object3D.matrixWorld);
+        this.content_clips[1].applyMatrix4(this.el.object3D.matrixWorld);
+        this.content_clips[2].applyMatrix4(this.el.object3D.matrixWorld);
+        this.content_clips[3].applyMatrix4(this.el.object3D.matrixWorld);
+        this.ripple.material.clippingPlanes = this.el._content_clips?this.el._content_clips.concat(this.content_clips):this.content_clips;
+        this.ripple.material.clipShadows = true;
+        this.ripple.material.needsUpdate = true;
+    },
+    tweenSize(geometry){
+        let _this = this;
+        // Start changes
+        UI.utils.isChanging(this.el.sceneEl,_this.ripple.uuid);
+        new TWEEN.Tween({x:0.00001})
+            .to({ x: 1}, this.data.duration)
+            .onUpdate(function(){
+                _this.ripple.scale.set(this.x,this.x,this.x);
+            })
+            .onComplete(()=>{
+                _this.ripple.scale.set(0.00001,0.00001,0.00001);
+                // Reset throttle flag.
+                this.isRippling = false;
+                // Stop changes
+                UI.utils.stoppedChanging(_this.ripple.uuid);
+            })
+            .easing(TWEEN.Easing.Exponential.Out).start();
+    },
+    tweenOpacity(material){
+        new TWEEN.Tween({x:0.4})
+            .to({ x: 0}, this.data.fadeDuration)
+            .delay(this.data.fadeDelay)
+            .onUpdate(function(){
+                material.opacity = this.x;
+            })
+            .onComplete(()=>{
+                material.opacity = 0.4;
+            })
+            .easing(TWEEN.Easing.Exponential.Out).start();
+    }
+});
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports) {
+
+/* global AFRAME */
+/**
+ * A component shim the mouse move event for the AFRAME cursor raycaster.
+ * @namespace aframe-material-collection
+ * @component ui-mouse-shim
+ * @author Shane Harris
+ */
+module.exports = AFRAME.registerComponent('ui-mouse-shim', {
+    schema:{
+        fps:{type:'number',default:45}
+    },
+    init(){
+        if (!this.el.components.raycaster) {
+            throw 'ui-mouse-move component needs the raycaster component to be added.'
+        }
+        // Add support for mouse wheel
+        this.el.sceneEl.renderer.domElement.addEventListener( 'wheel', this.onMouseWheel.bind(this), false);
+    },
+    onMouseWheel(e){
+        this.emitMouseEvent('ui-mousewheel',e);
+    },
+    tick() {
+        if(new Date().getTime()-this.lastMouseMoveTime<(1000/this.data.fps))return;
+        this.emitMouseEvent('ui-mousemove');
+        this.lastMouseMoveTime = new Date().getTime();
+    },
+    emitMouseEvent(eventType,event){
+        // Get current intersections from raycaster component.
+        this.el.components.raycaster.intersections.forEach(intersection=>{
+            if(intersection.object.el){
+                // Emit custom mouse move event ont he intersected element.
+                intersection.object.el.emit(eventType,{cursorEl:this.el,intersection:intersection,evt:event})
+            }
+        });
+    }
+});
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports) {
+
+/* global AFRAME */
+/**
+ * Checkbox A simple component to listen for two click events in quick succession.
+ * @namespace aframe-material-collection
+ * @component ui-double-click
+ * @author Shane Harris
+ */
+module.exports = AFRAME.registerComponent('ui-double-click', {
+    schema:{
+        timeout:{type:'int',default:200}
+    },
+    init() {
+        let last_click = 0;
+        // Add click event for listening for two clicks within the specified timespan.
+        this.el.addEventListener('mousedown',e=>{
+            let now = new Date().getTime();
+            if(now-last_click<this.data.timeout){
+                this.el.emit('dblclick',e);
+                // Reset last click
+                last_click = 0;
+                e.preventDefault();
+            }
+            last_click = now;
+        });
+    }
+});
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports) {
+
+/* global AFRAME,THREE */
+/**
+ * Rounded borders Component for aframe-material-collection. Expects an a-plane entity.
+ * @namespace aframe-material-collection
+ * @component ui-border
+ * @author Shane Harris
+ */
+module.exports = AFRAME.registerComponent('ui-border', {
+    schema: {
+        borderRadius: {type: 'number', default: 0.01},
+        curveSegments:{type: 'int', default: 1},
+        borderWidth:{type: 'number', default: 0.015},
+        color:{default:"#8f8f8f"},
+        numberOfPoints:{type:'int',default:180}
+    },
+    init() {
+        let mesh = this.el.getObject3D('mesh');
+        let roundedRectShape = new THREE.Shape();
+        // Draw the Rounded rectangle shape centered in the object - from three.js shapes example.
+        ( function roundedRect( ctx, x, y, width, height, radius ) {
+            ctx.moveTo( x, y + radius );
+            ctx.lineTo( x, y + height - radius );
+            ctx.quadraticCurveTo( x, y + height, x + radius, y + height );
+            ctx.lineTo( x + width - radius, y + height );
+            ctx.quadraticCurveTo( x + width, y + height, x + width, y + height - radius );
+            ctx.lineTo( x + width, y + radius );
+            ctx.quadraticCurveTo( x + width, y, x + width - radius, y );
+            ctx.lineTo( x + radius, y );
+            ctx.quadraticCurveTo( x, y, x, y + radius );
+        } )( roundedRectShape, -mesh.geometry.metadata.parameters.width/2, -mesh.geometry.metadata.parameters.height/2, mesh.geometry.metadata.parameters.width, mesh.geometry.metadata.parameters.height, this.data.borderRadius );
+
+        let points = roundedRectShape.getSpacedPoints(this.data.numberOfPoints);
+        let geometryPoints = new THREE.BufferGeometry().setFromPoints( points );
+        this.el.setObject3D('mesh',new THREE.Points( geometryPoints, new THREE.PointsMaterial( { color: this.data.color, size: this.data.borderWidth } ) ));
+    }
+});
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports) {
+
+/* global AFRAME,THREE */
+/**
+ * Modal Component for aframe-material-collection.
+ * @namespace aframe-material-collection
+ * @component ui-modal
+ * @author Shane Harris
+ */
+module.exports = AFRAME.registerComponent('ui-modal', {
+    schema: {
+        modal:{type:'selector'},
+        main:{type:'selector'}
+    },
+    init(){
+        if(this.data.modal&&this.data.main){
+            // Get the modal panel to be able to animate its scale on open/close.
+            this.modalPanel = document.querySelector(this.data.modal.getAttribute('ui-panel'));
+
+            let mainComponents = this.data.main.components;
+            let modalComponents = this.data.modal.components;
+            // Pause rendering of modal until opened.
+            if(modalComponents&&modalComponents['ui-renderer']){
+                modalComponents['ui-renderer'].pause();
+            }
+            // Setup close listeners for anything with the class close-modal.
+            let close_buttons = this.data.modal.querySelectorAll('.close-modal');
+            for(let i = 0; i < close_buttons.length; i++ ){
+                let close_button = close_buttons[i];
+                close_button.addEventListener('mousedown',()=>{
+                    // Pause the modal rendering and play the main rendering again.
+                    modalComponents['ui-renderer'].pause();
+                    mainComponents['ui-renderer'].playRender();
+                    this.tweenModalScale(1,0.0000001);
+                });
+            }
+            // Add click handler for opening the modal, pause the main render screen and play the modal renderer
+            this.el.addEventListener('mousedown',()=>{
+                if(mainComponents&&mainComponents['ui-renderer']){
+                    mainComponents['ui-renderer'].pauseRender();
+                    this.tweenModalScale(0.0000001,1);
+                    modalComponents['ui-renderer'].play();
+                }
+            });
+        }
+    },
+    tweenModalScale(from,to){
+        return new Promise(r=>{
+            let _this = this;
+            new TWEEN.Tween({x:from})
+                .to({x:to}, 250)
+                .onUpdate(function(){
+                    if(_this.modalPanel)
+                        _this.modalPanel.setAttribute('scale',this.x+' '+this.x+' '+this.x);
+                })
+                .onComplete(r)
+                .easing(TWEEN.Easing.Exponential.Out).start();
+        });
+    }
+});
+
+/***/ }),
 /* 29 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -2496,7 +2496,7 @@ class Utils{
  */
 
 
-let version = __webpack_require__(0).version;
+let version = __webpack_require__(21).version;
 console.log('aframe-material-collection version '+version);
 
 if (typeof AFRAME === 'undefined') {
@@ -2508,36 +2508,36 @@ window.UI = {
     // Utils
     utils:utils,
     // Primitives
-    a_ui_button: __webpack_require__(1),
-    a_ui_fab_button: __webpack_require__(2),
-    a_ui_fab_button_small: __webpack_require__(3),
-    a_ui_switch: __webpack_require__(4),
-    a_ui_checkbox: __webpack_require__(5),
-    a_ui_radio: __webpack_require__(6),
-    a_ui_text_input: __webpack_require__(7),
-    a_ui_number_input: __webpack_require__(8),
-    a_ui_int_input: __webpack_require__(9),
-    a_ui_password_input: __webpack_require__(10),
-    a_ui_scroll_pane: __webpack_require__(11),
-    a_ui_renderer: __webpack_require__(12),
+    a_ui_button: __webpack_require__(0),
+    a_ui_fab_button: __webpack_require__(1),
+    a_ui_fab_button_small: __webpack_require__(2),
+    a_ui_switch: __webpack_require__(3),
+    a_ui_checkbox: __webpack_require__(4),
+    a_ui_radio: __webpack_require__(5),
+    a_ui_text_input: __webpack_require__(6),
+    a_ui_number_input: __webpack_require__(7),
+    a_ui_int_input: __webpack_require__(8),
+    a_ui_password_input: __webpack_require__(9),
+    a_ui_scroll_pane: __webpack_require__(10),
+    a_ui_renderer: __webpack_require__(11),
 
     // Components
-    text: __webpack_require__(13),
-    btn: __webpack_require__(14),
-    icon: __webpack_require__(15),
-    rounded: __webpack_require__(16),
-    ripple: __webpack_require__(17),
-    ui_switch: __webpack_require__(18),
-    scroll_pane: __webpack_require__(19),
-    mouse_shim: __webpack_require__(20),
-    double_click: __webpack_require__(21),
-    checkbox: __webpack_require__(22),
-    radio: __webpack_require__(23),
-    border: __webpack_require__(24),
-    curvedPlane: __webpack_require__(25),
-    modal: __webpack_require__(26),
-    renderer: __webpack_require__(27),
-    yoga_properties: __webpack_require__(28),
+    text: __webpack_require__(12),
+    btn: __webpack_require__(13),
+    icon: __webpack_require__(22),
+    rounded: __webpack_require__(23),
+    ripple: __webpack_require__(24),
+    ui_switch: __webpack_require__(14),
+    scroll_pane: __webpack_require__(15),
+    mouse_shim: __webpack_require__(25),
+    double_click: __webpack_require__(26),
+    checkbox: __webpack_require__(16),
+    radio: __webpack_require__(17),
+    border: __webpack_require__(27),
+    curvedPlane: __webpack_require__(18),
+    modal: __webpack_require__(28),
+    renderer: __webpack_require__(19),
+    yoga_properties: __webpack_require__(20),
 };
 //module.exports = UI;
 
