@@ -46,6 +46,7 @@ module.exports = AFRAME.registerComponent('ui-modal', {
     close(){
         // Pause the modal rendering and play the main rendering again.
         this.modalComponents['ui-renderer'].pause();
+        this.mainComponents['ui-renderer'].play();
         this.mainComponents['ui-renderer'].playRender();
         this.tweenModalScale(1,0.0000001);
     },

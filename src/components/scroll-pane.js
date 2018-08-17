@@ -125,11 +125,13 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             // Set the content in the scroll pane.
             return new Promise(resolve=>{
                 let loadedWrapper = document.createElement('a-entity');
+                loadedWrapper.setAttribute('visible',false)
                 loadedWrapper.insertAdjacentHTML('afterbegin',body);
                 loadedWrapper.addEventListener('loaded',e=>{
                     // Trigger an update to redraw scrollbars and fire change events.
                     if(!noAutoReload)this.updateContent();
                     resolve(loadedWrapper);
+                    loadedWrapper.setAttribute('visible',true)
                 });
                 this.container.appendChild(loadedWrapper);
             })
