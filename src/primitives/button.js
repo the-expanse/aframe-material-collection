@@ -39,6 +39,8 @@ module.exports = AFRAME.registerPrimitive('a-ui-button', AFRAME.utils.extendDeep
         "ripple-z-index":'ui-ripple.zIndex',
         "text-value": 'text.value',
         "wrap-count":'text.wrapCount',
+        "border-radius":"ui-rounded.borderRadius",
+        "curve-segments":"ui-rounded.curveSegments",
         disabled:'ui-btn.disabled'
     }
 }));
