@@ -56,7 +56,11 @@ module.exports = AFRAME.registerComponent('ui-switch', {
         this.el.appendChild(this.railEl);
         // Wait for the rounded edge on the rail to load to clone the geometry for the
         // selected progress bar part of the rail
-        this.railEl.addEventListener('rounded-loaded',()=>this.getRailObject(this.railEl.object3D));
+        this.railEl.addEventListener('rounded-loaded',()=>{
+            this.getRailObject(this.railEl.object3D);
+            this.setDisabled();
+            this.click();
+        });
         this.clickHandler = e=>{
             this.data.value = !this.data.value;
             this.click();
@@ -65,7 +69,6 @@ module.exports = AFRAME.registerComponent('ui-switch', {
                 e.detail.preventDefault();
             }
         };
-        this.setDisabled();
     },
     setDisabled(){
         // Add / Remove click handlers based on disabled state.
