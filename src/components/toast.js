@@ -26,7 +26,7 @@ module.exports = AFRAME.registerComponent('ui-toast', {
                 })
                 .onComplete(()=>{
                     // Stop changes
-                    this.closeTween = new TWEEN.Tween({x:0.3})
+                    this.closeTween = new TWEEN.Tween({x:0.8})
                         .delay(2000)
                         .to({x:0.0001}, 350)
                         .onUpdate(function(){
@@ -40,7 +40,7 @@ module.exports = AFRAME.registerComponent('ui-toast', {
                 })
                 .easing(TWEEN.Easing.Exponential.Out).start();
             new TWEEN.Tween({x:0.0001})
-                .to({x:0.3}, 350)
+                .to({x:0.8}, 350)
                 .onUpdate(function(){
                     _this.data.toastEl.setAttribute('opacity',this.x);
                 })

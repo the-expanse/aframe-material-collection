@@ -17,7 +17,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-toast', AFRAME.utils.extendDeep(
             color: '#010e0f',
             shader: 'flat',
             transparent:true,
-            opacity: 0.5
+            opacity: 0.8
         },
         "ui-rounded":{borderRadius:0.01,curveSegments:3},
         text:{
