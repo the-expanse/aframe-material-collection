@@ -19,6 +19,9 @@ export class Utils{
             e.detail.preventDefault();
         }
     }
+    shorten(string,length){
+        return string.length>length?string.substr(0,length)+"...":string;
+    }
     isChanging(scene,ref){
         let index = this.changesDetected.indexOf(ref);
         if(index===-1){

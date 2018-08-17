@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 29);
+/******/ 	return __webpack_require__(__webpack_require__.s = 31);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -241,6 +241,53 @@ module.exports = AFRAME.registerPrimitive('a-ui-switch', AFRAME.utils.extendDeep
 
 /* global AFRAME */
 /**
+ * Toast Message Primitive for aframe-material-collection.
+ * @namespace aframe-material-collection
+ * @primitive a-ui-toast
+ * @author Shane Harris
+ */
+
+module.exports = AFRAME.registerPrimitive('a-ui-toast', AFRAME.utils.extendDeep({}, AFRAME.primitives.getMeshMixin(), {
+    defaultComponents: {
+        geometry: {
+            primitive: 'plane',
+            width: 0.5,
+            height: 0.2
+        },
+        material: {
+            color: '#010e0f',
+            shader: 'flat',
+            transparent:true,
+            opacity: 0.5
+        },
+        "ui-rounded":{borderRadius:0.01,curveSegments:3},
+        text:{
+            font:'roboto',
+            value:'Toast Message!',
+            align:'center',
+            zOffset:0.002,
+            wrapCount:20,
+        }
+    },
+    mappings: {
+        height: 'geometry.height',
+        width: 'geometry.width',
+        color: 'material.color',
+        transparent: 'material.transparent',
+        "font-color":'text.color',
+        "text-value": 'text.value',
+        "wrap-count":'text.wrapCount',
+        "border-radius":"ui-rounded.borderRadius",
+        "curve-segments":"ui-rounded.curveSegments"
+    }
+}));
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+/* global AFRAME */
+/**
  * Checkbox Primitive for aframe-material-collection.
  * @namespace aframe-material-collection
  * @primitive a-ui-checkbox
@@ -266,7 +313,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-checkbox', AFRAME.utils.extendDe
 }));
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -304,7 +351,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-radio', AFRAME.utils.extendDeep(
 }));
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -330,7 +377,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-text-input', AFRAME.utils.extend
 }));
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -357,7 +404,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-number-input', AFRAME.utils.exte
 }));
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -384,7 +431,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-int-input', AFRAME.utils.extendD
 }));
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -411,7 +458,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-password-input', AFRAME.utils.ex
 }));
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -439,7 +486,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-scroll-pane', AFRAME.utils.exten
 }));
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -467,7 +514,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-renderer', AFRAME.utils.extendDe
 }));
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -678,7 +725,7 @@ module.exports = AFRAME.registerComponent('ui-text', {
 });
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN */
@@ -773,7 +820,7 @@ module.exports = AFRAME.registerComponent('ui-btn', {
 });
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN,THREE */
@@ -900,7 +947,62 @@ module.exports = AFRAME.registerComponent('ui-switch', {
 });
 
 /***/ }),
-/* 15 */
+/* 16 */
+/***/ (function(module, exports) {
+
+/* global AFRAME,TWEEN,THREE */
+/**
+ * Toast Component for aframe-material-collection.
+ * @namespace aframe-material-collection
+ * @component ui-toast
+ * @author Shane Harris
+ */
+
+module.exports = AFRAME.registerComponent('ui-toast', {
+    schema: {
+        toastEl:{type:'selector'},
+        message:{default:'Hello from toast!'}
+    },
+    init() {
+        this.originalPosition = this.data.toastEl.getAttribute('position').clone();
+        this.el.addEventListener('mousedown',()=>{
+            if(this.closeTween)this.closeTween.stop();
+            UI.utils.isChanging(this.el.sceneEl,this.data.toastEl.object3D.uuid);
+            this.data.toastEl.setAttribute('visible',true);
+            this.data.toastEl.setAttribute('text-value',UI.utils.shorten(this.data.message,85));
+            let _this = this;
+            new TWEEN.Tween({x:this.originalPosition.x,y:this.originalPosition.y-0.1,z:this.originalPosition.z})
+                .to(this.originalPosition, 350)
+                .onUpdate(function(){
+                    _this.data.toastEl.setAttribute('position',this);
+                })
+                .onComplete(()=>{
+                    // Stop changes
+                    this.closeTween = new TWEEN.Tween({x:0.3})
+                        .delay(2000)
+                        .to({x:0.0001}, 350)
+                        .onUpdate(function(){
+                            _this.data.toastEl.setAttribute('opacity',this.x);
+                        })
+                        .onComplete(()=>{
+                            this.data.toastEl.setAttribute('visible',false);
+                            UI.utils.stoppedChanging(this.data.toastEl.object3D.uuid);
+                        })
+                        .easing(TWEEN.Easing.Exponential.Out).start();
+                })
+                .easing(TWEEN.Easing.Exponential.Out).start();
+            new TWEEN.Tween({x:0.0001})
+                .to({x:0.3}, 350)
+                .onUpdate(function(){
+                    _this.data.toastEl.setAttribute('opacity',this.x);
+                })
+                .easing(TWEEN.Easing.Exponential.Out).start();
+        });
+    }
+});
+
+/***/ }),
+/* 17 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -1317,7 +1419,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
 });
 
 /***/ }),
-/* 16 */
+/* 18 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN */
@@ -1490,7 +1592,7 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
 });
 
 /***/ }),
-/* 17 */
+/* 19 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN */
@@ -1592,7 +1694,7 @@ module.exports = AFRAME.registerComponent('ui-radio', {
 });
 
 /***/ }),
-/* 18 */
+/* 20 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -1629,7 +1731,7 @@ module.exports = AFRAME.registerComponent('ui-curved-plane', {
 });
 
 /***/ }),
-/* 19 */
+/* 21 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -1860,7 +1962,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
 });
 
 /***/ }),
-/* 20 */
+/* 22 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,Yoga */
@@ -2100,13 +2202,13 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
 });
 
 /***/ }),
-/* 21 */
+/* 23 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.3.19","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.3.20","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
-/* 22 */
+/* 24 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -2131,7 +2233,7 @@ module.exports = AFRAME.registerComponent('ui-icon', {
 });
 
 /***/ }),
-/* 23 */
+/* 25 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -2170,7 +2272,7 @@ module.exports = AFRAME.registerComponent('ui-rounded', {
 });
 
 /***/ }),
-/* 24 */
+/* 26 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN,THREE */
@@ -2275,7 +2377,7 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
 });
 
 /***/ }),
-/* 25 */
+/* 27 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -2316,7 +2418,7 @@ module.exports = AFRAME.registerComponent('ui-mouse-shim', {
 });
 
 /***/ }),
-/* 26 */
+/* 28 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -2347,7 +2449,7 @@ module.exports = AFRAME.registerComponent('ui-double-click', {
 });
 
 /***/ }),
-/* 27 */
+/* 29 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -2388,7 +2490,7 @@ module.exports = AFRAME.registerComponent('ui-border', {
 });
 
 /***/ }),
-/* 28 */
+/* 30 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -2459,7 +2561,7 @@ module.exports = AFRAME.registerComponent('ui-modal', {
 });
 
 /***/ }),
-/* 29 */
+/* 31 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2487,6 +2589,9 @@ class Utils{
             e.detail.preventDefault();
         }
     }
+    shorten(string,length){
+        return string.length>length?string.substr(0,length)+"...":string;
+    }
     isChanging(scene,ref){
         let index = this.changesDetected.indexOf(ref);
         if(index===-1){
@@ -2511,7 +2616,7 @@ class Utils{
  */
 
 
-let version = __webpack_require__(21).version;
+let version = __webpack_require__(23).version;
 console.log('aframe-material-collection version '+version);
 
 if (typeof AFRAME === 'undefined') {
@@ -2527,32 +2632,34 @@ window.UI = {
     a_ui_fab_button: __webpack_require__(1),
     a_ui_fab_button_small: __webpack_require__(2),
     a_ui_switch: __webpack_require__(3),
-    a_ui_checkbox: __webpack_require__(4),
-    a_ui_radio: __webpack_require__(5),
-    a_ui_text_input: __webpack_require__(6),
-    a_ui_number_input: __webpack_require__(7),
-    a_ui_int_input: __webpack_require__(8),
-    a_ui_password_input: __webpack_require__(9),
-    a_ui_scroll_pane: __webpack_require__(10),
-    a_ui_renderer: __webpack_require__(11),
+    a_ui_toast: __webpack_require__(4),
+    a_ui_checkbox: __webpack_require__(5),
+    a_ui_radio: __webpack_require__(6),
+    a_ui_text_input: __webpack_require__(7),
+    a_ui_number_input: __webpack_require__(8),
+    a_ui_int_input: __webpack_require__(9),
+    a_ui_password_input: __webpack_require__(10),
+    a_ui_scroll_pane: __webpack_require__(11),
+    a_ui_renderer: __webpack_require__(12),
 
     // Components
-    text: __webpack_require__(12),
-    btn: __webpack_require__(13),
-    icon: __webpack_require__(22),
-    rounded: __webpack_require__(23),
-    ripple: __webpack_require__(24),
-    ui_switch: __webpack_require__(14),
-    scroll_pane: __webpack_require__(15),
-    mouse_shim: __webpack_require__(25),
-    double_click: __webpack_require__(26),
-    checkbox: __webpack_require__(16),
-    radio: __webpack_require__(17),
-    border: __webpack_require__(27),
-    curvedPlane: __webpack_require__(18),
-    modal: __webpack_require__(28),
-    renderer: __webpack_require__(19),
-    yoga_properties: __webpack_require__(20),
+    text: __webpack_require__(13),
+    btn: __webpack_require__(14),
+    icon: __webpack_require__(24),
+    rounded: __webpack_require__(25),
+    ripple: __webpack_require__(26),
+    switch: __webpack_require__(15),
+    toast: __webpack_require__(16),
+    scroll_pane: __webpack_require__(17),
+    mouse_shim: __webpack_require__(27),
+    double_click: __webpack_require__(28),
+    checkbox: __webpack_require__(18),
+    radio: __webpack_require__(19),
+    border: __webpack_require__(29),
+    curvedPlane: __webpack_require__(20),
+    modal: __webpack_require__(30),
+    renderer: __webpack_require__(21),
+    yoga_properties: __webpack_require__(22),
 };
 //module.exports = UI;
 

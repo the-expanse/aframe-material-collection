@@ -72,6 +72,9 @@
 
         <a-entity position="0 0 -0.69" id="uiPanel" >
 
+            <!-- Toast Message -->
+            <a-ui-toast id="toastMessage" position="1 -0.4 0.1" visible="false"></a-ui-toast>
+
             <!-- Scroll Pane -->
             <a-text font="roboto" baseLine="bottom" value="Aframe Material Collection"
                     position="-1.4 0.6 0.005" color="#212121" wrap-count="25" width="1.25" height="0.25"></a-text>
@@ -83,16 +86,16 @@
                     <!--Introduction-->
                     <a-entity width="2.9">
                         <a-text font="roboto" baseLine="center" value="Introduction"
-                                color="#212121" anchor="center" wrap-count="54" width="2.45" height="0.1"></a-text>
+                                color="#212121" anchor="center" alpha-test="0.3" wrap-count="54" width="2.45" height="0.1"></a-text>
 
                         <a-text font="roboto" baseLine="bottom" value="Here we have some material UI based primitives and components for use in your aframe projects."
-                                anchor="center" color="#515151" wrap-count="80" width="2.85" height="0.15"></a-text>
+                                anchor="center" color="#515151" alpha-test="0.3" wrap-count="80" width="2.85" height="0.15"></a-text>
 
                         <a-text id="getwidth" font="roboto" baseLine="center" anchor="center" value="Scroll Pane"
-                                color="#212121" wrap-count="54" width="2" height="0.1"></a-text>
+                                color="#212121" wrap-count="54" alpha-test="0.3" width="2" height="0.1"></a-text>
 
                         <a-text font="roboto" baseLine="center" value="All of these primitive elements are enclosed inside a scroll pane. Elements out of view are automatically clipped."
-                                anchor="center" color="#515151" wrap-count="80" width="2.9" height="0.15"></a-text>
+                                anchor="center" color="#515151" alpha-test="0.3" wrap-count="80" width="2.9" height="0.15"></a-text>
                     </a-entity>
 
                     <!-- Left Panel -->
@@ -226,6 +229,18 @@
                             <a-ui-radio selected="true"></a-ui-radio>
                             <a-ui-radio></a-ui-radio>
                             <a-ui-radio disabled="true"></a-ui-radio>
+                        </a-entity>
+
+                        <a-entity width="1.25">
+
+                            <a-text font="roboto" baseLine="center" value="Toast Message"
+                                    color="#212121" anchor="center" wrap-count="25" width="1.25" height="0.15"></a-text>
+
+                            <!--Toast Button-->
+                            <a-ui-button ui-toast="toastEl:#toastMessage;message:Hello World! Im a very long toast message toast toasty toast toasty toast toast toasty toast toasty toast toast!" class="intersectable" text-value="Show Toast" wrap-count="12"></a-ui-button>
+
+                            <!--Toast Button 2-->
+                            <a-ui-button ui-toast="toastEl:#toastMessage;message:Im another toast message!" class="intersectable" text-value="Show Toast 2" wrap-count="12"></a-ui-button>
                         </a-entity>
 
                     </a-entity>
