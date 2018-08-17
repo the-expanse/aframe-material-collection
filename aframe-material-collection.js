@@ -1027,11 +1027,13 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             // Set the content in the scroll pane.
             return new Promise(resolve=>{
                 let loadedWrapper = document.createElement('a-entity');
+                loadedWrapper.setAttribute('visible',false)
                 loadedWrapper.insertAdjacentHTML('afterbegin',body);
                 loadedWrapper.addEventListener('loaded',e=>{
                     // Trigger an update to redraw scrollbars and fire change events.
                     if(!noAutoReload)this.updateContent();
                     resolve(loadedWrapper);
+                    loadedWrapper.setAttribute('visible',true)
                 });
                 this.container.appendChild(loadedWrapper);
             })
@@ -2098,7 +2100,7 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
 /* 21 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.3.16","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.3.18","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 22 */
@@ -2434,6 +2436,7 @@ module.exports = AFRAME.registerComponent('ui-modal', {
     close(){
         // Pause the modal rendering and play the main rendering again.
         this.modalComponents['ui-renderer'].pause();
+        this.mainComponents['ui-renderer'].play();
         this.mainComponents['ui-renderer'].playRender();
         this.tweenModalScale(1,0.0000001);
     },
