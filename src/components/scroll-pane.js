@@ -115,8 +115,8 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
     setContent(body,noAutoReload){
         if(this.container) {
             // Remove all children in the container and all yoga nodes
-            for(let i =0; i < this.container.children.length; i++){
-                let child = this.container.children[i];
+            while (this.container.firstChild) {
+                let child = this.container.firstChild;
                 if (this.container.yoga_node&&child.yoga_node) {
                     this.container.yoga_node.removeChild(child.yoga_node);
                 }
