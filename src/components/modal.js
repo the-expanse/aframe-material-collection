@@ -48,7 +48,10 @@ module.exports = AFRAME.registerComponent('ui-modal', {
         this.modalComponents['ui-renderer'].pause();
         this.mainComponents['ui-renderer'].play();
         this.mainComponents['ui-renderer'].playRender();
-        this.tweenModalScale(1,0.0000001);
+        this.tweenModalScale(1,0.0000001)
+            .then(()=>{
+                this.el.sceneEl.emit('modal-closed');
+            });
     },
     tweenModalScale(from,to){
         return new Promise(r=>{
