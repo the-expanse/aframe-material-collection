@@ -1101,6 +1101,10 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.updateContent();
         this.el.emit('scroll-pane-loaded');
         this.setupMouseWheelScroll();
+
+        // Expose methods to the element to update/set the content of the scroll pane.
+        this.el.setContent = this.setContent.bind(this);
+        this.el.updateContent = this.updateContent.bind(this);
     },
     updateContentClips(){
         this.el.sceneEl.object3D.updateMatrixWorld();
@@ -1787,6 +1791,10 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         // Set last render time
         this.lastRenderTime = 0;
         this.isFrozen = false;
+
+        // Expose methods to the element to pause/play the renderer.
+        this.el.pauseRender = this.pauseRender.bind(this);
+        this.el.playRender = this.playRender.bind(this);
     },
     pauseRender(time){
         return this.playRender(time,true)
@@ -2202,7 +2210,7 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
 /* 23 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.3.27","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.3.28","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 24 */
@@ -2562,14 +2570,20 @@ module.exports = AFRAME.registerComponent('ui-color-picker', {
         this.setupEvents();
         this.el.setAttribute('visible',false);
         this.el.setAttribute('scale','0.00001 0.00001 0.00001');
-        this.el.open = ()=>{
+        // Expose methods to open/close the color picker.
+        this.el.open = this.open.bind(this);
+        this.el.close = this.close.bind(this);
+    },
+    open(){
+        return new Promise(resolve=>{
+            this.selectCallback = resolve;
             this.el.setAttribute('visible',true);
             this.tweenPickerScale(0.00001,0.5);
-        };
-        this.el.close = ()=>{
-            this.tweenPickerScale(0.5,0.00001)
-                .then(()=>this.el.setAttribute('visible',false));
-        };
+        });
+    },
+    close(){
+        this.tweenPickerScale(0.5,0.00001)
+            .then(()=>this.el.setAttribute('visible',false));
     },
     tweenPickerScale(from,to){
         UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
@@ -2654,9 +2668,12 @@ module.exports = AFRAME.registerComponent('ui-color-picker', {
             this.el.emit('color-selected',hex);
             this.el.close();
             UI.utils.preventDefault(e);
-            if(this.data.targetEl)
+            if(this.data.targetEl){
                 this.data.targetEl.setAttribute('color',hex);
-
+            }
+            if(this.selectCallback&& typeof this.selectCallback === "function"){
+                this.selectCallback(hex);
+            }
         });
 
         let buttonCancel = document.createElement('a-ui-button');
@@ -2980,6 +2997,10 @@ module.exports = AFRAME.registerComponent('ui-modal', {
                 this.open();
             });
             this.data.main.modal = this;
+
+            // Expose methods to open/close the modal.
+            this.el.open = this.open.bind(this);
+            this.el.close = this.close.bind(this);
         }
     },
     open(){
