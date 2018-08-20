@@ -81,6 +81,8 @@ module.exports = AFRAME.registerComponent('ui-switch', {
         }
     },
     click(){
+        // Emit the current selected value
+        this.el.emit('ui-switch-changed',this.data.value);
         // Animate the switch handle and the progress bar.
         this.tweenHandle();
         this.tweenProgress();

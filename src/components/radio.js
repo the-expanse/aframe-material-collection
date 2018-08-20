@@ -74,6 +74,8 @@ module.exports = AFRAME.registerComponent('ui-radio', {
                 ring.components['ui-radio'].deselect();
             }
         });
+        // Emit the current selected value
+        this.el.emit('ui-radio-changed',this.data.value);
         // Set this radio's selected state.
         this.el.setAttribute('selected',true);
         // Throttle animations.
