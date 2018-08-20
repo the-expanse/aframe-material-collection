@@ -230,6 +230,7 @@ module.exports = AFRAME.registerComponent('ui-color-picker', {
         brightnessResetLeft.setAttribute('vertex-c','0.05 -0.05 0');
         brightnessResetLeft.setAttribute('position','-0.475 -0.6 0');
         brightnessResetLeft.setAttribute('rotation','0 0 90');
+        brightnessResetLeft.setAttribute('shader','flat');
         brightnessResetLeft.setAttribute('color','#009688');
         brightnessResetLeft.setAttribute('ui-btn','');
         brightnessResetLeft.className = 'intersectable';
@@ -243,6 +244,7 @@ module.exports = AFRAME.registerComponent('ui-color-picker', {
         brightnessResetRight.setAttribute('position','0.475 -0.6 0');
         brightnessResetRight.setAttribute('rotation','0 0 -90');
         brightnessResetRight.setAttribute('color','#009688');
+        brightnessResetRight.setAttribute('shader','flat');
         brightnessResetRight.setAttribute('ui-btn','');
         brightnessResetRight.className = 'intersectable';
         this.el.appendChild(brightnessResetRight);
