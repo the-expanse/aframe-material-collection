@@ -283,12 +283,15 @@ module.exports = AFRAME.registerComponent('ui-color-picker', {
     setupEvents(){
         this.colorWheel.addEventListener('mousedown',e=>{
             this.isMouseDown = true;
+            UI.utils.preventDefault(e);
         });
         this.colorWheel.addEventListener('mouseup',e=>{
             this.isMouseDown = false;
+            UI.utils.preventDefault(e);
         });
         this.colorWheel.addEventListener('ui-mousemove',e=>{
             if(!this.isMouseDown)return;
+            UI.utils.preventDefault(e);
 
             UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
             let colorWheel = this.colorWheel.getObject3D('mesh'),
@@ -312,12 +315,15 @@ module.exports = AFRAME.registerComponent('ui-color-picker', {
         });
         this.brightnessSlider.addEventListener('mousedown',e=>{
             this.isMouseDown = true;
+            UI.utils.preventDefault(e);
         });
         this.brightnessSlider.addEventListener('mouseup',e=>{
             this.isMouseDown = false;
+            UI.utils.preventDefault(e);
         });
         this.brightnessSlider.addEventListener('ui-mousemove',e=>{
 
+            UI.utils.preventDefault(e);
             UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
             if(!this.isMouseDown)return;
             let brightnessSlider = this.brightnessSlider.getObject3D('mesh'),

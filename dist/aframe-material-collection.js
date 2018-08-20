@@ -2202,7 +2202,7 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
 /* 23 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.3.26","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.3.27","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 24 */
@@ -2826,12 +2826,15 @@ module.exports = AFRAME.registerComponent('ui-color-picker', {
     setupEvents(){
         this.colorWheel.addEventListener('mousedown',e=>{
             this.isMouseDown = true;
+            UI.utils.preventDefault(e);
         });
         this.colorWheel.addEventListener('mouseup',e=>{
             this.isMouseDown = false;
+            UI.utils.preventDefault(e);
         });
         this.colorWheel.addEventListener('ui-mousemove',e=>{
             if(!this.isMouseDown)return;
+            UI.utils.preventDefault(e);
 
             UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
             let colorWheel = this.colorWheel.getObject3D('mesh'),
@@ -2855,12 +2858,15 @@ module.exports = AFRAME.registerComponent('ui-color-picker', {
         });
         this.brightnessSlider.addEventListener('mousedown',e=>{
             this.isMouseDown = true;
+            UI.utils.preventDefault(e);
         });
         this.brightnessSlider.addEventListener('mouseup',e=>{
             this.isMouseDown = false;
+            UI.utils.preventDefault(e);
         });
         this.brightnessSlider.addEventListener('ui-mousemove',e=>{
 
+            UI.utils.preventDefault(e);
             UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
             if(!this.isMouseDown)return;
             let brightnessSlider = this.brightnessSlider.getObject3D('mesh'),
