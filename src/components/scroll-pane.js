@@ -97,6 +97,10 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.updateContent();
         this.el.emit('scroll-pane-loaded');
         this.setupMouseWheelScroll();
+
+        // Expose methods to the element to update/set the content of the scroll pane.
+        this.el.setContent = this.setContent.bind(this);
+        this.el.updateContent = this.updateContent.bind(this);
     },
     updateContentClips(){
         this.el.sceneEl.object3D.updateMatrixWorld();

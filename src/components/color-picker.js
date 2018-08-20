@@ -19,14 +19,20 @@ module.exports = AFRAME.registerComponent('ui-color-picker', {
         this.setupEvents();
         this.el.setAttribute('visible',false);
         this.el.setAttribute('scale','0.00001 0.00001 0.00001');
-        this.el.open = ()=>{
+        // Expose methods to open/close the color picker.
+        this.el.open = this.open.bind(this);
+        this.el.close = this.close.bind(this);
+    },
+    open(){
+        return new Promise(resolve=>{
+            this.selectCallback = resolve;
             this.el.setAttribute('visible',true);
             this.tweenPickerScale(0.00001,0.5);
-        };
-        this.el.close = ()=>{
-            this.tweenPickerScale(0.5,0.00001)
-                .then(()=>this.el.setAttribute('visible',false));
-        };
+        });
+    },
+    close(){
+        this.tweenPickerScale(0.5,0.00001)
+            .then(()=>this.el.setAttribute('visible',false));
     },
     tweenPickerScale(from,to){
         UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
@@ -111,9 +117,12 @@ module.exports = AFRAME.registerComponent('ui-color-picker', {
             this.el.emit('color-selected',hex);
             this.el.close();
             UI.utils.preventDefault(e);
-            if(this.data.targetEl)
+            if(this.data.targetEl){
                 this.data.targetEl.setAttribute('color',hex);
-
+            }
+            if(this.selectCallback&& typeof this.selectCallback === "function"){
+                this.selectCallback(hex);
+            }
         });
 
         let buttonCancel = document.createElement('a-ui-button');

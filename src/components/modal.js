@@ -34,6 +34,10 @@ module.exports = AFRAME.registerComponent('ui-modal', {
                 this.open();
             });
             this.data.main.modal = this;
+
+            // Expose methods to open/close the modal.
+            this.el.open = this.open.bind(this);
+            this.el.close = this.close.bind(this);
         }
     },
     open(){
