@@ -765,8 +765,7 @@ module.exports = AFRAME.registerComponent('ui-btn', {
         },function(){
             _this.el.object3D.position.z = _this.defaultZ+_this.data.hoverHeight;
         });
-        // Propagate event on parent element.
-        this.el.emit('ui-mouse-enter',e);
+        UI.utils.preventDefault(e)
     },
     mouseLeave(e){
         // Ignore mouse leave event if the button was clicked - mouse up already resets to default state.
@@ -775,14 +774,13 @@ module.exports = AFRAME.registerComponent('ui-btn', {
         }
         // Reset button state from hover
         this.resetAnimation(this.defaultZ+this.data.hoverHeight);
-        // Propagate event on parent element.
-        this.el.emit('ui-mouse-leave',e);
+        UI.utils.preventDefault(e)
     },
     mouseUp(e){
         this.is_clicked = true;
         // Reset button state from pressed
         this.resetAnimation(this.defaultZ+this.data.activeHeight);
-        this.el.emit('ui-mouse-up',e);
+        UI.utils.preventDefault(e)
     },
     mouseDown(e){
         const _this = this;
@@ -792,8 +790,7 @@ module.exports = AFRAME.registerComponent('ui-btn', {
         },function(){
             _this.el.object3D.position.z = _this.defaultZ+_this.data.activeHeight;
         });
-        // Propagate event on parent element.
-        this.el.emit('ui-mouse-down',e);
+        UI.utils.preventDefault(e)
     },
     resetAnimation(start_z){
         let _this = this;
@@ -2205,7 +2202,7 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
 /* 23 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.3.23","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.3.24","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 24 */
