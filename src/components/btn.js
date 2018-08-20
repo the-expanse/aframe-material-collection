@@ -35,8 +35,7 @@ module.exports = AFRAME.registerComponent('ui-btn', {
         },function(){
             _this.el.object3D.position.z = _this.defaultZ+_this.data.hoverHeight;
         });
-        // Propagate event on parent element.
-        this.el.emit('ui-mouse-enter',e);
+        UI.utils.preventDefault(e)
     },
     mouseLeave(e){
         // Ignore mouse leave event if the button was clicked - mouse up already resets to default state.
@@ -45,14 +44,13 @@ module.exports = AFRAME.registerComponent('ui-btn', {
         }
         // Reset button state from hover
         this.resetAnimation(this.defaultZ+this.data.hoverHeight);
-        // Propagate event on parent element.
-        this.el.emit('ui-mouse-leave',e);
+        UI.utils.preventDefault(e)
     },
     mouseUp(e){
         this.is_clicked = true;
         // Reset button state from pressed
         this.resetAnimation(this.defaultZ+this.data.activeHeight);
-        this.el.emit('ui-mouse-up',e);
+        UI.utils.preventDefault(e)
     },
     mouseDown(e){
         const _this = this;
@@ -62,8 +60,7 @@ module.exports = AFRAME.registerComponent('ui-btn', {
         },function(){
             _this.el.object3D.position.z = _this.defaultZ+_this.data.activeHeight;
         });
-        // Propagate event on parent element.
-        this.el.emit('ui-mouse-down',e);
+        UI.utils.preventDefault(e)
     },
     resetAnimation(start_z){
         let _this = this;
