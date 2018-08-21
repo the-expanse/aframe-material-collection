@@ -1931,7 +1931,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
                     intersection.object.el.emit('mouseenter',currentEvent);
                 }
                 // Emit the mouse event received
-                if(!defaultPrevented){
+                if(!defaultPrevented||type==='ui-mousewheel'){
                     intersection.object.el.emit(type,currentEvent);
                 }
                 // Store the intersection on the element.
