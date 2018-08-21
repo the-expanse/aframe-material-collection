@@ -4,7 +4,7 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 module.exports = {
     entry: {
         "aframe-material-collection": "./src/index.js",
-       // "aframe-material-collection.min": "./src/index.js",
+        "aframe-material-collection.min": "./src/index.js",
         // "aframe-yoga-layout": "./src/yoga.js",
         // "aframe-yoga-layout.min": "./src/yoga.js",
         // "aframe-material-collection_curved-plane.min": "./src/public-components/curved-plane.js",
@@ -28,10 +28,10 @@ module.exports = {
         contentBase: __dirname+"/dist",
         open:true
     },
-    // optimization: {
-    //     minimize: true,
-    //     minimizer: [new UglifyJsPlugin({
-    //         include: /\.min\.js$/
-    //     })]
-    // }
+    optimization: {
+        minimize: true,
+        minimizer: [new UglifyJsPlugin({
+            include: /\.min\.js$/
+        })]
+    }
 };
