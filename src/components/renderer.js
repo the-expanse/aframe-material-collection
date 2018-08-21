@@ -146,7 +146,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
     mouseEvent(type,e){
         let mouse = {x:0,y:0};
         if(e.detail.intersection){
-            let localPoint = this.el.object3D.worldToLocal(e.detail.intersection.point);
+            let localPoint = this.meshEl.object3D.worldToLocal(e.detail.intersection.point.clone());
             mouse = {
                 x:localPoint.x/this.meshEl.getAttribute('width')*2,
                 y:localPoint.y/this.meshEl.getAttribute('height')*2
@@ -166,6 +166,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
     },
     raycastIntersections(e,mouse,type){
         if(!this.camera)return;
+        //console.log(mouse);
         this.raycaster.setFromCamera( mouse, this.camera );
         // this.helper.setDirection(this.raycaster.ray.direction);
         let intersections = this.raycaster.intersectObjects( this.el.object3D.children, true );
@@ -184,7 +185,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
             let intersection = intersections[i];
             // Only emit events on objecst with an element attached
             if(intersection.object.el&&intersection.object.el.classList.contains(this.data.intersectableClass)){
-                let currentEvent = {intersection:intersection,evt:e,preventDefault:()=>{defaultPrevented=true}};
+                let currentEvent = {intersection:intersection,evt:e};
                 // If this is the first time weve seen this element then emit the mouseenter event.
                 if(this.prevIntersectionEls.indexOf(intersection.object.el)===-1&&!defaultPrevented){
                     intersection.object.el.emit('mouseenter',currentEvent);
