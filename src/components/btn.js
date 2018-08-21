@@ -35,7 +35,7 @@ module.exports = AFRAME.registerComponent('ui-btn', {
         },function(){
             _this.el.object3D.position.z = _this.defaultZ+_this.data.hoverHeight;
         });
-        UI.utils.preventDefault(e)
+        //UI.utils.preventDefault(e)
     },
     mouseLeave(e){
         // Ignore mouse leave event if the button was clicked - mouse up already resets to default state.
@@ -44,7 +44,7 @@ module.exports = AFRAME.registerComponent('ui-btn', {
         }
         // Reset button state from hover
         this.resetAnimation(this.defaultZ+this.data.hoverHeight);
-        UI.utils.preventDefault(e)
+        //UI.utils.preventDefault(e)
     },
     mouseUp(e){
         this.is_clicked = true;
