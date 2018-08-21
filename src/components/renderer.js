@@ -147,6 +147,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         let mouse = {x:0,y:0};
         if(e.detail.intersection){
             let localPoint = this.meshEl.object3D.worldToLocal(e.detail.intersection.point.clone());
+
             mouse = {
                 x:localPoint.x/this.meshEl.getAttribute('width')*2,
                 y:localPoint.y/this.meshEl.getAttribute('height')*2
