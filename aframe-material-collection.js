@@ -81,17 +81,11 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 32);
+/******/ 	return __webpack_require__(__webpack_require__.s = 43);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module) {
-
-module.exports = {"name":"aframe-material-collection","version":"0.3.34","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -142,7 +136,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-button', AFRAME.utils.extendDeep
 }));
 
 /***/ }),
-/* 2 */
+/* 1 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -182,7 +176,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-fab-button', AFRAME.utils.extend
 }));
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -221,7 +215,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-fab-button-small', AFRAME.utils.
 }));
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -242,7 +236,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-switch', AFRAME.utils.extendDeep
 }));
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -289,7 +283,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-toast', AFRAME.utils.extendDeep(
 }));
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -319,7 +313,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-checkbox', AFRAME.utils.extendDe
 }));
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -357,7 +351,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-radio', AFRAME.utils.extendDeep(
 }));
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -383,7 +377,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-text-input', AFRAME.utils.extend
 }));
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -410,7 +404,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-number-input', AFRAME.utils.exte
 }));
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -437,7 +431,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-int-input', AFRAME.utils.extendD
 }));
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -464,7 +458,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-password-input', AFRAME.utils.ex
 }));
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -492,7 +486,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-scroll-pane', AFRAME.utils.exten
 }));
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -520,7 +514,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-renderer', AFRAME.utils.extendDe
 }));
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -731,7 +725,7 @@ module.exports = AFRAME.registerComponent('ui-text', {
 });
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN */
@@ -823,176 +817,7 @@ module.exports = AFRAME.registerComponent('ui-btn', {
 });
 
 /***/ }),
-/* 16 */
-/***/ (function(module, exports) {
-
-/* global AFRAME,THREE */
-/**
- * A component to load an icon and set some defaults for positioning and transparency.
- * @namespace aframe-material-collection
- * @component ui-icon
- * @author Shane Harris
- */
-module.exports = AFRAME.registerComponent('ui-icon', {
-    schema: {
-        src: {default: 'icons/send_white_64dp.png'},
-        size:{type:'vec2',default:{x:0.1,y:0.1}},
-        zIndex:{type:'number',default:0.003},
-        color:{default:'#fff'}
-    },
-    init() {
-        this.icon = new THREE.Mesh(new THREE.PlaneGeometry(this.data.size.x,this.data.size.y),new THREE.MeshBasicMaterial({color:this.data.color,alphaTest:0.4,transparent:true,map:new THREE.TextureLoader().load(this.data.src)}));
-        this.icon.position.set(0,0,this.data.zIndex);
-        this.el.object3D.add(this.icon);
-    }
-});
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports) {
-
-/* global AFRAME,THREE */
-/**
- * Rounded corners Component for aframe-material-collection. Expects an a-plane entity.
- * @namespace aframe-material-collection
- * @component ui-rounded
- * @author Shane Harris
- */
-
-module.exports = AFRAME.registerComponent('ui-rounded', {
-    schema: {
-        borderRadius: {type: 'number', default: 0.01},
-        curveSegments:{type: 'int', default: 1},
-    },
-    init() {
-        let mesh = this.el.getObject3D('mesh');
-        let roundedRectShape = new THREE.Shape();
-        // Draw the Rounded rectangle shape centered in the object - from three.js shapes example.
-        ( function roundedRect( ctx, x, y, width, height, radius ) {
-            ctx.moveTo( x, y + radius );
-            ctx.lineTo( x, y + height - radius );
-            ctx.quadraticCurveTo( x, y + height, x + radius, y + height );
-            ctx.lineTo( x + width - radius, y + height );
-            ctx.quadraticCurveTo( x + width, y + height, x + width, y + height - radius );
-            ctx.lineTo( x + width, y + radius );
-            ctx.quadraticCurveTo( x + width, y, x + width - radius, y );
-            ctx.lineTo( x + radius, y );
-            ctx.quadraticCurveTo( x, y, x, y + radius );
-        } )( roundedRectShape, -mesh.geometry.metadata.parameters.width/2, -mesh.geometry.metadata.parameters.height/2, mesh.geometry.metadata.parameters.width, mesh.geometry.metadata.parameters.height, this.data.borderRadius );
-        // Update the geometry.
-        mesh.geometry = new THREE.ShapeGeometry(roundedRectShape,this.data.curveSegments);
-        // Emit rounded-loaded event once the geometry has been updated.
-        this.el.emit('rounded-loaded', null, false);
-    }
-});
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports) {
-
-/* global AFRAME,TWEEN,THREE */
-/**
- * Ripple Component for aframe-material-collection. Add a ripple to an entity with options for controlling
- * clamping the animation and offsetting the ripple z position to place on top or bottom
- * @namespace aframe-material-collection
- * @component ui-ripple
- * @author Shane Harris
- */
-
-module.exports = AFRAME.registerComponent('ui-ripple',{
-    schema:{
-        color: {default: '#fff'},
-        duration:{type:'int',default:1000},
-        fadeDuration:{type:'int',default:750},
-        fadeDelay:{type:'int',default:250},
-        clampToSquare:{type:'boolean',default:false},
-        size:{type:'vec2',default:{x:1,y:1}},
-        zIndex:{type:'number',default:-0.001},
-        segments:{type:'int',default:6}
-    },
-    init(){
-        // Setup circle geometry for ripple effect
-        this.rippleGeometry = new THREE.CircleGeometry(Math.max(this.data.size.x,this.data.size.y),this.data.segments);
-        this.ripple = new THREE.Mesh(this.rippleGeometry.clone(),new THREE.MeshBasicMaterial({color:this.data.color,transparent:true, opacity:0.4,alphaTest:0.1}));
-        this.ripple.scale.set(0.00001,0.00001,0.00001);
-        this.el.object3D.add(this.ripple);
-        this.el.addEventListener('mousedown',this.click.bind(this));
-        this.ripple.position.set(0,0,this.data.zIndex);
-        // Set clipping planes if clamping to square
-        if(this.data.clampToSquare){
-
-            this.content_clips = [
-                new THREE.Plane( new THREE.Vector3( 0, 1, 0 ), (this.data.size.y/2) ),
-                new THREE.Plane( new THREE.Vector3( 0, -1, 0 ), (this.data.size.y/2) ),
-                new THREE.Plane( new THREE.Vector3( -1, 0, 0 ), (this.data.size.x/2) ),
-                new THREE.Plane( new THREE.Vector3( 1, 0, 0 ), (this.data.size.x/2) )
-            ];
-        }
-    },
-    click(e){
-        if(this.isRippling){
-            // Throttle clicks.
-            return e.preventDefault();
-        }
-        this.isRippling = true;
-        // Set clipping planes if clamping to square
-        if(this.data.clampToSquare){
-            this.setRippleClips(this.ripple.material);
-        }
-        // Animate the size of the circle ripple from the center of the entity.
-        this.tweenSize(this.ripple.geometry);
-        // Fade the circle out as it ripples.
-        this.tweenOpacity(this.ripple.material);
-    },
-    setRippleClips(){
-        // update content clips world positions from this current element.
-        this.content_clips[0].set(new THREE.Vector3( 0, 1, 0 ), (this.data.size.y/2));
-        this.content_clips[1].set(new THREE.Vector3( 0, -1, 0 ), (this.data.size.y/2));
-        this.content_clips[2].set(new THREE.Vector3( -1, 0, 0 ), (this.data.size.x/2));
-        this.content_clips[3].set(new THREE.Vector3( 1, 0, 0 ), (this.data.size.x/2));
-        //this.el.sceneEl.object3D.updateMatrixWorld();
-        this.content_clips[0].applyMatrix4(this.el.object3D.matrixWorld);
-        this.content_clips[1].applyMatrix4(this.el.object3D.matrixWorld);
-        this.content_clips[2].applyMatrix4(this.el.object3D.matrixWorld);
-        this.content_clips[3].applyMatrix4(this.el.object3D.matrixWorld);
-        this.ripple.material.clippingPlanes = this.el._content_clips?this.el._content_clips.concat(this.content_clips):this.content_clips;
-        this.ripple.material.clipShadows = true;
-        this.ripple.material.needsUpdate = true;
-    },
-    tweenSize(geometry){
-        let _this = this;
-        // Start changes
-        UI.utils.isChanging(this.el.sceneEl,_this.ripple.uuid);
-        new TWEEN.Tween({x:0.00001})
-            .to({ x: 1}, this.data.duration)
-            .onUpdate(function(){
-                _this.ripple.scale.set(this.x,this.x,this.x);
-            })
-            .onComplete(()=>{
-                _this.ripple.scale.set(0.00001,0.00001,0.00001);
-                // Reset throttle flag.
-                this.isRippling = false;
-                // Stop changes
-                UI.utils.stoppedChanging(_this.ripple.uuid);
-            })
-            .easing(TWEEN.Easing.Exponential.Out).start();
-    },
-    tweenOpacity(material){
-        new TWEEN.Tween({x:0.4})
-            .to({ x: 0}, this.data.fadeDuration)
-            .delay(this.data.fadeDelay)
-            .onUpdate(function(){
-                material.opacity = this.x;
-            })
-            .onComplete(()=>{
-                material.opacity = 0.4;
-            })
-            .easing(TWEEN.Easing.Exponential.Out).start();
-    }
-});
-
-/***/ }),
-/* 19 */
+/* 15 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN,THREE */
@@ -1121,7 +946,7 @@ module.exports = AFRAME.registerComponent('ui-switch', {
 });
 
 /***/ }),
-/* 20 */
+/* 16 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN,THREE */
@@ -1176,7 +1001,7 @@ module.exports = AFRAME.registerComponent('ui-toast', {
 });
 
 /***/ }),
-/* 21 */
+/* 17 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -1597,79 +1422,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
 });
 
 /***/ }),
-/* 22 */
-/***/ (function(module, exports) {
-
-/* global AFRAME */
-/**
- * A component shim the mouse move event for the AFRAME cursor raycaster.
- * @namespace aframe-material-collection
- * @component ui-mouse-shim
- * @author Shane Harris
- */
-module.exports = AFRAME.registerComponent('ui-mouse-shim', {
-    schema:{
-        fps:{type:'number',default:45}
-    },
-    init(){
-        if (!this.el.components.raycaster) {
-            throw 'ui-mouse-move component needs the raycaster component to be added.'
-        }
-        // Add support for mouse wheel
-        this.el.sceneEl.renderer.domElement.addEventListener( 'wheel', this.onMouseWheel.bind(this), false);
-    },
-    onMouseWheel(e){
-        this.emitMouseEvent('ui-mousewheel',e);
-    },
-    tick() {
-        if(new Date().getTime()-this.lastMouseMoveTime<(1000/this.data.fps))return;
-        this.emitMouseEvent('ui-mousemove');
-        this.lastMouseMoveTime = new Date().getTime();
-    },
-    emitMouseEvent(eventType,event){
-        // Get current intersections from raycaster component.
-        this.el.components.raycaster.intersections.forEach(intersection=>{
-            if(intersection.object.el){
-                // Emit custom mouse move event ont he intersected element.
-                intersection.object.el.emit(eventType,{cursorEl:this.el,intersection:intersection,evt:event})
-            }
-        });
-    }
-});
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports) {
-
-/* global AFRAME */
-/**
- * Checkbox A simple component to listen for two click events in quick succession.
- * @namespace aframe-material-collection
- * @component ui-double-click
- * @author Shane Harris
- */
-module.exports = AFRAME.registerComponent('ui-double-click', {
-    schema:{
-        timeout:{type:'int',default:200}
-    },
-    init() {
-        let last_click = 0;
-        // Add click event for listening for two clicks within the specified timespan.
-        this.el.addEventListener('mousedown',e=>{
-            let now = new Date().getTime();
-            if(now-last_click<this.data.timeout){
-                this.el.emit('dblclick',e);
-                // Reset last click
-                last_click = 0;
-                e.preventDefault();
-            }
-            last_click = now;
-        });
-    }
-});
-
-/***/ }),
-/* 24 */
+/* 18 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN */
@@ -1842,7 +1595,7 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
 });
 
 /***/ }),
-/* 25 */
+/* 19 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN */
@@ -1946,7 +1699,768 @@ module.exports = AFRAME.registerComponent('ui-radio', {
 });
 
 /***/ }),
+/* 20 */
+/***/ (function(module, exports) {
+
+/* global AFRAME */
+/**
+ * A curved-plane component to curve a plane primitive.
+ * @namespace aframe-material-collection
+ * @component ui-curved-plane
+ * @author Shane Harris
+ */
+
+module.exports = AFRAME.registerComponent('ui-curved-plane', {
+    schema: {
+        depth:{type:'number',default:0.03}
+    },
+    init(){
+        let mesh = this.el.getObject3D('mesh');
+        let width = this.el.getAttribute('width');
+        let height = this.el.getAttribute('height');
+        let browser_pane = new THREE.PlaneGeometry(width, height, 5, 1);
+        let curve = new THREE.CubicBezierCurve3(
+            browser_pane.vertices[0],
+            new THREE.Vector3(0.375*width, 0, -this.data.depth*width ),
+            new THREE.Vector3(0.625*width, 0, -this.data.depth*width ),
+            browser_pane.vertices[(browser_pane.vertices.length/2) - 1]
+        );
+        let planePoints = curve.getPoints(Math.abs(browser_pane.vertices.length/2)-1);
+        for (let edgeI = 1; edgeI < 3; edgeI++) {
+            for (let pointI = 0; pointI < planePoints.length; pointI++) {
+                browser_pane.vertices[(edgeI === 2 ? planePoints.length + pointI : pointI)].z = planePoints[pointI].z;
+            }
+        }
+        mesh.geometry = browser_pane;
+    }
+});
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports) {
+
+/* global AFRAME */
+/**
+ * A component to render the UI to a flat plane, removing the objects from the scene and rendering them separately to a
+ * render target.
+ * @namespace aframe-material-collection
+ * @component ui-renderer
+ * @author Shane Harris
+ */
+module.exports = AFRAME.registerComponent('ui-renderer', {
+    schema: {
+        uiPanel: {type: 'selector'},
+        lookControlsEl: {type: 'selector'},
+        lookControlsComponent:{default:'look-controls'},
+        panelPosition:{type:'vec3',default:{x:0,y:1.6,z:-1}},
+        panelSize:{type:'vec2',default:{x:6,y:3}},
+        renderResolution:{type:'vec2',default:{x:2048,y:1024}},
+        debugRaycaster:{type:'boolean',default: false},
+        fps:{type:'number',default:60},
+        intersectableClass:{default:'intersectable'}
+    },
+    init() {
+        this.setupBackDrop();
+        if(!this.data.uiPanel){
+            this.meshEl = this.setupUIPanel();
+        }else{
+            this.meshEl = this.data.uiPanel;
+        }
+        // Remove this object from the scene to be rendered separately.
+        this.el.object3D.parent.remove(this.el.object3D);
+        // Setup fixed camera nd render target.
+        this.camera = new THREE.PerspectiveCamera( 100, 2, 0.1, 1000 );
+        // Setup render target
+        this.renderTarget = new THREE.WebGLRenderTarget(this.data.renderResolution.x,this.data.renderResolution.y, { antialias: true } );
+        // Set the texture to the ui panel mesh.
+        this.meshEl.getObject3D('mesh').material.map = this.renderTarget.texture;
+        // Listen for change events to enable rendering.
+        this.stoppedRendering = false;
+        this.isRendering = true;
+        // Listen for change events to enable/disable rendering
+        this.el.sceneEl.addEventListener('ui-changing',()=>{
+            //console.log(JSON.stringify(new Date()),'ui-changing');
+            this.stoppedRendering = false;
+            this.isRendering = true;
+        });
+        this.el.sceneEl.addEventListener('ui-changing-stopped',()=>{
+            //console.log(JSON.stringify(new Date()),'ui-changing-stopped');
+            this.isRendering = false;
+        });
+        // Setup raycaster for relaying mouse/keyboard events
+        this.raycaster = new THREE.Raycaster();
+        this.helper = new THREE.Mesh(new THREE.SphereGeometry(0.01),new THREE.MeshBasicMaterial({color:'#ff0000'}));
+        // Add cursor helper to object
+        if(this.data.debugRaycaster)this.el.object3D.add(this.helper);
+        // Set last render time
+        this.lastRenderTime = 0;
+        this.isFrozen = false;
+
+        // Expose methods to the element to pause/play the renderer.
+        this.el.pauseRender = this.pauseRender.bind(this);
+        this.el.playRender = this.playRender.bind(this);
+    },
+    pauseRender(time){
+        return this.playRender(time,true)
+    },
+    playRender(time,isPaused){
+        let _this = this;
+        return new Promise(resolve=>{
+            if(_this.isFrozen===isPaused||_this.isAnimatingBackground)return resolve();
+            _this.isAnimatingBackground = true;
+            if(!_this.isFrozen)this.backdrop.setAttribute('scale','1 1 1');
+            let fromScale = _this.isFrozen?0.9:0.000001;
+            let toScale = _this.isFrozen?0.000001:0.9;
+            let duration = _this.isFrozen?time||350:time||500;
+            if(_this.isFrozen){
+                _this.isFrozen = isPaused;
+                _this.play();
+            }
+            UI.utils.isChanging(_this.el.sceneEl,_this.backdrop.uuid);
+            new TWEEN.Tween({x:fromScale})
+                .to({x:toScale}, duration)
+                .onUpdate(function(){
+                    _this.backdrop.setAttribute('opacity',this.x);
+                })
+                .onComplete(()=>{
+                    _this.isFrozen = isPaused;
+                    _this.isAnimatingBackground = false;
+                    if(_this.isFrozen){
+                        _this.pause();
+                    }else{
+                        this.backdrop.setAttribute('scale','0.000001 0.000001 0.000001');
+                    }
+                    // Stop changes
+                    UI.utils.stoppedChanging(this.backdrop.uuid);
+                    resolve();
+                })
+                .easing(TWEEN.Easing.Exponential.Out).start();
+        });
+    },
+    setupBackDrop(){
+        this.backdrop = document.createElement('a-plane');
+        this.backdrop.setAttribute('transparent',true);
+        this.backdrop.setAttribute('opacity',0.000001);
+        this.backdrop.setAttribute('color','#000');
+        this.backdrop.setAttribute('shader','flat');
+        this.backdrop.setAttribute('position',{x:0,y:0,z:-0.2});
+        this.backdrop.setAttribute('width',1);
+        this.backdrop.setAttribute('height',1);
+        this.backdrop.setAttribute('scale','0.000001 0.000001 0.000001');
+        this.el.appendChild(this.backdrop);
+    },
+    play(){
+        this.lastMouseMoveTime = 0;
+        // Register event listeners
+        // Mousedown and mouseup do not have the correct intersection point. Use last mouse move event if available instead.
+        // TODO: raise issue with aframe / submit PR;
+        this.click = e=>this.mouseEvent('click',this.lastMoveEvent||e);
+        this.mousedown = e=>this.mouseEvent('mousedown',this.lastMoveEvent||e);
+        this.mouseup = e=>this.mouseEvent('mouseup',this.lastMoveEvent||e);
+        this.mousewheel = e=>this.mouseEvent('ui-mousewheel',e.detail.evt);
+        this.mousemove = e=>{
+            // Save mousemove event for mousedown/mouseup events.
+            this.lastMoveEvent = e;
+            this.mouseEvent('ui-mousemove',e);
+        };
+        this.meshEl.addEventListener('mousedown',this.mousedown);
+        this.meshEl.addEventListener('mouseup',this.mouseup);
+        this.meshEl.addEventListener('click',this.click);
+        this.meshEl.addEventListener('ui-mousemove',this.mousemove);
+        this.meshEl.addEventListener('ui-mousewheel',this.mousewheel);
+    },
+    pause(){
+        this.meshEl.removeEventListener('mousedown',this.mousedown);
+        this.meshEl.removeEventListener('mouseup',this.mouseup);
+        this.meshEl.removeEventListener('click',this.click);
+        this.meshEl.removeEventListener('ui-mousemove',this.mousemove);
+        this.meshEl.removeEventListener('ui-mousewheel',this.mousewheel);
+    },
+    setupUIPanel(){
+        let uiPanel = document.createElement('a-plane');
+        uiPanel.setAttribute('position',this.data.panelPosition);
+        uiPanel.setAttribute('width',this.data.panelSize.x);
+        uiPanel.setAttribute('height',this.data.panelSize.y);
+        this.el.sceneEl.appendChild(uiPanel);
+        return uiPanel;
+    },
+    mouseEvent(type,e){
+        let mouse = {x:0,y:0};
+        if(e.detail.intersection){
+            let localPoint = this.meshEl.object3D.worldToLocal(e.detail.intersection.point.clone());
+
+            mouse = {
+                x:localPoint.x/this.meshEl.getAttribute('width')*2,
+                y:localPoint.y/this.meshEl.getAttribute('height')*2
+            };
+        }
+        if(type==='ui-mousewheel'&&e.detail.evt){
+            mouse.deltaY = e.detail.deltaY;
+            mouse.deltaX = e.detail.deltaX;
+        }
+        if(type==='mousedown'&&this.lookControlsEl&&this.lookControlsEl.components['look-controls']){
+            this.lookControlsEl.components[this.data.lookControlsComponent].pause()
+        }
+        if(type==='mouseup'&&this.lookControlsEl&&this.lookControlsEl.components['look-controls']){
+            this.lookControlsEl.components[this.data.lookControlsComponent].play()
+        }
+        this.raycastIntersections(e,mouse,type);
+    },
+    raycastIntersections(e,mouse,type){
+        if(!this.camera)return;
+        //console.log(mouse);
+        this.raycaster.setFromCamera( mouse, this.camera );
+        // this.helper.setDirection(this.raycaster.ray.direction);
+        let intersections = this.raycaster.intersectObjects( this.el.object3D.children, true );
+        this.prevIntersectionEls = this.prevIntersectionEls||[];
+        let intersectionEls = [];
+        if(intersections.length&&this.data.debugRaycaster){
+            let intersectionPoint = intersections[0].point;
+            if(intersections[0].object===this.helper&&intersections.length>1){
+                intersectionPoint = intersections[1].point;
+            }
+            this.helper.position.copy(intersectionPoint);
+            this.helper.position.x-=0.03;
+        }
+        let defaultPrevented = false;
+        for(let i = 0;i < intersections.length; i++){
+            let intersection = intersections[i];
+            // Only emit events on objecst with an element attached
+            if(intersection.object.el&&intersection.object.el.classList.contains(this.data.intersectableClass)){
+                let currentEvent = {intersection:intersection,evt:e};
+                // If this is the first time weve seen this element then emit the mouseenter event.
+                if(this.prevIntersectionEls.indexOf(intersection.object.el)===-1&&!defaultPrevented){
+                    intersection.object.el.emit('mouseenter',currentEvent);
+                }
+                // Emit the mouse event received
+                if(!defaultPrevented||type==='ui-mousewheel'){
+                    intersection.object.el.emit(type,currentEvent);
+                }
+                // Store the intersection on the element.
+                intersection.object.el.intersection = intersection;
+                // Add the current el to the list to check against previous intersection els.
+                intersectionEls.push(intersection.object.el);
+            }
+        }
+        // Find any intersections that have disappeared to emit the mouse leave event.
+        for(let i = 0;i < this.prevIntersectionEls.length; i++){
+            let intersectionEl = this.prevIntersectionEls[i];
+            if(intersectionEls.indexOf(intersectionEl)===-1){
+                intersectionEl.emit('mouseleave',{intersection:intersectionEl.intersection});
+            }
+        }
+        // Store the current intersected elements for the next iteration.
+        this.prevIntersectionEls = intersectionEls;
+    },
+    tick(delta){
+        if(this.isFrozen||this.stoppedRendering)return;
+        if(delta-this.lastRenderTime<(1000/this.data.fps)&&this.isRendering)return;
+        this.el.object3D.traverse(child=>{
+            child.updateMatrixWorld();
+        });
+
+        let renderer = this.el.sceneEl.renderer;
+        let vrModeEnabled = renderer.vr.enabled;
+        renderer.vr.enabled = false;
+        renderer.render(this.el.object3D,this.camera,this.renderTarget);
+        renderer.vr.enabled = vrModeEnabled;
+        //console.log('render');
+        this.lastRenderTime = delta;
+        if(!this.isRendering){
+            this.stoppedRendering = true;
+        }
+    }
+});
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports) {
+
+/* global AFRAME,Yoga */
+/**
+ * Yogo Layout Engine mapped to a Component for aframe-material-collection - https://yogalayout.com
+ * @namespace aframe-material-collection
+ * @component ui-yoga
+ * @author Shane Harris
+ */
+
+if (typeof Yoga === 'undefined') {
+    throw 'ui-yoga component requires the Yoga Layout Engine to be loaded - https://yogalayout.com';
+}
+// Map yoga enums to frendly names.
+// TODO: Need to expose the padding/border/margin side as seperate options to allow for combinations.
+module.exports = AFRAME.registerComponent('ui-yoga', {
+    schema: {
+        alignContent: {default: 'flex-start'},
+        alignItems: {default: 'auto'},
+        alignSelf: {default: 'auto'},
+        display: {default: 'default'},
+        flex: {type:'number',default: 1},
+        flexDirection: {default: 'row'},
+        flexWrap:{default: 'default'},
+        aspectRatio: {default: 'default'},
+        overflow:{default:'default'},
+        justifyContent:{default:'start'},
+        border: {type:'int',default: 0},
+        borderLeft: {type:'int',default: 0},
+        borderRight: {type:'int',default: 0},
+        borderTop: {type:'int',default: 0},
+        borderBottom: {type:'int',default: 0},
+        padding: {type:'int',default: 0},
+        paddingLeft: {type:'int',default: 0},
+        paddingRight: {type:'int',default: 0},
+        paddingTop: {type:'int',default: 0},
+        paddingBottom: {type:'int',default: 0},
+        margin: {type:'int',default: 0},
+        marginLeft: {type:'int',default: 0},
+        marginRight: {type:'int',default: 0},
+        marginTop: {type:'int',default: 0},
+        marginBottom: {type:'int',default: 0},
+        marginAuto: {type:'boolean',default: false},
+        marginAutoLeft: {type:'boolean',default: false},
+        marginAutoRight: {type:'boolean',default: false},
+        marginAutoTop: {type:'boolean',default: false},
+        marginAutoBottom: {type:'boolean',default: false},
+        marginPercent:{type:'number',default: 0},
+        marginPercentLeft: {type:'int',default: 0},
+        marginPercentRight: {type:'int',default: 0},
+        marginPercentTop: {type:'int',default: 0},
+        marginPercentBottom: {type:'int',default: 0},
+        flexBasis: {default: 'default'},
+        flexBasisPercent: {type:'number',default: 0},
+        flexGrow:{type:'number',default: 0},
+        flexShrink:{type:'number',default: 1},
+        maxHeight:{default: 'default'},
+        minHeight:{default: 'default'},
+        maxWidth:{default: 'default'},
+        minWidth:{default: 'default'},
+        maxHeightPercent:{default: 'default'},
+        minHeightPercent:{default: 'default'},
+        maxWidthPercent:{default: 'default'},
+        minWidthPercent:{default: 'default'},
+        position:{default: 'default'},
+        positionLeft: {type:'int',default: 0},
+        positionRight: {type:'int',default: 0},
+        positionTop: {type:'int',default: 0},
+        positionBottom: {type:'int',default: 0},
+        positionPercent:{default: 'default'},
+        positionPercentLeft: {type:'int',default: 0},
+        positionPercentRight: {type:'int',default: 0},
+        positionPercentTop: {type:'int',default: 0},
+        positionPercentBottom: {type:'int',default: 0},
+        width:{default: 'default'},
+        height:{default: 'default'},
+        widthAuto:{type:'boolean',default: false},
+        heightAuto:{type:'boolean',default: false},
+        widthPercent:{default: 'default'},
+        heightPercent:{default: 'default'},
+    },
+    init(){
+        this.setProperties();
+    },
+    updateSchema(){
+        this.setProperties();
+    },
+    setProperties(){
+        this.properties = this.properties||[];
+        this.properties.length = 0;
+        // Store the current valid yoga properties;
+        for(let name in this.data){
+            if(this.data.hasOwnProperty(name)&&
+                this.data[name]!=='default'&&this.data[name]){
+                let value = this.mapPropertyToEnum(name);
+                if(value)this.properties.push({method:'set'+name.charAt(0).toUpperCase() + name.substr(1),value:this.mapPropertyToEnum(name)});
+            }
+        }
+    },
+    getProperties(){
+        // Get the current yoga properties array as an object
+        let propertiesObj = {};
+        for(let i = 0;i < this.properties.length;i++){
+            propertiesObj[this.properties[i].method] = this.properties[i];
+        }
+        return propertiesObj;
+    },
+    mapPropertyToEnum(name){
+        // Get the yoga enum for the friendly name.
+        switch(true){
+            case name.indexOf('align') > -1:
+                return this.enums.align[this.data[name]];
+            case name.indexOf('Edge') > -1:
+                return this.enums.edge[this.data[name]];
+            case name === 'flexDirection':
+            case name === 'flexWrap':
+            case name === 'positionType':
+            case name === 'overflow':
+            case name === 'display':
+            case name === 'justifyContent':
+                return this.enums[name][this.data[name]];
+            default:
+                return this.data[name];
+        }
+    },
+    enums:{
+        align:{
+            count:Yoga.ALIGN_COUNT,
+            auto:Yoga.ALIGN_AUTO,
+            "flex-start":Yoga.ALIGN_FLEX_START,
+            center:Yoga.ALIGN_CENTER,
+            "flex-end":Yoga.ALIGN_FLEX_END,
+            stretch:Yoga.ALIGN_STRETCH,
+            baseline:Yoga.ALIGN_BASELINE,
+            "space-between":Yoga.ALIGN_SPACE_BETWEEN,
+            "space-around":Yoga.ALIGN_SPACE_AROUND,
+        },
+        dimension:{
+            count:Yoga.DIMENSION_COUNT,
+            width:Yoga.DIMENSION_WIDTH,
+            height:Yoga.DIMENSION_HEIGHT,
+        },
+        direction:{
+            count:Yoga.DIRECTION_COUNT,
+            inherit:Yoga.DIRECTION_INHERIT,
+            ltr:Yoga.DIRECTION_LTR,
+            rtl:Yoga.DIRECTION_RTL,
+        },
+        display:{
+            count:Yoga.DISPLAY_COUNT,
+            flex:Yoga.DISPLAY_FLEX,
+            none:Yoga.DISPLAY_NONE,
+        },
+        edge:{
+            count:Yoga.EDGE_COUNT,
+            left:Yoga.EDGE_LEFT,
+            top:Yoga.EDGE_TOP,
+            right:Yoga.EDGE_RIGHT,
+            bottom:Yoga.EDGE_BOTTOM,
+            start:Yoga.EDGE_START,
+            end:Yoga.EDGE_END,
+            horizontal:Yoga.EDGE_HORIZONTAL,
+            vertical:Yoga.EDGE_VERTICAL,
+            all:Yoga.EDGE_ALL,
+        },
+        experimental:{
+            count:Yoga.EXPERIMENTAL_FEATURE_COUNT,
+            "flex-basis":Yoga.EXPERIMENTAL_FEATURE_WEB_FLEX_BASIS,
+        },
+        flexDirection:{
+            count:Yoga.FLEX_DIRECTION_COUNT,
+            column:Yoga.FLEX_DIRECTION_COLUMN,
+            "column-reverse":Yoga.FLEX_DIRECTION_COLUMN_REVERSE,
+            row:Yoga.FLEX_DIRECTION_ROW,
+            reverse:Yoga.FLEX_DIRECTION_ROW_REVERSE,
+        },
+        justifyContent:{
+            count:Yoga.JUSTIFY_COUNT,
+            start:Yoga.JUSTIFY_FLEX_START,
+            center:Yoga.JUSTIFY_CENTER,
+            end:Yoga.JUSTIFY_FLEX_END,
+            between:Yoga.JUSTIFY_SPACE_BETWEEN,
+            around:Yoga.JUSTIFY_SPACE_AROUND,
+            evenly:Yoga.JUSTIFY_SPACE_EVENLY,
+        },
+        logLevel:{
+            count:Yoga.LOG_LEVEL_COUNT,
+            error:Yoga.LOG_LEVEL_ERROR,
+            warn:Yoga.LOG_LEVEL_WARN,
+            info:Yoga.LOG_LEVEL_INFO,
+            debug:Yoga.LOG_LEVEL_DEBUG,
+            verbose:Yoga.LOG_LEVEL_VERBOSE,
+            fatal:Yoga.LOG_LEVEL_FATAL,
+        },
+        measureMode:{
+            count:Yoga.MEASURE_MODE_COUNT,
+            undefined:Yoga.MEASURE_MODE_UNDEFINED,
+            exactly:Yoga.MEASURE_MODE_EXACTLY,
+            "at-most":Yoga.MEASURE_MODE_AT_MOST,
+        },
+        nodeType:{
+            count:Yoga.NODE_TYPE_COUNT,
+            default:Yoga.NODE_TYPE_DEFAULT,
+            text:Yoga.NODE_TYPE_TEXT,
+        },
+        overflow:{
+            count:Yoga.OVERFLOW_COUNT,
+            visible:Yoga.OVERFLOW_VISIBLE,
+            hidden:Yoga.OVERFLOW_HIDDEN,
+            scroll:Yoga.OVERFLOW_SCROLL,
+        },
+        positionType:{
+            count:Yoga.POSITION_TYPE_COUNT,
+            relative:Yoga.POSITION_TYPE_RELATIVE,
+            absolute:Yoga.POSITION_TYPE_ABSOLUTE,
+        },
+        printOptions:{
+            count:Yoga.PRINT_OPTIONS_COUNT,
+            layout:Yoga.PRINT_OPTIONS_LAYOUT,
+            style:Yoga.PRINT_OPTIONS_STYLE,
+            children:Yoga.PRINT_OPTIONS_CHILDREN,
+        },
+        unit:{
+            count:Yoga.UNIT_COUNT,
+            undefined:Yoga.UNIT_UNDEFINED,
+            point:Yoga.UNIT_POINT,
+            percent:Yoga.UNIT_PERCENT,
+            auto:Yoga.UNIT_AUTO,
+        },
+        flexWrap:{
+            count:Yoga.WRAP_COUNT,
+            "no-wrap":Yoga.WRAP_NO_WRAP,
+            wrap:Yoga.WRAP_WRAP,
+            "wrap-reverse":Yoga.WRAP_WRAP_REVERSE,
+        }
+    }
+});
+
+/***/ }),
+/* 23 */
+/***/ (function(module) {
+
+module.exports = {"name":"aframe-material-collection","version":"0.3.34","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports) {
+
+/* global AFRAME,THREE */
+/**
+ * A component to load an icon and set some defaults for positioning and transparency.
+ * @namespace aframe-material-collection
+ * @component ui-icon
+ * @author Shane Harris
+ */
+module.exports = AFRAME.registerComponent('ui-icon', {
+    schema: {
+        src: {default: 'icons/send_white_64dp.png'},
+        size:{type:'vec2',default:{x:0.1,y:0.1}},
+        zIndex:{type:'number',default:0.003},
+        color:{default:'#fff'}
+    },
+    init() {
+        this.icon = new THREE.Mesh(new THREE.PlaneGeometry(this.data.size.x,this.data.size.y),new THREE.MeshBasicMaterial({color:this.data.color,alphaTest:0.4,transparent:true,map:new THREE.TextureLoader().load(this.data.src)}));
+        this.icon.position.set(0,0,this.data.zIndex);
+        this.el.object3D.add(this.icon);
+    }
+});
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports) {
+
+/* global AFRAME,THREE */
+/**
+ * Rounded corners Component for aframe-material-collection. Expects an a-plane entity.
+ * @namespace aframe-material-collection
+ * @component ui-rounded
+ * @author Shane Harris
+ */
+
+module.exports = AFRAME.registerComponent('ui-rounded', {
+    schema: {
+        borderRadius: {type: 'number', default: 0.01},
+        curveSegments:{type: 'int', default: 1},
+    },
+    init() {
+        let mesh = this.el.getObject3D('mesh');
+        let roundedRectShape = new THREE.Shape();
+        // Draw the Rounded rectangle shape centered in the object - from three.js shapes example.
+        ( function roundedRect( ctx, x, y, width, height, radius ) {
+            ctx.moveTo( x, y + radius );
+            ctx.lineTo( x, y + height - radius );
+            ctx.quadraticCurveTo( x, y + height, x + radius, y + height );
+            ctx.lineTo( x + width - radius, y + height );
+            ctx.quadraticCurveTo( x + width, y + height, x + width, y + height - radius );
+            ctx.lineTo( x + width, y + radius );
+            ctx.quadraticCurveTo( x + width, y, x + width - radius, y );
+            ctx.lineTo( x + radius, y );
+            ctx.quadraticCurveTo( x, y, x, y + radius );
+        } )( roundedRectShape, -mesh.geometry.metadata.parameters.width/2, -mesh.geometry.metadata.parameters.height/2, mesh.geometry.metadata.parameters.width, mesh.geometry.metadata.parameters.height, this.data.borderRadius );
+        // Update the geometry.
+        mesh.geometry = new THREE.ShapeGeometry(roundedRectShape,this.data.curveSegments);
+        // Emit rounded-loaded event once the geometry has been updated.
+        this.el.emit('rounded-loaded', null, false);
+    }
+});
+
+/***/ }),
 /* 26 */
+/***/ (function(module, exports) {
+
+/* global AFRAME,TWEEN,THREE */
+/**
+ * Ripple Component for aframe-material-collection. Add a ripple to an entity with options for controlling
+ * clamping the animation and offsetting the ripple z position to place on top or bottom
+ * @namespace aframe-material-collection
+ * @component ui-ripple
+ * @author Shane Harris
+ */
+
+module.exports = AFRAME.registerComponent('ui-ripple',{
+    schema:{
+        color: {default: '#fff'},
+        duration:{type:'int',default:1000},
+        fadeDuration:{type:'int',default:750},
+        fadeDelay:{type:'int',default:250},
+        clampToSquare:{type:'boolean',default:false},
+        size:{type:'vec2',default:{x:1,y:1}},
+        zIndex:{type:'number',default:-0.001},
+        segments:{type:'int',default:6}
+    },
+    init(){
+        // Setup circle geometry for ripple effect
+        this.rippleGeometry = new THREE.CircleGeometry(Math.max(this.data.size.x,this.data.size.y),this.data.segments);
+        this.ripple = new THREE.Mesh(this.rippleGeometry.clone(),new THREE.MeshBasicMaterial({color:this.data.color,transparent:true, opacity:0.4,alphaTest:0.1}));
+        this.ripple.scale.set(0.00001,0.00001,0.00001);
+        this.el.object3D.add(this.ripple);
+        this.el.addEventListener('mousedown',this.click.bind(this));
+        this.ripple.position.set(0,0,this.data.zIndex);
+        // Set clipping planes if clamping to square
+        if(this.data.clampToSquare){
+
+            this.content_clips = [
+                new THREE.Plane( new THREE.Vector3( 0, 1, 0 ), (this.data.size.y/2) ),
+                new THREE.Plane( new THREE.Vector3( 0, -1, 0 ), (this.data.size.y/2) ),
+                new THREE.Plane( new THREE.Vector3( -1, 0, 0 ), (this.data.size.x/2) ),
+                new THREE.Plane( new THREE.Vector3( 1, 0, 0 ), (this.data.size.x/2) )
+            ];
+        }
+    },
+    click(e){
+        if(this.isRippling){
+            // Throttle clicks.
+            return e.preventDefault();
+        }
+        this.isRippling = true;
+        // Set clipping planes if clamping to square
+        if(this.data.clampToSquare){
+            this.setRippleClips(this.ripple.material);
+        }
+        // Animate the size of the circle ripple from the center of the entity.
+        this.tweenSize(this.ripple.geometry);
+        // Fade the circle out as it ripples.
+        this.tweenOpacity(this.ripple.material);
+    },
+    setRippleClips(){
+        // update content clips world positions from this current element.
+        this.content_clips[0].set(new THREE.Vector3( 0, 1, 0 ), (this.data.size.y/2));
+        this.content_clips[1].set(new THREE.Vector3( 0, -1, 0 ), (this.data.size.y/2));
+        this.content_clips[2].set(new THREE.Vector3( -1, 0, 0 ), (this.data.size.x/2));
+        this.content_clips[3].set(new THREE.Vector3( 1, 0, 0 ), (this.data.size.x/2));
+        //this.el.sceneEl.object3D.updateMatrixWorld();
+        this.content_clips[0].applyMatrix4(this.el.object3D.matrixWorld);
+        this.content_clips[1].applyMatrix4(this.el.object3D.matrixWorld);
+        this.content_clips[2].applyMatrix4(this.el.object3D.matrixWorld);
+        this.content_clips[3].applyMatrix4(this.el.object3D.matrixWorld);
+        this.ripple.material.clippingPlanes = this.el._content_clips?this.el._content_clips.concat(this.content_clips):this.content_clips;
+        this.ripple.material.clipShadows = true;
+        this.ripple.material.needsUpdate = true;
+    },
+    tweenSize(geometry){
+        let _this = this;
+        // Start changes
+        UI.utils.isChanging(this.el.sceneEl,_this.ripple.uuid);
+        new TWEEN.Tween({x:0.00001})
+            .to({ x: 1}, this.data.duration)
+            .onUpdate(function(){
+                _this.ripple.scale.set(this.x,this.x,this.x);
+            })
+            .onComplete(()=>{
+                _this.ripple.scale.set(0.00001,0.00001,0.00001);
+                // Reset throttle flag.
+                this.isRippling = false;
+                // Stop changes
+                UI.utils.stoppedChanging(_this.ripple.uuid);
+            })
+            .easing(TWEEN.Easing.Exponential.Out).start();
+    },
+    tweenOpacity(material){
+        new TWEEN.Tween({x:0.4})
+            .to({ x: 0}, this.data.fadeDuration)
+            .delay(this.data.fadeDelay)
+            .onUpdate(function(){
+                material.opacity = this.x;
+            })
+            .onComplete(()=>{
+                material.opacity = 0.4;
+            })
+            .easing(TWEEN.Easing.Exponential.Out).start();
+    }
+});
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports) {
+
+/* global AFRAME */
+/**
+ * A component shim the mouse move event for the AFRAME cursor raycaster.
+ * @namespace aframe-material-collection
+ * @component ui-mouse-shim
+ * @author Shane Harris
+ */
+module.exports = AFRAME.registerComponent('ui-mouse-shim', {
+    schema:{
+        fps:{type:'number',default:45}
+    },
+    init(){
+        if (!this.el.components.raycaster) {
+            throw 'ui-mouse-move component needs the raycaster component to be added.'
+        }
+        // Add support for mouse wheel
+        this.el.sceneEl.renderer.domElement.addEventListener( 'wheel', this.onMouseWheel.bind(this), false);
+    },
+    onMouseWheel(e){
+        this.emitMouseEvent('ui-mousewheel',e);
+    },
+    tick() {
+        if(new Date().getTime()-this.lastMouseMoveTime<(1000/this.data.fps))return;
+        this.emitMouseEvent('ui-mousemove');
+        this.lastMouseMoveTime = new Date().getTime();
+    },
+    emitMouseEvent(eventType,event){
+        // Get current intersections from raycaster component.
+        this.el.components.raycaster.intersections.forEach(intersection=>{
+            if(intersection.object.el){
+                // Emit custom mouse move event ont he intersected element.
+                intersection.object.el.emit(eventType,{cursorEl:this.el,intersection:intersection,evt:event})
+            }
+        });
+    }
+});
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports) {
+
+/* global AFRAME */
+/**
+ * Checkbox A simple component to listen for two click events in quick succession.
+ * @namespace aframe-material-collection
+ * @component ui-double-click
+ * @author Shane Harris
+ */
+module.exports = AFRAME.registerComponent('ui-double-click', {
+    schema:{
+        timeout:{type:'int',default:200}
+    },
+    init() {
+        let last_click = 0;
+        // Add click event for listening for two clicks within the specified timespan.
+        this.el.addEventListener('mousedown',e=>{
+            let now = new Date().getTime();
+            if(now-last_click<this.data.timeout){
+                this.el.emit('dblclick',e);
+                // Reset last click
+                last_click = 0;
+                e.preventDefault();
+            }
+            last_click = now;
+        });
+    }
+});
+
+/***/ }),
+/* 29 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -2003,44 +2517,7 @@ module.exports = AFRAME.registerComponent('ui-border', {
 });
 
 /***/ }),
-/* 27 */
-/***/ (function(module, exports) {
-
-/* global AFRAME */
-/**
- * A curved-plane component to curve a plane primitive.
- * @namespace aframe-material-collection
- * @component ui-curved-plane
- * @author Shane Harris
- */
-
-module.exports = AFRAME.registerComponent('ui-curved-plane', {
-    schema: {
-        depth:{type:'number',default:0.03}
-    },
-    init(){
-        let mesh = this.el.getObject3D('mesh');
-        let width = this.el.getAttribute('width');
-        let height = this.el.getAttribute('height');
-        let browser_pane = new THREE.PlaneGeometry(width, height, 5, 1);
-        let curve = new THREE.CubicBezierCurve3(
-            browser_pane.vertices[0],
-            new THREE.Vector3(0.375*width, 0, -this.data.depth*width ),
-            new THREE.Vector3(0.625*width, 0, -this.data.depth*width ),
-            browser_pane.vertices[(browser_pane.vertices.length/2) - 1]
-        );
-        let planePoints = curve.getPoints(Math.abs(browser_pane.vertices.length/2)-1);
-        for (let edgeI = 1; edgeI < 3; edgeI++) {
-            for (let pointI = 0; pointI < planePoints.length; pointI++) {
-                browser_pane.vertices[(edgeI === 2 ? planePoints.length + pointI : pointI)].z = planePoints[pointI].z;
-            }
-        }
-        mesh.geometry = browser_pane;
-    }
-});
-
-/***/ }),
-/* 28 */
+/* 30 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -2452,7 +2929,7 @@ module.exports = AFRAME.registerComponent('ui-color-picker', {
 
 
 /***/ }),
-/* 29 */
+/* 31 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -2530,484 +3007,18 @@ module.exports = AFRAME.registerComponent('ui-modal', {
 });
 
 /***/ }),
-/* 30 */
-/***/ (function(module, exports) {
-
-/* global AFRAME */
-/**
- * A component to render the UI to a flat plane, removing the objects from the scene and rendering them separately to a
- * render target.
- * @namespace aframe-material-collection
- * @component ui-renderer
- * @author Shane Harris
- */
-module.exports = AFRAME.registerComponent('ui-renderer', {
-    schema: {
-        uiPanel: {type: 'selector'},
-        lookControlsEl: {type: 'selector'},
-        lookControlsComponent:{default:'look-controls'},
-        panelPosition:{type:'vec3',default:{x:0,y:1.6,z:-1}},
-        panelSize:{type:'vec2',default:{x:6,y:3}},
-        renderResolution:{type:'vec2',default:{x:2048,y:1024}},
-        debugRaycaster:{type:'boolean',default: false},
-        fps:{type:'number',default:60},
-        intersectableClass:{default:'intersectable'}
-    },
-    init() {
-        this.setupBackDrop();
-        if(!this.data.uiPanel){
-            this.meshEl = this.setupUIPanel();
-        }else{
-            this.meshEl = this.data.uiPanel;
-        }
-        // Remove this object from the scene to be rendered separately.
-        this.el.object3D.parent.remove(this.el.object3D);
-        // Setup fixed camera nd render target.
-        this.camera = new THREE.PerspectiveCamera( 100, 2, 0.1, 1000 );
-        // Setup render target
-        this.renderTarget = new THREE.WebGLRenderTarget(this.data.renderResolution.x,this.data.renderResolution.y, { antialias: true } );
-        // Set the texture to the ui panel mesh.
-        this.meshEl.getObject3D('mesh').material.map = this.renderTarget.texture;
-        // Listen for change events to enable rendering.
-        this.stoppedRendering = false;
-        this.isRendering = true;
-        // Listen for change events to enable/disable rendering
-        this.el.sceneEl.addEventListener('ui-changing',()=>{
-            //console.log(JSON.stringify(new Date()),'ui-changing');
-            this.stoppedRendering = false;
-            this.isRendering = true;
-        });
-        this.el.sceneEl.addEventListener('ui-changing-stopped',()=>{
-            //console.log(JSON.stringify(new Date()),'ui-changing-stopped');
-            this.isRendering = false;
-        });
-        // Setup raycaster for relaying mouse/keyboard events
-        this.raycaster = new THREE.Raycaster();
-        this.helper = new THREE.Mesh(new THREE.SphereGeometry(0.01),new THREE.MeshBasicMaterial({color:'#ff0000'}));
-        // Add cursor helper to object
-        if(this.data.debugRaycaster)this.el.object3D.add(this.helper);
-        // Set last render time
-        this.lastRenderTime = 0;
-        this.isFrozen = false;
-
-        // Expose methods to the element to pause/play the renderer.
-        this.el.pauseRender = this.pauseRender.bind(this);
-        this.el.playRender = this.playRender.bind(this);
-    },
-    pauseRender(time){
-        return this.playRender(time,true)
-    },
-    playRender(time,isPaused){
-        let _this = this;
-        return new Promise(resolve=>{
-            if(_this.isFrozen===isPaused||_this.isAnimatingBackground)return resolve();
-            _this.isAnimatingBackground = true;
-            if(!_this.isFrozen)this.backdrop.setAttribute('scale','1 1 1');
-            let fromScale = _this.isFrozen?0.9:0.000001;
-            let toScale = _this.isFrozen?0.000001:0.9;
-            let duration = _this.isFrozen?time||350:time||500;
-            if(_this.isFrozen){
-                _this.isFrozen = isPaused;
-                _this.play();
-            }
-            UI.utils.isChanging(_this.el.sceneEl,_this.backdrop.uuid);
-            new TWEEN.Tween({x:fromScale})
-                .to({x:toScale}, duration)
-                .onUpdate(function(){
-                    _this.backdrop.setAttribute('opacity',this.x);
-                })
-                .onComplete(()=>{
-                    _this.isFrozen = isPaused;
-                    _this.isAnimatingBackground = false;
-                    if(_this.isFrozen){
-                        _this.pause();
-                    }else{
-                        this.backdrop.setAttribute('scale','0.000001 0.000001 0.000001');
-                    }
-                    // Stop changes
-                    UI.utils.stoppedChanging(this.backdrop.uuid);
-                    resolve();
-                })
-                .easing(TWEEN.Easing.Exponential.Out).start();
-        });
-    },
-    setupBackDrop(){
-        this.backdrop = document.createElement('a-plane');
-        this.backdrop.setAttribute('transparent',true);
-        this.backdrop.setAttribute('opacity',0.000001);
-        this.backdrop.setAttribute('color','#000');
-        this.backdrop.setAttribute('shader','flat');
-        this.backdrop.setAttribute('position',{x:0,y:0,z:-0.2});
-        this.backdrop.setAttribute('width',1);
-        this.backdrop.setAttribute('height',1);
-        this.backdrop.setAttribute('scale','0.000001 0.000001 0.000001');
-        this.el.appendChild(this.backdrop);
-    },
-    play(){
-        this.lastMouseMoveTime = 0;
-        // Register event listeners
-        // Mousedown and mouseup do not have the correct intersection point. Use last mouse move event if available instead.
-        // TODO: raise issue with aframe / submit PR;
-        this.click = e=>this.mouseEvent('click',this.lastMoveEvent||e);
-        this.mousedown = e=>this.mouseEvent('mousedown',this.lastMoveEvent||e);
-        this.mouseup = e=>this.mouseEvent('mouseup',this.lastMoveEvent||e);
-        this.mousewheel = e=>this.mouseEvent('ui-mousewheel',e.detail.evt);
-        this.mousemove = e=>{
-            // Save mousemove event for mousedown/mouseup events.
-            this.lastMoveEvent = e;
-            this.mouseEvent('ui-mousemove',e);
-        };
-        this.meshEl.addEventListener('mousedown',this.mousedown);
-        this.meshEl.addEventListener('mouseup',this.mouseup);
-        this.meshEl.addEventListener('click',this.click);
-        this.meshEl.addEventListener('ui-mousemove',this.mousemove);
-        this.meshEl.addEventListener('ui-mousewheel',this.mousewheel);
-    },
-    pause(){
-        this.meshEl.removeEventListener('mousedown',this.mousedown);
-        this.meshEl.removeEventListener('mouseup',this.mouseup);
-        this.meshEl.removeEventListener('click',this.click);
-        this.meshEl.removeEventListener('ui-mousemove',this.mousemove);
-        this.meshEl.removeEventListener('ui-mousewheel',this.mousewheel);
-    },
-    setupUIPanel(){
-        let uiPanel = document.createElement('a-plane');
-        uiPanel.setAttribute('position',this.data.panelPosition);
-        uiPanel.setAttribute('width',this.data.panelSize.x);
-        uiPanel.setAttribute('height',this.data.panelSize.y);
-        this.el.sceneEl.appendChild(uiPanel);
-        return uiPanel;
-    },
-    mouseEvent(type,e){
-        let mouse = {x:0,y:0};
-        if(e.detail.intersection){
-            let localPoint = this.meshEl.object3D.worldToLocal(e.detail.intersection.point.clone());
-
-            mouse = {
-                x:localPoint.x/this.meshEl.getAttribute('width')*2,
-                y:localPoint.y/this.meshEl.getAttribute('height')*2
-            };
-        }
-        if(type==='ui-mousewheel'&&e.detail.evt){
-            mouse.deltaY = e.detail.deltaY;
-            mouse.deltaX = e.detail.deltaX;
-        }
-        if(type==='mousedown'&&this.lookControlsEl&&this.lookControlsEl.components['look-controls']){
-            this.lookControlsEl.components[this.data.lookControlsComponent].pause()
-        }
-        if(type==='mouseup'&&this.lookControlsEl&&this.lookControlsEl.components['look-controls']){
-            this.lookControlsEl.components[this.data.lookControlsComponent].play()
-        }
-        this.raycastIntersections(e,mouse,type);
-    },
-    raycastIntersections(e,mouse,type){
-        if(!this.camera)return;
-        //console.log(mouse);
-        this.raycaster.setFromCamera( mouse, this.camera );
-        // this.helper.setDirection(this.raycaster.ray.direction);
-        let intersections = this.raycaster.intersectObjects( this.el.object3D.children, true );
-        this.prevIntersectionEls = this.prevIntersectionEls||[];
-        let intersectionEls = [];
-        if(intersections.length&&this.data.debugRaycaster){
-            let intersectionPoint = intersections[0].point;
-            if(intersections[0].object===this.helper&&intersections.length>1){
-                intersectionPoint = intersections[1].point;
-            }
-            this.helper.position.copy(intersectionPoint);
-            this.helper.position.x-=0.03;
-        }
-        let defaultPrevented = false;
-        for(let i = 0;i < intersections.length; i++){
-            let intersection = intersections[i];
-            // Only emit events on objecst with an element attached
-            if(intersection.object.el&&intersection.object.el.classList.contains(this.data.intersectableClass)){
-                let currentEvent = {intersection:intersection,evt:e};
-                // If this is the first time weve seen this element then emit the mouseenter event.
-                if(this.prevIntersectionEls.indexOf(intersection.object.el)===-1&&!defaultPrevented){
-                    intersection.object.el.emit('mouseenter',currentEvent);
-                }
-                // Emit the mouse event received
-                if(!defaultPrevented||type==='ui-mousewheel'){
-                    intersection.object.el.emit(type,currentEvent);
-                }
-                // Store the intersection on the element.
-                intersection.object.el.intersection = intersection;
-                // Add the current el to the list to check against previous intersection els.
-                intersectionEls.push(intersection.object.el);
-            }
-        }
-        // Find any intersections that have disappeared to emit the mouse leave event.
-        for(let i = 0;i < this.prevIntersectionEls.length; i++){
-            let intersectionEl = this.prevIntersectionEls[i];
-            if(intersectionEls.indexOf(intersectionEl)===-1){
-                intersectionEl.emit('mouseleave',{intersection:intersectionEl.intersection});
-            }
-        }
-        // Store the current intersected elements for the next iteration.
-        this.prevIntersectionEls = intersectionEls;
-    },
-    tick(delta){
-        if(this.isFrozen||this.stoppedRendering)return;
-        if(delta-this.lastRenderTime<(1000/this.data.fps)&&this.isRendering)return;
-        this.el.object3D.traverse(child=>{
-            child.updateMatrixWorld();
-        });
-
-        let renderer = this.el.sceneEl.renderer;
-        let vrModeEnabled = renderer.vr.enabled;
-        renderer.vr.enabled = false;
-        renderer.render(this.el.object3D,this.camera,this.renderTarget);
-        renderer.vr.enabled = vrModeEnabled;
-        //console.log('render');
-        this.lastRenderTime = delta;
-        if(!this.isRendering){
-            this.stoppedRendering = true;
-        }
-    }
-});
-
-/***/ }),
-/* 31 */
-/***/ (function(module, exports) {
-
-/* global AFRAME,Yoga */
-/**
- * Yogo Layout Engine mapped to a Component for aframe-material-collection - https://yogalayout.com
- * @namespace aframe-material-collection
- * @component ui-yoga
- * @author Shane Harris
- */
-
-if (typeof Yoga === 'undefined') {
-    throw 'ui-yoga component requires the Yoga Layout Engine to be loaded - https://yogalayout.com';
-}
-// Map yoga enums to frendly names.
-// TODO: Need to expose the padding/border/margin side as seperate options to allow for combinations.
-module.exports = AFRAME.registerComponent('ui-yoga', {
-    schema: {
-        alignContent: {default: 'flex-start'},
-        alignItems: {default: 'auto'},
-        alignSelf: {default: 'auto'},
-        display: {default: 'default'},
-        flex: {type:'number',default: 1},
-        flexDirection: {default: 'row'},
-        flexWrap:{default: 'default'},
-        aspectRatio: {default: 'default'},
-        overflow:{default:'default'},
-        justifyContent:{default:'start'},
-        border: {type:'int',default: 0},
-        borderLeft: {type:'int',default: 0},
-        borderRight: {type:'int',default: 0},
-        borderTop: {type:'int',default: 0},
-        borderBottom: {type:'int',default: 0},
-        padding: {type:'int',default: 0},
-        paddingLeft: {type:'int',default: 0},
-        paddingRight: {type:'int',default: 0},
-        paddingTop: {type:'int',default: 0},
-        paddingBottom: {type:'int',default: 0},
-        margin: {type:'int',default: 0},
-        marginLeft: {type:'int',default: 0},
-        marginRight: {type:'int',default: 0},
-        marginTop: {type:'int',default: 0},
-        marginBottom: {type:'int',default: 0},
-        marginAuto: {type:'boolean',default: false},
-        marginAutoLeft: {type:'boolean',default: false},
-        marginAutoRight: {type:'boolean',default: false},
-        marginAutoTop: {type:'boolean',default: false},
-        marginAutoBottom: {type:'boolean',default: false},
-        marginPercent:{type:'number',default: 0},
-        marginPercentLeft: {type:'int',default: 0},
-        marginPercentRight: {type:'int',default: 0},
-        marginPercentTop: {type:'int',default: 0},
-        marginPercentBottom: {type:'int',default: 0},
-        flexBasis: {default: 'default'},
-        flexBasisPercent: {type:'number',default: 0},
-        flexGrow:{type:'number',default: 0},
-        flexShrink:{type:'number',default: 1},
-        maxHeight:{default: 'default'},
-        minHeight:{default: 'default'},
-        maxWidth:{default: 'default'},
-        minWidth:{default: 'default'},
-        maxHeightPercent:{default: 'default'},
-        minHeightPercent:{default: 'default'},
-        maxWidthPercent:{default: 'default'},
-        minWidthPercent:{default: 'default'},
-        position:{default: 'default'},
-        positionLeft: {type:'int',default: 0},
-        positionRight: {type:'int',default: 0},
-        positionTop: {type:'int',default: 0},
-        positionBottom: {type:'int',default: 0},
-        positionPercent:{default: 'default'},
-        positionPercentLeft: {type:'int',default: 0},
-        positionPercentRight: {type:'int',default: 0},
-        positionPercentTop: {type:'int',default: 0},
-        positionPercentBottom: {type:'int',default: 0},
-        width:{default: 'default'},
-        height:{default: 'default'},
-        widthAuto:{type:'boolean',default: false},
-        heightAuto:{type:'boolean',default: false},
-        widthPercent:{default: 'default'},
-        heightPercent:{default: 'default'},
-    },
-    init(){
-        this.setProperties();
-    },
-    updateSchema(){
-        this.setProperties();
-    },
-    setProperties(){
-        this.properties = this.properties||[];
-        this.properties.length = 0;
-        // Store the current valid yoga properties;
-        for(let name in this.data){
-            if(this.data.hasOwnProperty(name)&&
-                this.data[name]!=='default'&&this.data[name]){
-                let value = this.mapPropertyToEnum(name);
-                if(value)this.properties.push({method:'set'+name.charAt(0).toUpperCase() + name.substr(1),value:this.mapPropertyToEnum(name)});
-            }
-        }
-    },
-    getProperties(){
-        // Get the current yoga properties array as an object
-        let propertiesObj = {};
-        for(let i = 0;i < this.properties.length;i++){
-            propertiesObj[this.properties[i].method] = this.properties[i];
-        }
-        return propertiesObj;
-    },
-    mapPropertyToEnum(name){
-        // Get the yoga enum for the friendly name.
-        switch(true){
-            case name.indexOf('align') > -1:
-                return this.enums.align[this.data[name]];
-            case name.indexOf('Edge') > -1:
-                return this.enums.edge[this.data[name]];
-            case name === 'flexDirection':
-            case name === 'flexWrap':
-            case name === 'positionType':
-            case name === 'overflow':
-            case name === 'display':
-            case name === 'justifyContent':
-                return this.enums[name][this.data[name]];
-            default:
-                return this.data[name];
-        }
-    },
-    enums:{
-        align:{
-            count:Yoga.ALIGN_COUNT,
-            auto:Yoga.ALIGN_AUTO,
-            "flex-start":Yoga.ALIGN_FLEX_START,
-            center:Yoga.ALIGN_CENTER,
-            "flex-end":Yoga.ALIGN_FLEX_END,
-            stretch:Yoga.ALIGN_STRETCH,
-            baseline:Yoga.ALIGN_BASELINE,
-            "space-between":Yoga.ALIGN_SPACE_BETWEEN,
-            "space-around":Yoga.ALIGN_SPACE_AROUND,
-        },
-        dimension:{
-            count:Yoga.DIMENSION_COUNT,
-            width:Yoga.DIMENSION_WIDTH,
-            height:Yoga.DIMENSION_HEIGHT,
-        },
-        direction:{
-            count:Yoga.DIRECTION_COUNT,
-            inherit:Yoga.DIRECTION_INHERIT,
-            ltr:Yoga.DIRECTION_LTR,
-            rtl:Yoga.DIRECTION_RTL,
-        },
-        display:{
-            count:Yoga.DISPLAY_COUNT,
-            flex:Yoga.DISPLAY_FLEX,
-            none:Yoga.DISPLAY_NONE,
-        },
-        edge:{
-            count:Yoga.EDGE_COUNT,
-            left:Yoga.EDGE_LEFT,
-            top:Yoga.EDGE_TOP,
-            right:Yoga.EDGE_RIGHT,
-            bottom:Yoga.EDGE_BOTTOM,
-            start:Yoga.EDGE_START,
-            end:Yoga.EDGE_END,
-            horizontal:Yoga.EDGE_HORIZONTAL,
-            vertical:Yoga.EDGE_VERTICAL,
-            all:Yoga.EDGE_ALL,
-        },
-        experimental:{
-            count:Yoga.EXPERIMENTAL_FEATURE_COUNT,
-            "flex-basis":Yoga.EXPERIMENTAL_FEATURE_WEB_FLEX_BASIS,
-        },
-        flexDirection:{
-            count:Yoga.FLEX_DIRECTION_COUNT,
-            column:Yoga.FLEX_DIRECTION_COLUMN,
-            "column-reverse":Yoga.FLEX_DIRECTION_COLUMN_REVERSE,
-            row:Yoga.FLEX_DIRECTION_ROW,
-            reverse:Yoga.FLEX_DIRECTION_ROW_REVERSE,
-        },
-        justifyContent:{
-            count:Yoga.JUSTIFY_COUNT,
-            start:Yoga.JUSTIFY_FLEX_START,
-            center:Yoga.JUSTIFY_CENTER,
-            end:Yoga.JUSTIFY_FLEX_END,
-            between:Yoga.JUSTIFY_SPACE_BETWEEN,
-            around:Yoga.JUSTIFY_SPACE_AROUND,
-            evenly:Yoga.JUSTIFY_SPACE_EVENLY,
-        },
-        logLevel:{
-            count:Yoga.LOG_LEVEL_COUNT,
-            error:Yoga.LOG_LEVEL_ERROR,
-            warn:Yoga.LOG_LEVEL_WARN,
-            info:Yoga.LOG_LEVEL_INFO,
-            debug:Yoga.LOG_LEVEL_DEBUG,
-            verbose:Yoga.LOG_LEVEL_VERBOSE,
-            fatal:Yoga.LOG_LEVEL_FATAL,
-        },
-        measureMode:{
-            count:Yoga.MEASURE_MODE_COUNT,
-            undefined:Yoga.MEASURE_MODE_UNDEFINED,
-            exactly:Yoga.MEASURE_MODE_EXACTLY,
-            "at-most":Yoga.MEASURE_MODE_AT_MOST,
-        },
-        nodeType:{
-            count:Yoga.NODE_TYPE_COUNT,
-            default:Yoga.NODE_TYPE_DEFAULT,
-            text:Yoga.NODE_TYPE_TEXT,
-        },
-        overflow:{
-            count:Yoga.OVERFLOW_COUNT,
-            visible:Yoga.OVERFLOW_VISIBLE,
-            hidden:Yoga.OVERFLOW_HIDDEN,
-            scroll:Yoga.OVERFLOW_SCROLL,
-        },
-        positionType:{
-            count:Yoga.POSITION_TYPE_COUNT,
-            relative:Yoga.POSITION_TYPE_RELATIVE,
-            absolute:Yoga.POSITION_TYPE_ABSOLUTE,
-        },
-        printOptions:{
-            count:Yoga.PRINT_OPTIONS_COUNT,
-            layout:Yoga.PRINT_OPTIONS_LAYOUT,
-            style:Yoga.PRINT_OPTIONS_STYLE,
-            children:Yoga.PRINT_OPTIONS_CHILDREN,
-        },
-        unit:{
-            count:Yoga.UNIT_COUNT,
-            undefined:Yoga.UNIT_UNDEFINED,
-            point:Yoga.UNIT_POINT,
-            percent:Yoga.UNIT_PERCENT,
-            auto:Yoga.UNIT_AUTO,
-        },
-        flexWrap:{
-            count:Yoga.WRAP_COUNT,
-            "no-wrap":Yoga.WRAP_NO_WRAP,
-            wrap:Yoga.WRAP_WRAP,
-            "wrap-reverse":Yoga.WRAP_WRAP_REVERSE,
-        }
-    }
-});
-
-/***/ }),
-/* 32 */
+/* 32 */,
+/* 33 */,
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */,
+/* 39 */,
+/* 40 */,
+/* 41 */,
+/* 42 */,
+/* 43 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3062,7 +3073,7 @@ class Utils{
  */
 
 
-let version = __webpack_require__(0).version;
+let version = __webpack_require__(23).version;
 console.log('aframe-material-collection version '+version);
 
 if (typeof AFRAME === 'undefined') {
@@ -3074,39 +3085,39 @@ window.UI = {
     // Utils
     utils:utils,
     // Primitives
-    a_ui_button: __webpack_require__(1),
-    a_ui_fab_button: __webpack_require__(2),
-    a_ui_fab_button_small: __webpack_require__(3),
-    a_ui_switch: __webpack_require__(4),
-    a_ui_toast: __webpack_require__(5),
-    a_ui_checkbox: __webpack_require__(6),
-    a_ui_radio: __webpack_require__(7),
-    a_ui_text_input: __webpack_require__(8),
-    a_ui_number_input: __webpack_require__(9),
-    a_ui_int_input: __webpack_require__(10),
-    a_ui_password_input: __webpack_require__(11),
-    a_ui_scroll_pane: __webpack_require__(12),
-    a_ui_renderer: __webpack_require__(13),
+    a_ui_button: __webpack_require__(0),
+    a_ui_fab_button: __webpack_require__(1),
+    a_ui_fab_button_small: __webpack_require__(2),
+    a_ui_switch: __webpack_require__(3),
+    a_ui_toast: __webpack_require__(4),
+    a_ui_checkbox: __webpack_require__(5),
+    a_ui_radio: __webpack_require__(6),
+    a_ui_text_input: __webpack_require__(7),
+    a_ui_number_input: __webpack_require__(8),
+    a_ui_int_input: __webpack_require__(9),
+    a_ui_password_input: __webpack_require__(10),
+    a_ui_scroll_pane: __webpack_require__(11),
+    a_ui_renderer: __webpack_require__(12),
 
     // Components
-    text: __webpack_require__(14),
-    btn: __webpack_require__(15),
-    icon: __webpack_require__(16),
-    rounded: __webpack_require__(17),
-    ripple: __webpack_require__(18),
-    switch: __webpack_require__(19),
-    toast: __webpack_require__(20),
-    scroll_pane: __webpack_require__(21),
-    mouse_shim: __webpack_require__(22),
-    double_click: __webpack_require__(23),
-    checkbox: __webpack_require__(24),
-    radio: __webpack_require__(25),
-    border: __webpack_require__(26),
-    curvedPlane: __webpack_require__(27),
-    colorPicker: __webpack_require__(28),
-    modal: __webpack_require__(29),
-    renderer: __webpack_require__(30),
-    yoga_properties: __webpack_require__(31),
+    text: __webpack_require__(13),
+    btn: __webpack_require__(14),
+    icon: __webpack_require__(24),
+    rounded: __webpack_require__(25),
+    ripple: __webpack_require__(26),
+    switch: __webpack_require__(15),
+    toast: __webpack_require__(16),
+    scroll_pane: __webpack_require__(17),
+    mouse_shim: __webpack_require__(27),
+    double_click: __webpack_require__(28),
+    checkbox: __webpack_require__(18),
+    radio: __webpack_require__(19),
+    border: __webpack_require__(29),
+    curvedPlane: __webpack_require__(20),
+    colorPicker: __webpack_require__(30),
+    modal: __webpack_require__(31),
+    renderer: __webpack_require__(21),
+    yoga_properties: __webpack_require__(22),
 };
 //module.exports = UI;
 
