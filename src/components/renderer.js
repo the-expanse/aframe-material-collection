@@ -186,7 +186,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
             let intersection = intersections[i];
             // Only emit events on objecst with an element attached
             if(intersection.object.el&&intersection.object.el.classList.contains(this.data.intersectableClass)){
-                let currentEvent = {intersection:intersection,evt:e};
+                let currentEvent = {intersection:intersection,evt:e,preventDefault:()=>{defaultPrevented=true}};
                 // If this is the first time weve seen this element then emit the mouseenter event.
                 if(this.prevIntersectionEls.indexOf(intersection.object.el)===-1&&!defaultPrevented){
                     intersection.object.el.emit('mouseenter',currentEvent);
