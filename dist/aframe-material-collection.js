@@ -597,7 +597,7 @@ module.exports = AFRAME.registerComponent('ui-text', {
         }
         // Regex to allow float/int input - float inpit allows "0." for as you type numbers - need to remove on blur.
         // TODO: Need to remove trailing dot on blur to make a valid number.
-        if(!((is_float?/^\d*((\.)|(\.\d+))?$/g:/^\d*?$/g).test(this.el.sceneEl.canvas_input.value()+e.key))){
+        if(e&&!((is_float?/^\d*((\.)|(\.\d+))?$/g:/^\d*?$/g).test(this.el.sceneEl.canvas_input.value()+e.key))){
             e.preventDefault();
         }
     },
@@ -2216,7 +2216,7 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
 /* 23 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.3.34","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.3.35","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 24 */

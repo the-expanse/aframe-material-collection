@@ -78,7 +78,7 @@ module.exports = AFRAME.registerComponent('ui-text', {
         }
         // Regex to allow float/int input - float inpit allows "0." for as you type numbers - need to remove on blur.
         // TODO: Need to remove trailing dot on blur to make a valid number.
-        if(!((is_float?/^\d*((\.)|(\.\d+))?$/g:/^\d*?$/g).test(this.el.sceneEl.canvas_input.value()+e.key))){
+        if(e&&!((is_float?/^\d*((\.)|(\.\d+))?$/g:/^\d*?$/g).test(this.el.sceneEl.canvas_input.value()+e.key))){
             e.preventDefault();
         }
     },
