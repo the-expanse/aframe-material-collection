@@ -15,7 +15,7 @@ export class Utils{
         }
     }
     preventDefault(e){
-        if(e.detail.preventDefault && typeof e.detail.preventDefault === "function"){
+        if(e.detail && e.detail.preventDefault && typeof e.detail.preventDefault === "function"){
             e.detail.preventDefault();
         }
     }
