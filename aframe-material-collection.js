@@ -1927,7 +1927,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
             let intersection = intersections[i];
             // Only emit events on objecst with an element attached
             if(intersection.object.el&&intersection.object.el.classList.contains(this.data.intersectableClass)){
-                let currentEvent = {intersection:intersection,evt:e};
+                let currentEvent = {intersection:intersection,evt:e,preventDefault:()=>{defaultPrevented=true}};
                 // If this is the first time weve seen this element then emit the mouseenter event.
                 if(this.prevIntersectionEls.indexOf(intersection.object.el)===-1&&!defaultPrevented){
                     intersection.object.el.emit('mouseenter',currentEvent);
@@ -2216,7 +2216,7 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
 /* 23 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.3.35","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.3.36","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 24 */
