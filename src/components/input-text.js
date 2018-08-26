@@ -393,10 +393,10 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
     setCharacters(){
         this.positions = [];
         let child = this.text.object3D.children[this.text.object3D.children.length-1];
+        if(!this.chars.length||!child)return;
         let glyphs = child.geometry.layout.glyphs;
         let scale = child.scale.x;
         let lastPosition = 0;
-        if(!this.chars.length)return;
         for(let i = 0; i < glyphs.length; i++){
             let glyph = glyphs[i];
             let currentWidth = (this.chars[i].char===' '?20:glyph.data.width);
