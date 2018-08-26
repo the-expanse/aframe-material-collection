@@ -144,7 +144,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         UI.utils.stoppedChanging(this.text.object3D.uuid);
         this.underline.setAttribute('height',0.005);
         this.underline.setAttribute('color','#bfbfbf');
-        if(this.chars[this.chars.length-1].char==='.'&&this.data.type==="number"){
+        if(this.chars.length&&this.chars[this.chars.length-1].char==='.'&&this.data.type==="number"){
             this.chars.pop();
             this.setValue();
         }
