@@ -24,6 +24,7 @@ window.UI = {
     a_ui_toast: require('./primitives/toast'),
     a_ui_checkbox: require('./primitives/checkbox'),
     a_ui_radio: require('./primitives/radio'),
+    a_ui_input_text: require('./primitives/input-text'),
     a_ui_text_input: require('./primitives/text-input'),
     a_ui_number_input: require('./primitives/number-input'),
     a_ui_int_input: require('./primitives/int-input'),
@@ -33,6 +34,7 @@ window.UI = {
 
     // Components
     text: require('./components/text'),
+    input_text: require('./components/input-text'),
     btn: require('./components/btn'),
     icon: require('./components/icon'),
     rounded: require('./components/rounded'),

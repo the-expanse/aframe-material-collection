@@ -6,9 +6,6 @@
  * @author Shane Harris
  */
 
-if (typeof CanvasInput === 'undefined') {
-    throw 'aframe-material-collection requires CanvasInput to be loaded first - <script src="https://cdn.rawgit.com/shaneharris/CanvasInput/master/CanvasInput.js"></script>';
-}
 module.exports = AFRAME.registerComponent('ui-text', {
     schema: {
         width:{type:'number',default:0.5},
@@ -26,6 +23,10 @@ module.exports = AFRAME.registerComponent('ui-text', {
     },
     init(){
 
+        if (typeof CanvasInput === 'undefined') {
+            throw 'aframe-material-collection requires CanvasInput to be loaded first - <script src="https://cdn.rawgit.com/shaneharris/CanvasInput/master/CanvasInput.js"></script>';
+        }
+        console.warn('ui-text is deprecated. please use ui-input-text instead. Thanks!')
         // Setup text input box.
         this.backing = document.createElement('a-plane');
         this.backing.setAttribute('width',this.data.width);

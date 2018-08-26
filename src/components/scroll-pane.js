@@ -276,6 +276,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             case "A-UI-TEXT-INPUT":
             case "A-UI-NUMBER-INPUT":
             case "A-UI-INT-INPUT":
+            case "A-UI-INPUT-TEXT":
             case "A-UI-PASSWORD-INPUT":
                 width = parent.getAttribute('width');
                 height = parent.getAttribute('height');
