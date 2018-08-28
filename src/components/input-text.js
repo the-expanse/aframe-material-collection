@@ -22,6 +22,8 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
     init(){
         this.setupElements();
         this.text.addEventListener('textfontset',()=>{
+            this.text.selectionStart = 0;
+            this.text.selectionLength = 0;
             this.startSelection = 0;
             this.scrollOffset = 0;
             this.alphabet = {};
@@ -46,7 +48,6 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
                 this.isMoving = false;
                 this.setSelection(this.text.selectionStart,this.text.selectionLength)
             });
-            //this.el.addEventListener('dblclick',()=>this.selectAll());
             this.el.setAttribute('visible',false);
             setTimeout(()=>{
                 this.setValue();
@@ -54,6 +55,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
                 this.el.setAttribute('visible',true);
             });
         });
+        this.el.getValue = this.getValue.bind(this);
     },
     setupScrollClips(){
         this.content_clips = [
@@ -69,6 +71,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
     },
     increaseWrap(){
         let child = this.text.object3D.children[this.text.object3D.children.length-1];
+        if(!child)return;
         if(child.geometry.layout._linesTotal>1){
             this.text.setAttribute('width',this.text.getAttribute('width')*1.2);
             this.text.setAttribute('wrap-pixels',this.text.getAttribute('width')*500);
@@ -84,7 +87,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         this.content_clips[1].applyMatrix4(this.backing.object3D.matrixWorld);
 
         let child = this.text.object3D.children[this.text.object3D.children.length-1];
-        child.material.clippingPlanes = this.text._content_clips?this.text._content_clips.concat(this.content_clips):this.content_clips;
+        if(child)child.material.clippingPlanes = this.text._content_clips?this.text._content_clips.concat(this.content_clips):this.content_clips;
         let selectionHeight = this.selectionHighlight.getObject3D('mesh');
         if(selectionHeight){
             selectionHeight.material.clippingPlanes = this.text._content_clips?this.text._content_clips.concat(this.content_clips):this.content_clips;
@@ -112,10 +115,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         }
         // Regex to allow float/int input - float inpit allows "0." for as you type numbers - need to remove on blur.
         // TODO: Need to remove trailing dot on blur to make a valid number.
-        let output = '';
-        for(let i = 0; i < this.chars.length; i++){
-            output+=this.chars[i].char;
-        }
+        let output = this.getValue();
         if(e){
             return ((is_float?/^\d*((\.)|(\.\d+))?$/g:/^\d*?$/g).test(output+e.key));
         }
@@ -125,7 +125,9 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         return this.numberOnly(e,true);
     },
     focus(){
-        this.carretTweens = this.setupCarret();
+        if(this.isFocused)return;
+        this.isFocused = true;
+        this.setupCarret();
         UI.utils.isChanging(this.el.sceneEl,this.text.object3D.uuid);
         this.setValue();
         this.setScrollClips();
@@ -135,8 +137,8 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         this.underline.setAttribute('color','#009688');
     },
     blur(){
-        this.carretTweens[0].stop();
-        this.carretTweens[1].stop();
+        this.isFocused = false;
+        clearInterval(this.carretInterval)
         this.carret.getObject3D('mesh').material.opacity = 0;
         this.el.sceneEl.removeEventListener('mousedown',this.blurHandler);
         this.playPauseCamera('play');
@@ -151,7 +153,31 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
     },
     handleKeyboardEvent(e){
         if(e.keyCode===88&&e.ctrlKey) { //CTRL + X
+            // let selection = window.getSelection();
+            // selection.removeAllRanges();
+            //
+            // let textNode = document.createTextNode('lol')
+            // document.body.appendChild(textNode)
+            //
+            // let range = document.createRange();
+            // range.setStart(textNode, 1);
+            // range.setEnd(textNode, 3);
+            //
+            // selection.addRange(range)
+            //
+            // document.execCommand('copy')
+            //
+            // document.body.removeChild(textNode)
             // TODO: Clipboard API?? - https://stackoverflow.com/questions/6413036/get-current-clipboard-content
+
+
+            // const modifyCopy = e => {
+            //     console.log('copy executed!')
+            //     e.clipboardData.setData('text/plain', 'Please don\'t copy our work!');
+            //     e.preventDefault();
+            // };
+            //
+            // document.addEventListener('copy', modifyCopy);
         }if(e.keyCode===67&&e.ctrlKey) { //CTRL + C
 
         }else if(e.keyCode===86&&e.ctrlKey) { //CTRL + V
@@ -174,6 +200,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
                 this.chars.splice(this.text.selectionStart,this.text.selectionLength,{char:e.key});
                 this.text.selectionStart++;
                 this.text.selectionLength = 0;
+                console.log(this.text.selectionStart,this.text.selectionLength,{char:e.key});
             }
         }else if(e.keyCode===46){// Delete
             this.chars.splice(this.text.selectionStart,this.text.selectionLength||1);
@@ -251,10 +278,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         this.increaseWrap();
     },
     setScrolledValue(){
-        let output = '';
-        for(let i = 0; i < this.chars.length; i++){
-            output+=this.chars[i].char;
-        }
+        let output = this.getValue();
         this.text.setAttribute('value',output);
         if(!this.chars.length){
             this.text.setAttribute('color','#bfbfbf');
@@ -313,9 +337,8 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         this.carret.setAttribute('shader','flat');
         this.carret.className = 'no-yoga-layout';
         this.carret.setAttribute('color','#009688');
-        this.carret.setAttribute('position','0 0 0.001');
+        this.carret.setAttribute('position',-(this.data.width/2)+' 0 0.001');
         this.text.appendChild(this.carret);
-
 
 
         this.backing = document.createElement('a-plane');
@@ -338,37 +361,21 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         this.container.appendChild(this.underline);
 
         this.el.appendChild(this.container);
-    // <a-plane class="intersectable" width="1" height="0.2"
-    //     color="white" shader="flat" ui-double-click>
-    //     <a-text class="no-yoga-layout" color="#000000" white-space="pre" anchor="center" align="left"
-    //     width="2"
-    //     height="0.2"
-    //     value="0123456789-10-11-12-13-14-15-16 consectetur adipiscing elit. "
-    //         ></a-text>
-    //         </a-plane>
 
 
     },
     setupCarret(){
         let material = this.carret.getObject3D('mesh').material;
-        let tween = new TWEEN.Tween({x:material.opacity})
-            .to({ x: 1 }, 250)
-            .delay(100)
-            .onUpdate(function(){
-                material.opacity = this.x;
-            })
-            .easing(TWEEN.Easing.Circular.Out);
-        let tweenBack = new TWEEN.Tween({x:material.opacity})
-            .to({x:0}, 250)
-            .onUpdate(function(){
-                material.opacity = this.x;
-            })
-            .delay(100)
-            .easing(TWEEN.Easing.Circular.Out);
-        tween.chain(tweenBack);
-        tweenBack.chain(tween);
-        tween.start();
-        return [tween,tweenBack];
+        this.carretInterval = setInterval(()=>{
+            material.opacity = material.opacity?0:1;
+        },350);
+    },
+    getValue(){
+        let output = '';
+        for(let i = 0; i < this.chars.length; i++){
+            output+=this.chars[i].char;
+        }
+        return output;
     },
     getSelectionPosition(e){
         this.el.object3D.updateMatrixWorld();
