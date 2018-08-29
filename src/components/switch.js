@@ -17,6 +17,8 @@ module.exports = AFRAME.registerComponent('ui-switch', {
         switchDuration:{type:'int',default: 350},
         handleZIndex:{type:'number',default:0.01},
         intersectableClass: {default: 'intersectable'},
+        width:{type:'number',default: 0.3},
+        height:{type:'number',default: 0.1},
     },
     updateSchema(){
         if(this.data){
