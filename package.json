@@ -27,7 +27,5 @@
   },
   "author": "Shane Harris",
   "license": "MIT",
-  "dependencies": {
-    "url-parse": "^1.4.3"
-  }
+  "dependencies": {}
 }
