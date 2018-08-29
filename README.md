@@ -26,9 +26,6 @@ The Shane's Editor project is also open source and you can get involved at
 
 
 
-https://discord.gg/Q2a5BkZ
-
-
 
 ## Getting Started
 
