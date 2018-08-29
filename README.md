@@ -11,6 +11,22 @@ It goes further than providing some reusable components for your UI, but also in
 
 [MANY ELEMENTS DEMO](https://shaneharris.github.io/aframe-material-collection/performance.html)
 
+
+## Inspiration
+
+I wanted to port my scene editor built in Altspace VR to the browser as a standalone aframe based project. AltspaceVR
+provided a renderTarget based solution allowing you to render a browser to a texture making prototyping UIs as easy as making web apps.
+Without this solution available in the browser I had to compose some UI elements in order to be able to re-create the UI in a WebGL context
+while still allowing for quick prototyping of UIs and so this UI kit ( quickly becoming a UI framework ) was born.
+
+
+Here is a demo of the new aframe based Shane's Editor with a more complex UI:
+![Demo](https://raw.githubusercontent.com/shaneharris/shanes-editor/master/demo.gif)
+
+The Shane's Editor project is also open source and you can get involved [here](https://github.com/shaneharris/shanes-editor) or take it for a test drive in the live demo [here](https://shaneharris.github.io/shanes-editor/)
+
+
+
 ## Getting Started
 
 #### CDN for browser

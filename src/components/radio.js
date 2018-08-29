@@ -16,10 +16,12 @@ module.exports = AFRAME.registerComponent('ui-radio', {
         disabledColor: {default: '#afafaf'},
         disabled: {type: 'boolean', default: false},
         intersectableClass: {default: 'intersectable'},
+        width:{type:'number',default: 0.15},
+        height:{type:'number',default: 0.15},
     },
     init() {
-        this.width = this.data.size||0.15;
-        this.height = this.data.size||0.15;
+        this.width = 0.15;
+        this.height = 0.15;
         // Create center circle for checked state.
         this.filled_circle = document.createElement('a-circle');
         this.filled_circle.setAttribute('radius',this.data.selectedRadius);

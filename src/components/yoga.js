@@ -78,6 +78,7 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
         heightPercent:{default: 'default'},
     },
     init(){
+        this.el.getYogaProperties = this.getProperties.bind(this);
         this.setProperties();
     },
     updateSchema(){

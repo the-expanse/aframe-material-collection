@@ -76,7 +76,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
             this.text.setAttribute('width',this.text.getAttribute('width')*1.2);
             this.text.setAttribute('wrap-pixels',this.text.getAttribute('width')*500);
             this.text.setAttribute('x-offset',((this.text.getAttribute('width')-this.data.width)/2));
-            this.increaseWrap();
+            setTimeout(()=>this.increaseWrap(),0);
         }
     },
     setScrollClips(){
@@ -85,9 +85,10 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         this.content_clips[1].set(new THREE.Vector3( 1, 0, 0 ), (this.data.width/2)+0.005);
         this.content_clips[0].applyMatrix4(this.backing.object3D.matrixWorld);
         this.content_clips[1].applyMatrix4(this.backing.object3D.matrixWorld);
-
-        let child = this.text.object3D.children[this.text.object3D.children.length-1];
-        if(child)child.material.clippingPlanes = this.text._content_clips?this.text._content_clips.concat(this.content_clips):this.content_clips;
+        setTimeout(()=>{
+            let child = this.text.object3D.children[this.text.object3D.children.length-1];
+            if(child)child.material.clippingPlanes = this.text._content_clips?this.text._content_clips.concat(this.content_clips):this.content_clips;
+        },0);
         let selectionHeight = this.selectionHighlight.getObject3D('mesh');
         if(selectionHeight){
             selectionHeight.material.clippingPlanes = this.text._content_clips?this.text._content_clips.concat(this.content_clips):this.content_clips;

@@ -41,8 +41,11 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         ];
         // Pause/play camera look controls
         const playPauseCamera = method=>{
-            if(this.data.cameraEl&&this.data.cameraEl.components[this.data.lookControlsComponent]){
-                this.data.cameraEl.components[this.data.lookControlsComponent][method]();
+            if(this.data.cameraEl) {
+                let lookControls = this.data.cameraEl.getAttribute(this.data.lookControlsComponent);
+                if(lookControls){
+                    lookControls[method]();
+                }
             }
         };
         // Setup mouse move handler for scrolling and updating scroll handle.
@@ -129,7 +132,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             // Set the content in the scroll pane.
             return new Promise(resolve=>{
                 let loadedWrapper = document.createElement('a-entity');
-                loadedWrapper.setAttribute('visible',false)
+                loadedWrapper.setAttribute('visible',false);
                 loadedWrapper.insertAdjacentHTML('afterbegin',body);
                 loadedWrapper.addEventListener('loaded',e=>{
                     // Trigger an update to redraw scrollbars and fire change events.
@@ -256,7 +259,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                             break;
                     }
                 }else if(["setWidthAuto","setHeightAuto"]
-                .indexOf(method)>-1) {
+                    .indexOf(method)>-1) {
                     node[method]();
                 }else{
                     node[method](properties[method]);
@@ -270,6 +273,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         parent = parent||this.container;
         // Automatically detect the entity width / height by the element tagname.
         let width = 0,height = 0;
+        let geo = parent.getAttribute('geometry');
         switch(parent.tagName){
             case "A-TEXT":
             case "A-TRIANGLE":
@@ -284,33 +288,34 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             case "A-UI-BUTTON":
             case "A-PLANE":
             case "A-ENTITY":
-                width = Number(parent.components.geometry?parent.components.geometry.data.width:parent.getAttribute('width'));
-                height = Number(parent.components.geometry?parent.components.geometry.data.height:parent.getAttribute('height'));
+                width = Number(geo?geo.width:parent.getAttribute('width'));
+                height = Number(geo?geo.height:parent.getAttribute('height'));
                 break;
             case "A-UI-FAB-BUTTON":
             case "A-UI-FAB-BUTTON-SMALL":
             case "A-CIRCLE":
-                width = Number(parent.components.geometry?parent.components.geometry.data.radius*2:(parent.getAttribute('radius')||0)*2);
+                width = Number(geo?geo.radius*2:(parent.getAttribute('radius')||0)*2);
                 height = width;
                 break;
             case "A-RING":
-                width = Number(parent.components.geometry?parent.components.geometry.data["radius-outer"]*2:(parent.getAttribute('radius-outer')||0)*2);
+                width = Number(geo?geo["radius-outer"]*2:(parent.getAttribute('radius-outer')||0)*2);
                 height = width;
                 break;
             case "A-UI-SWITCH":
             case "A-UI-CHECKBOX":
             case "A-UI-RADIO":
                 let componentName = parent.tagName.substr(2).toLowerCase();
-                width = parent.components[componentName].width;
-                height = parent.components[componentName].height;
+                width = parent.getAttribute(componentName).width;
+                height = parent.getAttribute(componentName).height;
                 break;
         }
 
         if(!parent.yoga_node){
             parent.yoga_node = Yoga.Node.create();
-            if(parent.components["ui-yoga"]){
+            let ui_yoga = parent.getAttribute("ui-yoga");
+            if(ui_yoga&&parent.getYogaProperties){
                 this.setupYogaNode(parent.yoga_node,width ? width * 100 : 'auto',height ? height * 100 : 'auto',
-                    parent.components["ui-yoga"].getProperties());
+                    parent.getYogaProperties());
             }else{
                 parent.yoga_node.setWidth(width ? width * 100 : 'auto');
                 parent.yoga_node.setHeight(height ? height * 100 : 'auto');
@@ -322,96 +327,114 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             // Add the yoga node to the Yoga tree.
             if(parent.parentElement&&parent.parentElement.yoga_node){
                 // Default margin if none set;
-                if(!parent.components["ui-yoga"]){
+                if(!ui_yoga){
                     parent.yoga_node.setMargin(Yoga.EDGE_RIGHT, 5);
                     parent.yoga_node.setMargin(Yoga.EDGE_BOTTOM, 5);
                 }
                 parent.parentElement.yoga_node.insertChild(parent.yoga_node,parent.parentElement.yoga_node.getChildCount());
             }else{
                 // Default root padding if none set;
-                if(!parent.components["ui-yoga"]){
+                if(!ui_yoga){
                     parent.yoga_node.setPadding(Yoga.EDGE_ALL,2);
                 }
             }
         }
-        [].slice.call(parent.children).forEach(child=>{
-            if(child.classList.contains('no-yoga-layout')){
-                return;
+        for(let i = 0; i < parent.childNodes.length; i++) {
+            let child = parent.childNodes[i];
+            if (child.nodeType === 1) {
+                if(child.classList.contains('no-yoga-layout')){
+                    return;
+                }
+                this.initialiseYoga(child);
             }
-            this.initialiseYoga(child);
-        });
+        }
     },
     updateYoga(parent){
         // Update the entity positions from the Yoga layout.
-        [].slice.call(parent.children).forEach(child=>{
-            if(child.classList.contains('no-yoga-layout')){
-                return;
+        for(let i = 0; i < parent.childNodes.length; i++){
+            let child = parent.childNodes[i];
+            if(child.nodeType === 1){
+                if(child.classList.contains('no-yoga-layout')){
+                    return;
+                }
+                let position;
+                if(child.tagName==="A-ENTITY"){
+                    position = {
+                        x:(child.yoga_node.getComputedLeft()/100),
+                        y:(child.yoga_node.getComputedTop()/100),
+                    };
+                }else{
+                    position = {
+                        x:(child.yoga_node.getComputedLeft()/100)+(child.yoga_node.getComputedWidth()/200),
+                        y:(child.yoga_node.getComputedTop()/100)+(child.yoga_node.getComputedHeight()/200),
+                    };
+                }
+                let highest = (child.yoga_node.getComputedTop()/100)+(child.yoga_node.getComputedHeight()/100);
+                if(highest>this.content_height){
+                    this.content_height = highest;
+                }
+                child.setAttribute('position',position.x+' '+(-position.y)+' 0.0001');//+child.getAttribute('position').z);
             }
-            let position;
-            if(child.tagName==="A-ENTITY"){
-                position = {
-                    x:(child.yoga_node.getComputedLeft()/100),
-                    y:(child.yoga_node.getComputedTop()/100),
-                };
-            }else{
-                position = {
-                    x:(child.yoga_node.getComputedLeft()/100)+(child.yoga_node.getComputedWidth()/200),
-                    y:(child.yoga_node.getComputedTop()/100)+(child.yoga_node.getComputedHeight()/200),
-                };
-            }
-            let highest = (child.yoga_node.getComputedTop()/100)+(child.yoga_node.getComputedHeight()/100);
-            if(highest>this.content_height){
-                this.content_height = highest;
-            }
-            child.setAttribute('position',position.x+' '+(-position.y)+' '+child.getAttribute('position').z);
             this.updateYoga(child);
-        });
+        }
     },
     setChildClips(parent){
         // Traverse the entity tree inside the content container and add content clips to each material found.
         parent = parent||this.container;
-        [].slice.call(parent.children).forEach(child=>{
-            child._content_clips = this.content_clips;
-            let traverse = ()=>{
-                child.object3D.traverse(object=>{
-                    if(object.material){
-                        // Add shader chunks to be able to clip shader materials - needed for <a-text> entities.
-                        if(object.material.isRawShaderMaterial){
-                            object.material.onBeforeCompile = function ( shader ) {
-                                let vertexParts = shader.vertexShader.split('\n');
-                                let vertexMainIndex = vertexParts.indexOf('void main(void) {');
-                                vertexParts.splice(vertexMainIndex,0,'#include <clipping_planes_pars_vertex>');
-                                vertexParts.splice(vertexMainIndex+2,0,'#include <begin_vertex>');
-                                vertexParts.splice(vertexParts.length-2,0,'#include <project_vertex>');
-                                vertexParts.splice(vertexParts.length-2,0,'#include <clipping_planes_vertex>');
-                                shader.vertexShader = vertexParts.join('\n');
-                                let fragmentParts = shader.fragmentShader.split('\n');
-                                let fragmentMainIndex = fragmentParts.indexOf('void main() {');
-                                fragmentParts.splice(fragmentMainIndex,0,'#include <clipping_planes_pars_fragment>');
-                                fragmentParts.splice(fragmentMainIndex+2,0,'#include <clipping_planes_fragment>');
-                                shader.fragmentShader = fragmentParts.join('\n');
-                            };
-                            object.material.clipping = true;
-                        }
-                        // Set the content clipping planes.
-                        object.material.clippingPlanes = this.content_clips;
-                        object.material.clipShadows = true;
-                        object.material.needsUpdate = true;
+        for(let i = 0; i < parent.childNodes.length; i++) {
+            let child = parent.childNodes[i];
+            //if (child.nodeType === 1) {
+                child._content_clips = this.content_clips;
+                let traverse = ()=>{
+                    if(child.object3D){
+                        child.object3D.traverse(object=>{
+                            if(object.material){
+                                // Add shader chunks to be able to clip shader materials - needed for <a-text> entities.
+                                if(object.material.isRawShaderMaterial){
+                                    object.material.onBeforeCompile = function ( shader ) {
+                                        let vertexParts = shader.vertexShader.split('\n');
+                                        let vertexMainIndex = vertexParts.indexOf('void main(void) {');
+                                        vertexParts.splice(vertexMainIndex,0,'#include <clipping_planes_pars_vertex>');
+                                        vertexParts.splice(vertexMainIndex+2,0,'#include <begin_vertex>');
+                                        vertexParts.splice(vertexParts.length-2,0,'#include <project_vertex>');
+                                        vertexParts.splice(vertexParts.length-2,0,'#include <clipping_planes_vertex>');
+                                        shader.vertexShader = vertexParts.join('\n');
+                                        let fragmentParts = shader.fragmentShader.split('\n');
+                                        let fragmentMainIndex = fragmentParts.indexOf('void main() {');
+                                        fragmentParts.splice(fragmentMainIndex,0,'#include <clipping_planes_pars_fragment>');
+                                        fragmentParts.splice(fragmentMainIndex+2,0,'#include <clipping_planes_fragment>');
+                                        shader.fragmentShader = fragmentParts.join('\n');
+                                    };
+                                    object.material.clipping = true;
+                                }
+                                // Set the content clipping planes.
+                                object.material.clippingPlanes = this.content_clips;
+                                object.material.clipShadows = true;
+                                object.material.needsUpdate = true;
+                            }
+                        });
                     }
-                });
-            };
-            if(child.components.text){
-                // Wait for the font to load first.
-                child.addEventListener('textfontset',()=>{
-                    clearTimeout(this.fontRenderTimeout);
-                    this.fontRenderTimeout = setTimeout(()=>UI.utils.stoppedChanging(this.currentUuid),500);
-                    traverse();
-                })
-            }else{
-                traverse();
-            }
-            // Recurse.
+                };
+                // Wait for next tick - exokit required this.
+                setTimeout(()=>{
+                    if(child.getAttribute){
+                        let text = child.getAttribute('text');
+
+                        if(text){
+                            // Wait for the font to load first.
+                            child.addEventListener('textfontset',()=>{
+                                clearTimeout(this.fontRenderTimeout);
+                                this.fontRenderTimeout = setTimeout(()=>UI.utils.stoppedChanging(this.currentUuid),500);
+                                traverse();
+                            })
+                        }else{
+                            traverse();
+                        }
+                    }
+                },0);
+           // }
+            // Recurse
             this.setChildClips(child);
-        })
+        }
     }
 });

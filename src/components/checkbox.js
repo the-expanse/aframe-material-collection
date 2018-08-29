@@ -14,7 +14,9 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
         disabledColor: {default: '#afafaf'},
         indeterminate: {type:'boolean',default: false},
         disabled:{type:'boolean',default: false},
-        intersectableClass: {default: 'intersectable'}
+        intersectableClass: {default: 'intersectable'},
+        width:{type:'number',default: 0.15},
+        height:{type:'number',default: 0.15},
     },
     init() {
         this.width = 0.15;
