@@ -15,9 +15,9 @@ It goes further than providing some reusable components for your UI, but also in
 ## Inspiration
 
 I wanted to port my scene editor built in Altspace VR to the browser as a standalone aframe based project. AltspaceVR
-provided a renderTarget based solution allowing you to render a browser to a texture making prototyping UIs as easy as making web apps.
-Without this solution available in the browser I had to compose some UI elements in order to be able to re-create the UI in a WebGL context
-while still allowing for quick prototyping of UIs and so this UI kit ( quickly becoming a UI framework ) was born.
+provided a renderTarget based solution allowing you to render a browser to a texture. This made prototyping UIs as easy as making web apps.
+Without this solution available in the browser, I had to make my own UI components so I could re-create the editor UI in a WebGL context -
+as such `aframe-material-collection` was born.
 
 
 Here is a demo of the new aframe based Shane's Editor with a more complex UI:
