@@ -5,11 +5,7 @@ Aframe Material Collection uses material design and the [yoga layout engine](htt
 It goes further than providing some reusable components for your UI, but also integrates yoga for easy and powerful flex layouts. 2D primitives used inside the a-ui-scroll-pane are automatically measured for width and height to allow the layout engine to automatically place them with default settings, but all of these can be overridden with the ui-yoga component to allow granular control over the layout properties. Note only a subset of 2D primitives are supported for auto layout including a-plane, a-circle, a-ring, a-text ( width width and height explicitly set ) and all the primitives below.
 ## Live Demo
 
-[FULL DEMO](https://shaneharris.github.io/aframe-material-collection/)
-
-[SCROLL PANE DEMO](https://shaneharris.github.io/aframe-material-collection/scroll-pane.html)
-
-[MANY ELEMENTS DEMO](https://shaneharris.github.io/aframe-material-collection/performance.html)
+[DEMO](https://shaneharris.github.io/aframe-material-collection/)
 
 
 ## Inspiration
@@ -23,7 +19,14 @@ as such `aframe-material-collection` was born.
 Here is a demo of the new aframe based Shane's Editor with a more complex UI:
 ![Demo](https://raw.githubusercontent.com/shaneharris/shanes-editor/master/demo.gif)
 
-The Shane's Editor project is also open source and you can get involved [here](https://github.com/shaneharris/shanes-editor) or take it for a test drive in the live demo [here](https://shaneharris.github.io/shanes-editor/)
+The Shane's Editor project is also open source and you can get involved at
+[github](https://github.com/shaneharris/shanes-editor), join our
+[discord](https://discord.gg/Q2a5BkZ) or take it for a test drive in the
+[live demo](https://shaneharris.github.io/shanes-editor/)
+
+
+
+https://discord.gg/Q2a5BkZ
 
 
 
