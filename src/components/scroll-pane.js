@@ -42,7 +42,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         // Pause/play camera look controls
         const playPauseCamera = method=>{
             if(this.data.cameraEl) {
-                let lookControls = this.data.cameraEl.getAttribute(this.data.lookControlsComponent);
+                let lookControls = this.data.cameraEl.components[this.data.lookControlsComponent];
                 if(lookControls){
                     lookControls[method]();
                 }
