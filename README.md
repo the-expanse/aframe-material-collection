@@ -31,7 +31,6 @@ The Shane's Editor project is also open source and you can get involved at
 
 #### CDN for browser
 ```HTML
-<script src="https://cdn.rawgit.com/shaneharris/CanvasInput/master/CanvasInput.js"></script>
 <script src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
 <!-- Include yoga layout for scroll pane layouts after aframe -->
 <script src="https://unpkg.com/aframe-material-collection/dist/aframe-yoga-layout.min.js"></script>
@@ -92,7 +91,7 @@ npm run build
 </a-entity>
 
 <!-- Text Input -->
-<a-ui-text-input width="0.9" height="0.15" value="something"></a-ui-text-input>
+<a-ui-input-text width="0.9" height="0.15" value="something"></a-ui-input-text>
 
 ```
 
@@ -100,6 +99,5 @@ npm run build
 
 * Need to add touchpad/joystick support for scrolling.
 * Need to document yoga layout properties/strategies.
-* Need to improve canvasinput and remove dom dependencies.
 * Need to expose DOM-like events on all the primitives, as well as getters and setters for values etc.
 * Look at [unit testing with Karma](https://github.com/aframevr/aframe/tree/master/tests)
