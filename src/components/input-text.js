@@ -56,6 +56,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
             });
         });
         this.el.getValue = this.getValue.bind(this);
+        this.el.value = this.value.bind(this);
     },
     setupScrollClips(){
         this.content_clips = [
