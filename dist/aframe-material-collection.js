@@ -2473,7 +2473,7 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
 /* 20 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.4.14","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.4.15","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 21 */
@@ -2676,7 +2676,7 @@ module.exports = AFRAME.registerComponent('ui-rounded', {
             ctx.quadraticCurveTo( x, y, x, y + radius );
         } )( roundedRectShape, -mesh.geometry.metadata.parameters.width/2, -mesh.geometry.metadata.parameters.height/2, mesh.geometry.metadata.parameters.width, mesh.geometry.metadata.parameters.height, this.data.borderRadius );
         // Update the geometry.
-        mesh.geometry = new THREE.ShapeGeometry(roundedRectShape,this.data.curveSegments);
+        mesh.geometry = new THREE.ShapeBufferGeometry(roundedRectShape,this.data.curveSegments);
         // Emit rounded-loaded event once the geometry has been updated.
         this.el.emit('rounded-loaded', null, false);
     }

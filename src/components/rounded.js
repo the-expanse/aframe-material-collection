@@ -27,7 +27,7 @@ module.exports = AFRAME.registerComponent('ui-rounded', {
             ctx.quadraticCurveTo( x, y, x, y + radius );
         } )( roundedRectShape, -mesh.geometry.metadata.parameters.width/2, -mesh.geometry.metadata.parameters.height/2, mesh.geometry.metadata.parameters.width, mesh.geometry.metadata.parameters.height, this.data.borderRadius );
         // Update the geometry.
-        mesh.geometry = new THREE.ShapeGeometry(roundedRectShape,this.data.curveSegments);
+        mesh.geometry = new THREE.ShapeBufferGeometry(roundedRectShape,this.data.curveSegments);
         // Emit rounded-loaded event once the geometry has been updated.
         this.el.emit('rounded-loaded', null, false);
     }
