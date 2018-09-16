@@ -646,7 +646,6 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
                 this.chars.splice(this.text.selectionStart,this.text.selectionLength,{char:e.key});
                 this.text.selectionStart++;
                 this.text.selectionLength = 0;
-                console.log(this.text.selectionStart,this.text.selectionLength,{char:e.key});
             }
         }else if(e.keyCode===46){// Delete
             this.chars.splice(this.text.selectionStart,this.text.selectionLength||1);
@@ -816,10 +815,17 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
             material.opacity = material.opacity?0:1;
         },350);
     },
+    value(text){
+        if(text){
+            // set value
+        }else{
+            return this.chars.join('');
+        }
+    },
     getValue(){
         let output = '';
         for(let i = 0; i < this.chars.length; i++){
-            output+=this.chars[i].char;
+            output+=this.data.type==="password"?'*':this.chars[i].char;
         }
         return output;
     },
