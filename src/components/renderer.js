@@ -33,6 +33,8 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         this.renderTarget = new THREE.WebGLRenderTarget(this.data.renderResolution.x,this.data.renderResolution.y, { antialias: true } );
         // Set the texture to the ui panel mesh.
         this.meshEl.getObject3D('mesh').material.map = this.renderTarget.texture;
+        // emit ready event for anythng wanting to use this texture.
+        this.meshEl.emit('texture-ready',this.renderTarget.texture);
         // Listen for change events to enable rendering.
         this.stoppedRendering = false;
         this.isRendering = true;

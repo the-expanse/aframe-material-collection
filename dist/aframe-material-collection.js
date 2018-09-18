@@ -2030,6 +2030,8 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         this.renderTarget = new THREE.WebGLRenderTarget(this.data.renderResolution.x,this.data.renderResolution.y, { antialias: true } );
         // Set the texture to the ui panel mesh.
         this.meshEl.getObject3D('mesh').material.map = this.renderTarget.texture;
+        // emit ready event for anythng wanting to use this texture.
+        this.meshEl.emit('texture-ready',this.renderTarget.texture);
         // Listen for change events to enable rendering.
         this.stoppedRendering = false;
         this.isRendering = true;
@@ -2473,7 +2475,7 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
 /* 20 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.4.15","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.4.16","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 21 */
