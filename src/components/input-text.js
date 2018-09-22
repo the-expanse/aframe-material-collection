@@ -130,7 +130,6 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         if(this.isFocused)return;
         this.isFocused = true;
         this.setupCarret();
-        UI.utils.isChanging(this.el.sceneEl,this.text.object3D.uuid);
         this.setValue();
         this.setScrollClips();
         setTimeout(()=>this.el.sceneEl.addEventListener('mousedown',this.blurHandler),50);
@@ -369,6 +368,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         let material = this.carret.getObject3D('mesh').material;
         this.carretInterval = setInterval(()=>{
             material.opacity = material.opacity?0:1;
+            UI.utils.isChanging(this.el.sceneEl,this.text.object3D.uuid);
         },350);
     },
     value(text){

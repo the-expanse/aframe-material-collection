@@ -577,7 +577,6 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         if(this.isFocused)return;
         this.isFocused = true;
         this.setupCarret();
-        UI.utils.isChanging(this.el.sceneEl,this.text.object3D.uuid);
         this.setValue();
         this.setScrollClips();
         setTimeout(()=>this.el.sceneEl.addEventListener('mousedown',this.blurHandler),50);
@@ -816,6 +815,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         let material = this.carret.getObject3D('mesh').material;
         this.carretInterval = setInterval(()=>{
             material.opacity = material.opacity?0:1;
+            UI.utils.isChanging(this.el.sceneEl,this.text.object3D.uuid);
         },350);
     },
     value(text){
@@ -2477,7 +2477,7 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
 /* 20 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.4.17","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.4.18","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 21 */
@@ -3431,14 +3431,21 @@ __webpack_require__.r(__webpack_exports__);
 // CONCATENATED MODULE: ./src/utils.js
 class Utils{
     constructor(){
-        this.changesDetected = [];
+        this.changesDetected = {};
         this.is_changeing = false;
     }
     isFirstOrLastChange(){
-        if(!this.is_changeing&&this.changesDetected.length){
+        let empty = true;
+
+        for(let key in this.changesDetected) {
+            empty = false;
+            break;
+        }
+
+        if(!this.is_changeing&&!empty){
             this.scene.emit('ui-changing');
             this.is_changeing = true;
-        }else if(this.is_changeing&&!this.changesDetected.length){
+        }else if(this.is_changeing&&empty){
             if(this.is_changeing){
                 this.scene.emit('ui-changing-stopped');
                 this.is_changeing = false;
@@ -3454,18 +3461,22 @@ class Utils{
         return string.length>length?string.substr(0,length)+"...":string;
     }
     isChanging(scene,ref){
-        let index = this.changesDetected.indexOf(ref);
-        if(index===-1){
+        //let index = this.changesDetected[ref];
+        //if(!index){
             this.scene = this.scene||scene;
-            this.changesDetected.push(ref);
+            let now = new Date().getTime();
+            this.changesDetected[ref] = {t:now};
             this.isFirstOrLastChange();
-        }
+            for(let key in this.changesDetected){
+                let change = this.changesDetected[key];
+                if(change.t&&now-change.t>1000){
+                    this.stoppedChanging(ref);
+                }
+            }
+       // }
     }
     stoppedChanging(ref){
-        let index = this.changesDetected.indexOf(ref);
-        if(index>-1){
-            this.changesDetected.splice(index, 1)
-        }
+        delete this.changesDetected[ref];
         this.isFirstOrLastChange();
     }
 }
