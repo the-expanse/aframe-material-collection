@@ -225,7 +225,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         renderer.vr.enabled = false;
         renderer.render(this.el.object3D,this.camera,this.renderTarget);
         renderer.vr.enabled = vrModeEnabled;
-        console.log('render');
+        //console.log('render');
         this.lastRenderTime = delta;
         if(!this.isRendering){
             this.stoppedRendering = true;
