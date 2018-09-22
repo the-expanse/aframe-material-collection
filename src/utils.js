@@ -2,6 +2,15 @@ export class Utils{
     constructor(){
         this.changesDetected = {};
         this.is_changeing = false;
+        setInterval(()=>{
+            let now = new Date().getTime();
+            for(let key in this.changesDetected){
+                let change = this.changesDetected[key];
+                if(change.t&&now-change.t>2000){
+                    this.stoppedChanging(key);
+                }
+            }
+        },2000);
     }
     isFirstOrLastChange(){
         let empty = true;
@@ -30,19 +39,15 @@ export class Utils{
         return string.length>length?string.substr(0,length)+"...":string;
     }
     isChanging(scene,ref){
-        //let index = this.changesDetected[ref];
-        //if(!index){
+        let index = this.changesDetected[ref];
+        if(!index){
             this.scene = this.scene||scene;
             let now = new Date().getTime();
             this.changesDetected[ref] = {t:now};
             this.isFirstOrLastChange();
-            for(let key in this.changesDetected){
-                let change = this.changesDetected[key];
-                if(change.t&&now-change.t>1000){
-                    this.stoppedChanging(ref);
-                }
-            }
-       // }
+        }else{
+            this.changesDetected[ref].t = new Date().getTime();
+        }
     }
     stoppedChanging(ref){
         delete this.changesDetected[ref];
