@@ -1394,9 +1394,9 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.handle.setAttribute('width',this.handleSize===1?0.00000001:0.1);
         this.rail.setAttribute('width',this.handleSize===1?0.00000001:0.1);
         this.rail.setAttribute('color',this.handleSize===1?'#efefef':'#fff');
+        this.handle.setAttribute('height',this.data.height*this.handleSize);
         if(!should_not_scroll){
             this.container.object3D.position.y = this.data.height/2;
-            this.handle.setAttribute('height',this.data.height*this.handleSize);
             this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+(this.data.height-(this.data.height*this.handleSize))/2+' '+(this.data.scrollZOffset+0.0005));
         }
     },
@@ -2479,7 +2479,7 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
 /* 20 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.4.22","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.4.23","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 21 */
