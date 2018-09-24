@@ -158,9 +158,9 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.handle.setAttribute('width',this.handleSize===1?0.00000001:0.1);
         this.rail.setAttribute('width',this.handleSize===1?0.00000001:0.1);
         this.rail.setAttribute('color',this.handleSize===1?'#efefef':'#fff');
+        this.handle.setAttribute('height',this.data.height*this.handleSize);
         if(!should_not_scroll){
             this.container.object3D.position.y = this.data.height/2;
-            this.handle.setAttribute('height',this.data.height*this.handleSize);
             this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+(this.data.height-(this.data.height*this.handleSize))/2+' '+(this.data.scrollZOffset+0.0005));
         }
     },
