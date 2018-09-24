@@ -266,6 +266,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
             }
 
         }
+        this.el.emit('ui-keypress',e);
         this.setValue();
         this.carret.getObject3D('mesh').material.opacity = 1;
         e.preventDefault();
