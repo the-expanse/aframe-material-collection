@@ -144,12 +144,12 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
             })
         }
     },
-    updateContent(){
+    updateContent(should_not_scroll){
         this.updateContentClips();
         this.currentUuid = THREE.Math.generateUUID();
         UI.utils.isChanging(this.el.sceneEl,this.currentUuid);
         this.setChildClips();
-        this.container.object3D.position.y = this.data.height/2;
+        if(!should_not_scroll)this.container.object3D.position.y = this.data.height/2;
         if(typeof Yoga !== 'undefined')this.initialiseYoga(this.container,this.data.width*100);
         this.container.yoga_node.calculateLayout(this.data.width*100, 'auto', Yoga.DIRECTION_LTR);
         this.content_height = Number.NEGATIVE_INFINITY;
