@@ -149,18 +149,20 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.currentUuid = THREE.Math.generateUUID();
         UI.utils.isChanging(this.el.sceneEl,this.currentUuid);
         this.setChildClips();
-        if(!should_not_scroll)this.container.object3D.position.y = this.data.height/2;
         if(typeof Yoga !== 'undefined')this.initialiseYoga(this.container,this.data.width*100);
         this.container.yoga_node.calculateLayout(this.data.width*100, 'auto', Yoga.DIRECTION_LTR);
         this.content_height = Number.NEGATIVE_INFINITY;
         if(typeof Yoga !== 'undefined')this.updateYoga(this.container);
+
         this.handleSize = THREE.Math.clamp((this.data.height/this.content_height),0.1,1);
-        this.handle.setAttribute('height',this.data.height*this.handleSize);
         this.handle.setAttribute('width',this.handleSize===1?0.00000001:0.1);
         this.rail.setAttribute('width',this.handleSize===1?0.00000001:0.1);
         this.rail.setAttribute('color',this.handleSize===1?'#efefef':'#fff');
-        this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+(this.data.height-(this.data.height*this.handleSize))/2+' '+(this.data.scrollZOffset+0.0005));
-
+        if(!should_not_scroll){
+            this.container.object3D.position.y = this.data.height/2;
+            this.handle.setAttribute('height',this.data.height*this.handleSize);
+            this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+(this.data.height-(this.data.height*this.handleSize))/2+' '+(this.data.scrollZOffset+0.0005));
+        }
     },
     mouseMove(e){
         if(this.isDragging){
