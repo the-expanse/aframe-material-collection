@@ -378,6 +378,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-input-text', AFRAME.utils.extend
         height:"ui-input-text.height",
         type:"ui-input-text.type",
         value:"ui-input-text.value",
+        "background-color":"ui-input-text.backgroundColor",
         "place-holder":"ui-input-text.placeHolder",
         "camera-el":"ui-input-text.cameraEl",
         "look-controls-component":"ui-input-text.lookControlsComponent",
@@ -462,6 +463,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         cameraEl:{type:'selector'},
         width:{type:'number',default:1},
         height:{type:'number',default:0.2},
+        backgroundColor:{default:'white'},
         lookControlsComponent:{default:'look-controls'},
         wasdControlsComponent:{default:'wasd-controls'},
         placeHolder:{default:'Text...'}
@@ -794,7 +796,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         this.backing.className = 'intersectable no-yoga-layout';
         this.backing.setAttribute('width',this.data.width+0.1);
         this.backing.setAttribute('height',this.data.height);
-        this.backing.setAttribute('color','white');
+        this.backing.setAttribute('color',this.data.backgroundColor);
         this.backing.setAttribute('shader','flat');
         this.container.appendChild(this.backing);
 
@@ -2483,7 +2485,7 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
 /* 20 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.4.26","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.4.27","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 21 */
