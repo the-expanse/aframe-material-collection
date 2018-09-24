@@ -15,6 +15,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         cameraEl:{type:'selector'},
         width:{type:'number',default:1},
         height:{type:'number',default:0.2},
+        backgroundColor:{default:'white'},
         lookControlsComponent:{default:'look-controls'},
         wasdControlsComponent:{default:'wasd-controls'},
         placeHolder:{default:'Text...'}
@@ -347,7 +348,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         this.backing.className = 'intersectable no-yoga-layout';
         this.backing.setAttribute('width',this.data.width+0.1);
         this.backing.setAttribute('height',this.data.height);
-        this.backing.setAttribute('color','white');
+        this.backing.setAttribute('color',this.data.backgroundColor);
         this.backing.setAttribute('shader','flat');
         this.container.appendChild(this.backing);
 

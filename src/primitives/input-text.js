@@ -20,6 +20,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-input-text', AFRAME.utils.extend
         height:"ui-input-text.height",
         type:"ui-input-text.type",
         value:"ui-input-text.value",
+        "background-color":"ui-input-text.backgroundColor",
         "place-holder":"ui-input-text.placeHolder",
         "camera-el":"ui-input-text.cameraEl",
         "look-controls-component":"ui-input-text.lookControlsComponent",
