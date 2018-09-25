@@ -375,7 +375,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         },350);
     },
     value(text){
-        if(text){
+        if(text||text===""){
             this.chars = text.split('').map(char=>({char:char}))
             this.setValue();
             // set value
