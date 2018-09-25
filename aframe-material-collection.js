@@ -1346,6 +1346,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         // Expose methods to the element to update/set the content of the scroll pane.
         this.el.setContent = this.setContent.bind(this);
         this.el.updateContent = this.updateContent.bind(this);
+        this.el.scroll = this.scroll.bind(this);
     },
     updateContentClips(){
         this.el.sceneEl.object3D.updateMatrixWorld();
@@ -2485,7 +2486,7 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
 /* 20 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.4.28","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.4.29","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 21 */
