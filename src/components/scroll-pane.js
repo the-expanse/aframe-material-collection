@@ -176,7 +176,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         let max = (this.data.height/2)-(this.data.height*this.handleSize)/2;
         // Set scroll position with start point offset.
         let scroll_pos = THREE.Math.clamp(positionY,min,max);
-        let scroll_perc = 1-((scroll_pos-min)/(max-min));
+        let scroll_perc = this.handleSize===1?0:1-((scroll_pos-min)/(max-min));
         this.container.object3D.position.y = ((this.content_height-this.data.height)*scroll_perc)+(this.data.height/2);
         this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+scroll_pos+' '+(this.data.scrollZOffset+0.0005));
     },
