@@ -2,15 +2,15 @@ export class Utils{
     constructor(){
         this.changesDetected = {};
         this.is_changeing = false;
-        setInterval(()=>{
-            let now = new Date().getTime();
-            for(let key in this.changesDetected){
-                let change = this.changesDetected[key];
-                if(change.t&&now-change.t>2000){
-                    this.stoppedChanging(key);
-                }
-            }
-        },2000);
+        // setInterval(()=>{
+        //     let now = new Date().getTime();
+        //     for(let key in this.changesDetected){
+        //         let change = this.changesDetected[key];
+        //         if(change.t&&now-change.t>2000){
+        //             this.stoppedChanging(key);
+        //         }
+        //     }
+        // },2000);
     }
     isFirstOrLastChange(){
         let empty = true;
