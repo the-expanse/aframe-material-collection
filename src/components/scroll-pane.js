@@ -104,6 +104,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         // Expose methods to the element to update/set the content of the scroll pane.
         this.el.setContent = this.setContent.bind(this);
         this.el.updateContent = this.updateContent.bind(this);
+        this.el.scroll = this.scroll.bind(this);
     },
     updateContentClips(){
         this.el.sceneEl.object3D.updateMatrixWorld();
