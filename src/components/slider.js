@@ -114,6 +114,7 @@ module.exports = AFRAME.registerComponent('ui-slider', {
             // Scroll immediately and register mouse move events.
             this.slide(this.railEl.object3D.worldToLocal(e.detail.intersection?e.detail.intersection.point:e.relatedTarget.object3D.position).x);
             this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
+            this.el.emit('slide-end',this.scroll_perc);
             // Prevent default behaviour of event
             UI.utils.preventDefault(e);
         });
