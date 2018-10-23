@@ -80,7 +80,7 @@ module.exports = AFRAME.registerComponent('ui-slider', {
             this.isDragging = true;
             // Store the start point offset
             this.el.emit('slide-start',this.scroll_perc);
-            this.handlePos = this.handleEl.object3D.worldToLocal(e.detail.intersection.point).x;
+            this.handlePos = this.handleEl.object3D.worldToLocal(e.detail.intersection?e.detail.intersection.point:e.relatedTarget.object3D.position).x;
             this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
             // Start changes
             UI.utils.isChanging(this.el.sceneEl,this.handleEl.object3D.uuid);
