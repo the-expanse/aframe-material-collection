@@ -1213,7 +1213,7 @@ module.exports = AFRAME.registerComponent('ui-slider', {
             // Reset handle pos to center of handle
             this.handlePos = 0;
             // Scroll immediately and register mouse move events.
-            this.slide(this.railEl.object3D.worldToLocal(e.detail.intersection.point).x);
+            this.slide(this.railEl.object3D.worldToLocal(e.detail.intersection?e.detail.intersection.point:e.fromElement.object3D.position).x);
             this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
             // Prevent default behaviour of event
             UI.utils.preventDefault(e);
