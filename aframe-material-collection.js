@@ -1877,27 +1877,28 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         for(let i = 0; i < parent.childNodes.length; i++){
             let child = parent.childNodes[i];
             if(child.nodeType === 1){
-                if(!child.classList.contains('no-yoga-layout')){
-                    let position;
-                    if(child.tagName==="A-ENTITY"){
-                        position = {
-                            x:(child.yoga_node.getComputedLeft()/100),
-                            y:(child.yoga_node.getComputedTop()/100),
-                        };
-                    }else{
-                        position = {
-                            x:(child.yoga_node.getComputedLeft()/100)+(child.yoga_node.getComputedWidth()/200),
-                            y:(child.yoga_node.getComputedTop()/100)+(child.yoga_node.getComputedHeight()/200),
-                        };
-                    }
-                    let highest = (child.yoga_node.getComputedTop()/100)+(child.yoga_node.getComputedHeight()/100);
-                    if(highest>this.content_height){
-                        this.content_height = highest;
-                    }
-                    child.setAttribute('position',position.x+' '+(-position.y)+' 0.0001');//+child.getAttribute('position').z);
-                    this.updateYoga(child);
+                if(child.classList.contains('no-yoga-layout')){
+                    return;
                 }
+                let position;
+                if(child.tagName==="A-ENTITY"){
+                    position = {
+                        x:(child.yoga_node.getComputedLeft()/100),
+                        y:(child.yoga_node.getComputedTop()/100),
+                    };
+                }else{
+                    position = {
+                        x:(child.yoga_node.getComputedLeft()/100)+(child.yoga_node.getComputedWidth()/200),
+                        y:(child.yoga_node.getComputedTop()/100)+(child.yoga_node.getComputedHeight()/200),
+                    };
+                }
+                let highest = (child.yoga_node.getComputedTop()/100)+(child.yoga_node.getComputedHeight()/100);
+                if(highest>this.content_height){
+                    this.content_height = highest;
+                }
+                child.setAttribute('position',position.x+' '+(-position.y)+' 0.0001');//+child.getAttribute('position').z);
             }
+            this.updateYoga(child);
         }
     },
 
@@ -1907,55 +1908,55 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         for(let i = 0; i < parent.childNodes.length; i++) {
             let child = parent.childNodes[i];
             //if (child.nodeType === 1) {
-                child._content_clips = this.content_clips;
-                let traverse = ()=>{
-                    if(child.object3D){
-                        child.object3D.traverse(object=>{
-                            if(object.material){
-                                // Add shader chunks to be able to clip shader materials - needed for <a-text> entities.
-                                if(object.material.isRawShaderMaterial){
-                                    object.material.onBeforeCompile = function ( shader ) {
-                                        let vertexParts = shader.vertexShader.split('\n');
-                                        let vertexMainIndex = vertexParts.indexOf('void main(void) {');
-                                        vertexParts.splice(vertexMainIndex,0,'#include <clipping_planes_pars_vertex>');
-                                        vertexParts.splice(vertexMainIndex+2,0,'#include <begin_vertex>');
-                                        vertexParts.splice(vertexParts.length-2,0,'#include <project_vertex>');
-                                        vertexParts.splice(vertexParts.length-2,0,'#include <clipping_planes_vertex>');
-                                        shader.vertexShader = vertexParts.join('\n');
-                                        let fragmentParts = shader.fragmentShader.split('\n');
-                                        let fragmentMainIndex = fragmentParts.indexOf('void main() {');
-                                        fragmentParts.splice(fragmentMainIndex,0,'#include <clipping_planes_pars_fragment>');
-                                        fragmentParts.splice(fragmentMainIndex+2,0,'#include <clipping_planes_fragment>');
-                                        shader.fragmentShader = fragmentParts.join('\n');
-                                    };
-                                    object.material.clipping = true;
-                                }
-                                // Set the content clipping planes.
-                                object.material.clippingPlanes = this.content_clips;
-                                object.material.clipShadows = true;
-                                object.material.needsUpdate = true;
+            child._content_clips = this.content_clips;
+            let traverse = ()=>{
+                if(child.object3D){
+                    child.object3D.traverse(object=>{
+                        if(object.material){
+                            // Add shader chunks to be able to clip shader materials - needed for <a-text> entities.
+                            if(object.material.isRawShaderMaterial){
+                                object.material.onBeforeCompile = function ( shader ) {
+                                    let vertexParts = shader.vertexShader.split('\n');
+                                    let vertexMainIndex = vertexParts.indexOf('void main(void) {');
+                                    vertexParts.splice(vertexMainIndex,0,'#include <clipping_planes_pars_vertex>');
+                                    vertexParts.splice(vertexMainIndex+2,0,'#include <begin_vertex>');
+                                    vertexParts.splice(vertexParts.length-2,0,'#include <project_vertex>');
+                                    vertexParts.splice(vertexParts.length-2,0,'#include <clipping_planes_vertex>');
+                                    shader.vertexShader = vertexParts.join('\n');
+                                    let fragmentParts = shader.fragmentShader.split('\n');
+                                    let fragmentMainIndex = fragmentParts.indexOf('void main() {');
+                                    fragmentParts.splice(fragmentMainIndex,0,'#include <clipping_planes_pars_fragment>');
+                                    fragmentParts.splice(fragmentMainIndex+2,0,'#include <clipping_planes_fragment>');
+                                    shader.fragmentShader = fragmentParts.join('\n');
+                                };
+                                object.material.clipping = true;
                             }
-                        });
-                    }
-                };
-                // Wait for next tick - exokit required this.
-                setTimeout(()=>{
-                    if(child.getAttribute){
-                        let text = child.getAttribute('text');
-
-                        if(text){
-                            // Wait for the font to load first.
-                            child.addEventListener('textfontset',()=>{
-                                clearTimeout(this.fontRenderTimeout);
-                                this.fontRenderTimeout = setTimeout(()=>UI.utils.stoppedChanging(this.currentUuid),500);
-                                traverse();
-                            })
-                        }else{
-                            traverse();
+                            // Set the content clipping planes.
+                            object.material.clippingPlanes = this.content_clips;
+                            object.material.clipShadows = true;
+                            object.material.needsUpdate = true;
                         }
+                    });
+                }
+            };
+            // Wait for next tick - exokit required this.
+            setTimeout(()=>{
+                if(child.getAttribute){
+                    let text = child.getAttribute('text');
+
+                    if(text){
+                        // Wait for the font to load first.
+                        child.addEventListener('textfontset',()=>{
+                            clearTimeout(this.fontRenderTimeout);
+                            this.fontRenderTimeout = setTimeout(()=>UI.utils.stoppedChanging(this.currentUuid),500);
+                            traverse();
+                        })
+                    }else{
+                        traverse();
                     }
-                },0);
-           // }
+                }
+            },0);
+            // }
             // Recurse
             this.setChildClips(child);
         }
@@ -2767,7 +2768,7 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
 /* 24 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.4.31","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.4.32","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 25 */
