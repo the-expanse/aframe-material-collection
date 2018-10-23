@@ -9,6 +9,8 @@ module.exports = {
         "aframe-yoga-layout.min": "./src/yoga.js",
         "aframe-material-collection_curved-plane.min": "./src/public-components/curved-plane.js",
         "aframe-material-collection_switch.min": "./src/public-components/switch.js",
+        "aframe-material-collection_slider.min": "./src/public-components/slider.js",
+        "aframe-material-collection_number.min": "./src/public-components/number.js",
         "aframe-material-collection_toast.min": "./src/public-components/toast.js",
         "aframe-material-collection_buttons.min": "./src/public-components/buttons.js",
         "aframe-material-collection_checkbox.min": "./src/public-components/checkbox.js",

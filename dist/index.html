@@ -123,7 +123,7 @@
                         </a-entity>
 
                         <!-- Buttons -->
-                        <a-entity position="0 -2 0" width="1.25">
+                        <a-entity width="1.25">
 
                             <a-text font="roboto" baseLine="center" value="Buttons"
                                     color="#212121" anchor="center" wrap-count="25" width="1.25" height="0.1"></a-text>
@@ -171,7 +171,14 @@
                             </a-ui-button>
                         </a-entity>
 
+                        <!-- Slider -->
+                        <a-entity width="1.25">
 
+                            <a-text font="roboto" baseLine="center" value="Slider"
+                                    color="#212121" anchor="center" wrap-count="25" width="1.25" height="0.1"></a-text>
+
+                            <a-ui-slider camera-el="#camera" value="0.5"></a-ui-slider>
+                        </a-entity>
 
                     </a-entity>
 
@@ -194,8 +201,11 @@
                             <a-text font="roboto" baseLine="center" anchor="center" value="Number"
                                     color="#212121" wrap-count="25" width="0.9" height="0.1"></a-text>
 
-                            <a-ui-input-text camera-el="#camera" width="1" height="0.2" type="number"
+                            <a-ui-input-text camera-el="#camera" width="0.45" height="0.2" type="number"
                                              value="0.00" place-holder="Number..."></a-ui-input-text>
+
+
+                            <a-ui-number></a-ui-number>
 
                         </a-entity>
 

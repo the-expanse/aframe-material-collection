@@ -92,7 +92,7 @@ module.exports = AFRAME.registerComponent('ui-switch', {
     getRailObject(object){
         // Get the rounded shape geomtery.
         object.traverse(child=>{
-            if(child.geometry&&child.geometry.type==="ShapeGeometry"){
+            if(child.geometry&&child.geometry.type==="ShapeBufferGeometry"){
                 this.progress = new THREE.Mesh(child.geometry.clone(),new THREE.MeshBasicMaterial({color:this.data.progressColor}));
                 this.progress.position.set(-0.075,0,0.001);
                 this.progress.scale.set(0.00001,1,1);

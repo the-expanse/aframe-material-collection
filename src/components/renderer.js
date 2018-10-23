@@ -16,7 +16,9 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         renderResolution:{type:'vec2',default:{x:2048,y:1024}},
         debugRaycaster:{type:'boolean',default: false},
         fps:{type:'number',default:60},
-        intersectableClass:{default:'intersectable'}
+        intersectableClass:{default:'intersectable'},
+        debug:{type:'boolean',default:false},
+        initDelay:{type:'int',default:0},
     },
     init() {
         this.setupBackDrop();
@@ -60,6 +62,8 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         // Expose methods to the element to pause/play the renderer.
         this.el.pauseRender = this.pauseRender.bind(this);
         this.el.playRender = this.playRender.bind(this);
+        this.isReady = false;
+        setTimeout(()=>{this.isReady = true;},this.data.initDelay);
     },
     pauseRender(time){
         return this.playRender(time,true)
@@ -214,7 +218,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         this.prevIntersectionEls = intersectionEls;
     },
     tick(delta){
-        if(this.isFrozen||this.stoppedRendering)return;
+        if(this.isFrozen||this.stoppedRendering||!this.isReady)return;
         if(delta-this.lastRenderTime<(1000/this.data.fps)&&this.isRendering)return;
         this.el.object3D.traverse(child=>{
             child.updateMatrixWorld();
@@ -225,7 +229,6 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         renderer.vr.enabled = false;
         renderer.render(this.el.object3D,this.camera,this.renderTarget);
         renderer.vr.enabled = vrModeEnabled;
-        //console.log('render');
         this.lastRenderTime = delta;
         if(!this.isRendering){
             this.stoppedRendering = true;

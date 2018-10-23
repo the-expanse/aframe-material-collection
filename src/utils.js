@@ -53,4 +53,32 @@ export class Utils{
         delete this.changesDetected[ref];
         this.isFirstOrLastChange();
     }
+    copyToClipboard(text){
+        navigator.clipboard.writeText(text).then(()=>{
+        },(err)=> {
+            console.error('copy to clipboard failed:', err);
+        });
+    }
+    clearObject(object){
+        object.traverse(child=>{
+            if(child.material) {
+                if(child.material.length){
+                    for(let i =0; i < child.material.length; i++){
+                        if(child.material[i].map){
+                            child.material[i].map.dispose();
+                        }
+                        child.material[i].dispose();
+                    }
+                }else{
+                    if(child.material.map){
+                        child.material.map.dispose();
+                    }
+                    child.material.dispose();
+                }
+            }
+            if(child.geometry){
+                child.geometry.dispose();
+            }
+        });
+    }
 }

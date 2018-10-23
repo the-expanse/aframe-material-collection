@@ -128,7 +128,11 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 if (this.container.yoga_node&&child.yoga_node) {
                     this.container.yoga_node.removeChild(child.yoga_node);
                 }
+                if(child.object3D){
+                    UI.utils.clearObject(child.object3D);
+                }
                 this.container.removeChild(child);
+                this.container.firstChild = null;
             }
             // Set the content in the scroll pane.
             return new Promise(resolve=>{
@@ -304,6 +308,8 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 width = Number(geo?geo["radius-outer"]*2:(parent.getAttribute('radius-outer')||0)*2);
                 height = width;
                 break;
+            case "A-UI-SLIDER":
+            case "A-UI-NUMBER":
             case "A-UI-SWITCH":
             case "A-UI-CHECKBOX":
             case "A-UI-RADIO":
@@ -357,30 +363,30 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         for(let i = 0; i < parent.childNodes.length; i++){
             let child = parent.childNodes[i];
             if(child.nodeType === 1){
-                if(child.classList.contains('no-yoga-layout')){
-                    return;
+                if(!child.classList.contains('no-yoga-layout')){
+                    let position;
+                    if(child.tagName==="A-ENTITY"){
+                        position = {
+                            x:(child.yoga_node.getComputedLeft()/100),
+                            y:(child.yoga_node.getComputedTop()/100),
+                        };
+                    }else{
+                        position = {
+                            x:(child.yoga_node.getComputedLeft()/100)+(child.yoga_node.getComputedWidth()/200),
+                            y:(child.yoga_node.getComputedTop()/100)+(child.yoga_node.getComputedHeight()/200),
+                        };
+                    }
+                    let highest = (child.yoga_node.getComputedTop()/100)+(child.yoga_node.getComputedHeight()/100);
+                    if(highest>this.content_height){
+                        this.content_height = highest;
+                    }
+                    child.setAttribute('position',position.x+' '+(-position.y)+' 0.0001');//+child.getAttribute('position').z);
+                    this.updateYoga(child);
                 }
-                let position;
-                if(child.tagName==="A-ENTITY"){
-                    position = {
-                        x:(child.yoga_node.getComputedLeft()/100),
-                        y:(child.yoga_node.getComputedTop()/100),
-                    };
-                }else{
-                    position = {
-                        x:(child.yoga_node.getComputedLeft()/100)+(child.yoga_node.getComputedWidth()/200),
-                        y:(child.yoga_node.getComputedTop()/100)+(child.yoga_node.getComputedHeight()/200),
-                    };
-                }
-                let highest = (child.yoga_node.getComputedTop()/100)+(child.yoga_node.getComputedHeight()/100);
-                if(highest>this.content_height){
-                    this.content_height = highest;
-                }
-                child.setAttribute('position',position.x+' '+(-position.y)+' 0.0001');//+child.getAttribute('position').z);
             }
-            this.updateYoga(child);
         }
     },
+
     setChildClips(parent){
         // Traverse the entity tree inside the content container and add content clips to each material found.
         parent = parent||this.container;

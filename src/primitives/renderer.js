@@ -19,5 +19,6 @@ module.exports = AFRAME.registerPrimitive('a-ui-renderer', AFRAME.utils.extendDe
         "debug-raycaster":"ui-renderer.debugRaycaster",
         "fps":"ui-renderer.fps",
         "intersectable-class":"ui-renderer.intersectableClass",
+        "render-debug":"ui-renderer.debug"
     }
 }));

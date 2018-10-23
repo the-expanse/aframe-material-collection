@@ -13,6 +13,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         disabled: {type: 'boolean', default: false},
         type: {default: 'text'},
         cameraEl:{type:'selector'},
+        rigEl:{type:'selector'},
         width:{type:'number',default:1},
         height:{type:'number',default:0.2},
         backgroundColor:{default:'white'},
@@ -22,6 +23,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
     },
     init(){
         this.setupElements();
+        this.setupScrollClips();
         this.text.addEventListener('textfontset',()=>{
             this.text.selectionStart = 0;
             this.text.selectionLength = 0;
@@ -52,9 +54,9 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
             this.el.setAttribute('visible',false);
             setTimeout(()=>{
                 this.setValue();
-                this.setupScrollClips();
+                this.setScrollClips();
                 this.el.setAttribute('visible',true);
-            });
+            },150);
         });
         this.el.getValue = this.getValue.bind(this);
         this.el.value = this.value.bind(this);
@@ -79,11 +81,12 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
             this.text.setAttribute('width',this.text.getAttribute('width')*1.2);
             this.text.setAttribute('wrap-pixels',this.text.getAttribute('width')*500);
             this.text.setAttribute('x-offset',((this.text.getAttribute('width')-this.data.width)/2));
-            setTimeout(()=>this.increaseWrap(),0);
+            this.increaseWrap();
         }
     },
     setScrollClips(){
-        this.text.object3D.updateMatrixWorld();
+        //this.text.object3D.updateMatrixWorld();
+        this.backing.object3D.parent.updateMatrixWorld();
         this.content_clips[0].set(new THREE.Vector3( -1, 0, 0 ), (this.data.width/2)+0.005);
         this.content_clips[1].set(new THREE.Vector3( 1, 0, 0 ), (this.data.width/2)+0.005);
         this.content_clips[0].applyMatrix4(this.backing.object3D.matrixWorld);
@@ -222,7 +225,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
                 if(!this.shiftStartPos){
                     this.shiftStartPos = this.text.selectionStart;
                 }
-               if(this.text.selectionStart<this.shiftStartPos){
+                if(this.text.selectionStart<this.shiftStartPos){
                     this.text.selectionStart++;
                     this.text.selectionLength=Math.abs(this.shiftStartPos-this.text.selectionStart);
                 }else{
@@ -395,19 +398,17 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         return this.text.object3D.worldToLocal(e.detail.intersection.point.clone()).x
     },
     playPauseCamera(method){
-        if(this.data.cameraEl){
-            if(this.data.cameraEl.components[this.data.lookControlsComponent]) {
-                this.data.cameraEl.components[this.data.lookControlsComponent][method]();
-            }
-            if(this.data.cameraEl.components[this.data.wasdControlsComponent]) {
-                this.data.cameraEl.components[this.data.wasdControlsComponent][method]();
-            }
-            if(method==="play"){
-                document.querySelector('a-scene').setAttribute('keyboard-shortcuts',"enterVR: true")
-            }
-            if(method==="pause"){
-                document.querySelector('a-scene').setAttribute('keyboard-shortcuts',"enterVR: false")
-            }
+        let el = this.data.cameraEl;
+        if (el&&el.components[this.data.lookControlsComponent]) {
+            el.components[this.data.lookControlsComponent][method]();
+        }
+
+        if(this.data.rigEl){
+            el = this.data.rigEl
+        }
+
+        if(el&&el.components[this.data.wasdControlsComponent]) {
+            el.components[this.data.wasdControlsComponent][method]();
         }
     },
     setCharacters(){
