@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 45);
+/******/ 	return __webpack_require__(__webpack_require__.s = 49);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -243,6 +243,48 @@ module.exports = AFRAME.registerPrimitive('a-ui-switch', AFRAME.utils.extendDeep
 
 /* global AFRAME */
 /**
+ * Slider Primitive for aframe-material-collection.
+ * @namespace aframe-material-collection
+ * @primitive a-ui-slider
+ * @author Shane Harris
+ */
+module.exports = AFRAME.registerPrimitive('a-ui-slider', AFRAME.utils.extendDeep({}, AFRAME.primitives.getMeshMixin(), {
+    defaultComponents: {
+        "ui-slider":{}
+    },
+    mappings: {
+        value: 'ui-slider.value',
+        disabled: 'ui-slider.disabled',
+        "camera-el": 'ui-slider.cameraEl'
+    }
+}));
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+/* global AFRAME */
+/**
+ * Number Widget Primitive for aframe-material-collection.
+ * @namespace aframe-material-collection
+ * @primitive a-ui-number
+ * @author Shane Harris
+ */
+module.exports = AFRAME.registerPrimitive('a-ui-number', AFRAME.utils.extendDeep({}, AFRAME.primitives.getMeshMixin(), {
+    defaultComponents: {
+        "ui-number":{}
+    },
+    mappings: {
+
+    }
+}));
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+/* global AFRAME */
+/**
  * Toast Message Primitive for aframe-material-collection.
  * @namespace aframe-material-collection
  * @primitive a-ui-toast
@@ -285,7 +327,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-toast', AFRAME.utils.extendDeep(
 }));
 
 /***/ }),
-/* 5 */
+/* 7 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -315,7 +357,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-checkbox', AFRAME.utils.extendDe
 }));
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -353,7 +395,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-radio', AFRAME.utils.extendDeep(
 }));
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -381,13 +423,14 @@ module.exports = AFRAME.registerPrimitive('a-ui-input-text', AFRAME.utils.extend
         "background-color":"ui-input-text.backgroundColor",
         "place-holder":"ui-input-text.placeHolder",
         "camera-el":"ui-input-text.cameraEl",
+        "rig-el":"ui-input-text.rigEl",
         "look-controls-component":"ui-input-text.lookControlsComponent",
         "wasd-controls-component":"ui-input-text.wasdControlsComponent",
     }
 }));
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -415,7 +458,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-scroll-pane', AFRAME.utils.exten
 }));
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -439,11 +482,12 @@ module.exports = AFRAME.registerPrimitive('a-ui-renderer', AFRAME.utils.extendDe
         "debug-raycaster":"ui-renderer.debugRaycaster",
         "fps":"ui-renderer.fps",
         "intersectable-class":"ui-renderer.intersectableClass",
+        "render-debug":"ui-renderer.debug"
     }
 }));
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN,THREE */
@@ -461,6 +505,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         disabled: {type: 'boolean', default: false},
         type: {default: 'text'},
         cameraEl:{type:'selector'},
+        rigEl:{type:'selector'},
         width:{type:'number',default:1},
         height:{type:'number',default:0.2},
         backgroundColor:{default:'white'},
@@ -470,6 +515,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
     },
     init(){
         this.setupElements();
+        this.setupScrollClips();
         this.text.addEventListener('textfontset',()=>{
             this.text.selectionStart = 0;
             this.text.selectionLength = 0;
@@ -500,9 +546,9 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
             this.el.setAttribute('visible',false);
             setTimeout(()=>{
                 this.setValue();
-                this.setupScrollClips();
+                this.setScrollClips();
                 this.el.setAttribute('visible',true);
-            });
+            },150);
         });
         this.el.getValue = this.getValue.bind(this);
         this.el.value = this.value.bind(this);
@@ -527,11 +573,12 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
             this.text.setAttribute('width',this.text.getAttribute('width')*1.2);
             this.text.setAttribute('wrap-pixels',this.text.getAttribute('width')*500);
             this.text.setAttribute('x-offset',((this.text.getAttribute('width')-this.data.width)/2));
-            setTimeout(()=>this.increaseWrap(),0);
+            this.increaseWrap();
         }
     },
     setScrollClips(){
-        this.text.object3D.updateMatrixWorld();
+        //this.text.object3D.updateMatrixWorld();
+        this.backing.object3D.parent.updateMatrixWorld();
         this.content_clips[0].set(new THREE.Vector3( -1, 0, 0 ), (this.data.width/2)+0.005);
         this.content_clips[1].set(new THREE.Vector3( 1, 0, 0 ), (this.data.width/2)+0.005);
         this.content_clips[0].applyMatrix4(this.backing.object3D.matrixWorld);
@@ -670,7 +717,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
                 if(!this.shiftStartPos){
                     this.shiftStartPos = this.text.selectionStart;
                 }
-               if(this.text.selectionStart<this.shiftStartPos){
+                if(this.text.selectionStart<this.shiftStartPos){
                     this.text.selectionStart++;
                     this.text.selectionLength=Math.abs(this.shiftStartPos-this.text.selectionStart);
                 }else{
@@ -843,19 +890,17 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         return this.text.object3D.worldToLocal(e.detail.intersection.point.clone()).x
     },
     playPauseCamera(method){
-        if(this.data.cameraEl){
-            if(this.data.cameraEl.components[this.data.lookControlsComponent]) {
-                this.data.cameraEl.components[this.data.lookControlsComponent][method]();
-            }
-            if(this.data.cameraEl.components[this.data.wasdControlsComponent]) {
-                this.data.cameraEl.components[this.data.wasdControlsComponent][method]();
-            }
-            if(method==="play"){
-                document.querySelector('a-scene').setAttribute('keyboard-shortcuts',"enterVR: true")
-            }
-            if(method==="pause"){
-                document.querySelector('a-scene').setAttribute('keyboard-shortcuts',"enterVR: false")
-            }
+        let el = this.data.cameraEl;
+        if (el&&el.components[this.data.lookControlsComponent]) {
+            el.components[this.data.lookControlsComponent][method]();
+        }
+
+        if(this.data.rigEl){
+            el = this.data.rigEl
+        }
+
+        if(el&&el.components[this.data.wasdControlsComponent]) {
+            el.components[this.data.wasdControlsComponent][method]();
         }
     },
     setCharacters(){
@@ -959,7 +1004,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
 //
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN */
@@ -1051,7 +1096,234 @@ module.exports = AFRAME.registerComponent('ui-btn', {
 });
 
 /***/ }),
-/* 12 */
+/* 14 */
+/***/ (function(module, exports) {
+
+/* global AFRAME,TWEEN,THREE */
+/**
+ * Slider Component for aframe-material-collection. Includes a disabled state.
+ * @namespace aframe-material-collection
+ * @component ui-slider
+ * @author Shane Harris
+ */
+
+module.exports = AFRAME.registerComponent('ui-slider', {
+    schema: {
+        value: {type:'number',default: 0},
+        disabled:{type:'boolean',default: false},
+        progressColor:{default:'#4db6ac'},
+        handleColor:{default:'#009688'},
+        handleDisabledColor:{default:'#afafaf'},
+        railColor:{default:'#fff'},
+        handleZIndex:{type:'number',default:0.001},
+        intersectableClass: {default: 'intersectable'},
+        width:{type:'number',default: 0.5},
+        height:{type:'number',default: 0.1},
+        lookControlsComponent:{default:'look-controls'},
+        handleRadius:{type:'number',default:0.055},
+        scrollZOffset:{type:'number',default:0},
+        cameraEl:{type:'selector'},
+    },
+    init(){
+        this.scroll_perc = this.data.value;
+        this.width = this.data.width;
+        this.height = this.data.height;
+        // Setup background with mouse input to catch mouse move events when not exactly over the scroll bar.
+        this.backgroundPanel = document.createElement('a-plane');
+        this.backgroundPanel.setAttribute('class','no-yoga-layout background '+this.data.intersectableClass);
+        this.backgroundPanel.setAttribute('width',this.data.width+1);
+        this.backgroundPanel.setAttribute('height',this.data.height+1);
+        this.backgroundPanel.setAttribute('position','0 0 -0.02');
+        this.backgroundPanel.setAttribute('opacity',0.0001);//
+        this.backgroundPanel.setAttribute('transparent',true);
+        this.el.appendChild(this.backgroundPanel);
+        // Setup handle circle entity.
+        this.handleEl = document.createElement('a-circle');
+        this.handleEl.setAttribute('radius',this.data.handleRadius);
+        this.handleEl.setAttribute('color',this.data.handleColor);
+        this.handleEl.setAttribute('shader','flat');
+        this.handleEl.setAttribute('ui-ripple','size:0.1 0.1;color:#999;fadeDelay:300;duration:500');
+        this.handleEl.setAttribute('class',this.data.intersectableClass+' no-yoga-layout');
+        this.handleEl.setAttribute('position',((-(this.data.width)/2)+this.data.handleRadius)+' 0 '+this.data.handleZIndex);
+        this.handleEl.setAttribute('segments',6);
+        this.el.appendChild(this.handleEl);
+
+        // Setup rail entity.
+        this.railEl = document.createElement('a-plane');
+        this.railEl.setAttribute('width',(this.data.width-0.1));
+        this.railEl.setAttribute('height','0.05');
+        this.railEl.setAttribute('shader','flat');
+        this.railEl.setAttribute('ui-rounded','borderRadius:0.025');
+        this.railEl.setAttribute('color',this.data.railColor);
+        this.railEl.setAttribute('class',this.data.intersectableClass+' no-yoga-layout');
+        this.el.appendChild(this.railEl);
+        // Wait for the rounded edge on the rail to load to clone the geometry for the
+        // selected progress bar part of the rail
+        this.railEl.addEventListener('rounded-loaded',()=>{
+            this.getRailObject(this.railEl.object3D);
+            this.slide(this.scroll_perc,true);
+        });
+        // Pause/play camera look controls
+        const playPauseCamera = method=>{
+            if(this.data.cameraEl) {
+                let lookControls = this.data.cameraEl.components[this.data.lookControlsComponent];
+                if(lookControls){
+                    lookControls[method]();
+                }
+            }
+        };
+        // Setup mouse move handler for scrolling and updating scroll handle.
+        const mousemove = e=>this.mouseMove(e);
+        // Start scroll
+        this.handleEl.addEventListener('mousedown',e=>{
+            // Pause look controls to allow scrolling
+            playPauseCamera('pause');
+            this.isDragging = true;
+            // Store the start point offset
+            this.el.emit('slide-start',this.scroll_perc);
+            this.handlePos = this.handleEl.object3D.worldToLocal(e.detail.intersection.point).x;
+            this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
+            // Start changes
+            UI.utils.isChanging(this.el.sceneEl,this.handleEl.object3D.uuid);
+            // Prevent default behaviour of event
+            UI.utils.preventDefault(e);
+        });
+        // End scroll
+        const endScroll = e=>{
+            if(this.isDragging){
+                this.backgroundPanel.removeEventListener('ui-mousemove',mousemove);
+                // Play look controls once scrolling is finished
+                playPauseCamera('play');
+                this.isDragging = false;
+                // Stop changes
+                this.el.emit('slide-end',this.scroll_perc);
+                UI.utils.stoppedChanging(this.handleEl.object3D.uuid);
+                // Prevent default behaviour of event
+                UI.utils.preventDefault(e);
+            }
+        };
+        this.backgroundPanel.addEventListener('mouseup',endScroll);
+        this.backgroundPanel.addEventListener('mouseleave',endScroll);
+        // // Handle clicks on rail to scroll
+        this.railEl.addEventListener('mousedown',e=>{
+
+            UI.utils.isChanging(this.el.sceneEl,this.handleEl.object3D.uuid);
+            // Pause look controls
+            this.isDragging = true;
+            // Reset handle pos to center of handle
+            this.handlePos = 0;
+            // Scroll immediately and register mouse move events.
+            this.slide(this.railEl.object3D.worldToLocal(e.detail.intersection.point).x);
+            this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
+            // Prevent default behaviour of event
+            UI.utils.preventDefault(e);
+        });
+    },
+    slide(positionX,isPerc){
+        let min = (-(this.data.width)/2)+this.data.handleRadius;
+        let max = ((this.data.width)/2)-this.data.handleRadius;
+        // Set scroll position with start point offset.
+        let scroll_pos = isPerc?(min+((max-min)*positionX)):THREE.Math.clamp(positionX,min,max);
+        this.scroll_perc = isPerc?positionX:((scroll_pos-min)/(max-min));
+        this.el.emit('slide',this.scroll_perc);
+        this.progress.scale.set(this.scroll_perc||0.0001,1,1);
+        this.progress.position.set((-(this.data.width-this.data.handleRadius)/2)+(this.scroll_perc*((this.data.width-this.data.handleRadius)/2)),0,0.0001);
+        this.handleEl.setAttribute('position',/*((this.data.width/2)+this.data.scrollPadding)+' '+*/scroll_pos+' 0 '+(this.data.scrollZOffset+0.0005));
+    },
+    mouseMove(e){
+        if(this.isDragging){
+            let pos = this.railEl.object3D.worldToLocal(e.detail.intersection.point);
+            this.slide(pos.x-this.handlePos+this.data.handleRadius);
+        }
+    },
+    getRailObject(object){
+        // Get the rounded shape geomtery.
+        object.traverse(child=>{
+            if(child.geometry&&child.geometry.type==="ShapeBufferGeometry"){
+                this.progress = new THREE.Mesh(child.geometry.clone(),new THREE.MeshBasicMaterial({color:this.data.progressColor}));
+                this.progress.position.set(-this.data.width/2,0,0.0001);
+                this.progress.scale.set(0.00001,1,1);
+                this.el.object3D.add(this.progress);
+            }
+        });
+    },
+});
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports) {
+
+/* global AFRAME,TWEEN,THREE */
+/**
+ * NUmber widget Component for aframe-material-collection. Includes up/down buttons
+ * @namespace aframe-material-collection
+ * @component ui-number
+ * @author Shane Harris
+ */
+
+module.exports = AFRAME.registerComponent('ui-number', {
+    schema: {
+        value: {type: 'number', default: 0},
+        increment: {type: 'number', default: 0.001},
+        width:{type: 'number',default: 0.65},
+        height:{type: 'number',default: 0.2},
+        intersectableClass: {default: 'intersectable'},
+    },
+    init(){
+        this.setupElements();
+    },
+    setupElements(){
+        let numberText = document.createElement('a-plane');
+        numberText.setAttribute('width',"0.55");
+        numberText.setAttribute('height',"0.2");
+        numberText.className = 'no-yoga-layout';
+        numberText.setAttribute('color',"#212121");
+        numberText.setAttribute('text',"value:"+this.data.value.toFixed(3)+";color:#212121;wrapCount:12;align:center");
+        numberText.setAttribute('ui-border',"borderRadius:0.1;borderWidth:0.008");
+
+        let upButton = document.createElement('a-ui-fab-button-small');
+        upButton.setAttribute('scale','0.75 0.75 0.75');
+        upButton.className = 'no-yoga-layout '+this.data.intersectableClass;
+        upButton.setAttribute('color','#009688');
+        upButton.setAttribute('position','0.33 0.055 0.001');
+        upButton.setAttribute('color','#009688');
+        upButton.setAttribute('icon-color','#fff');
+        upButton.setAttribute('ripple-color','#009688');
+        upButton.setAttribute('src','https://cdn.theexpanse.app/images/icons/baseline_keyboard_arrow_up_white_18dp.png');
+        upButton.addEventListener('click',()=>{
+            this.data.value+=this.data.increment;
+            numberText.setAttribute('text',"value:"+(this.data.value).toFixed(3)+";color:#212121;wrapCount:12;align:center");
+            this.el.emit('change',this.data.value);
+        });
+        let downButton = document.createElement('a-ui-fab-button-small');
+        downButton.setAttribute('scale','0.75 0.75 0.75');
+        downButton.className = 'no-yoga-layout '+this.data.intersectableClass;
+        downButton.setAttribute('color','#009688');
+        downButton.setAttribute('position','0.33 -0.055 0.001');
+        downButton.setAttribute('color','#009688');
+        downButton.setAttribute('icon-color','#fff');
+        downButton.setAttribute('ripple-color','#009688');
+        downButton.setAttribute('src','https://cdn.theexpanse.app/images/icons/down_arrow.png');
+        downButton.addEventListener('click',()=>{
+            this.data.value-=this.data.increment;
+            numberText.setAttribute('text',"value:"+(this.data.value).toFixed(3)+";color:#212121;wrapCount:12;align:center");
+            this.el.emit('change',this.data.value);
+        });
+        numberText.appendChild(upButton);
+        numberText.appendChild(downButton);
+        this.el.appendChild(numberText);
+    }
+});
+
+/*
+<a-plane class="zInput" width="0.55" ui-border="borderRadius:0.1;borderWidth:0.008" height="0.2" color="#212121" text="value:{{to-fixed vector.z 3}};color:#212121;wrapCount:12;align:center">
+        <a-ui-fab-button-small scale="0.75 0.75 0.75" class="zInputUp intersectable no-yoga-layout" color="#009688" position="0.33 0.055 0.001" icon-color="#fff" ripple-color="#009688" src="https://cdn.theexpanse.app/images/icons/baseline_keyboard_arrow_up_white_18dp.png"></a-ui-fab-button-small>
+        <a-ui-fab-button-small scale="0.75 0.75 0.75" class="zInputDown intersectable no-yoga-layout" color="#009688" position="0.33 -0.055 0.001" icon-color="#fff" ripple-color="#009688" src="https://cdn.theexpanse.app/images/icons/down_arrow.png"></a-ui-fab-button-small>
+    </a-plane>
+ */
+
+/***/ }),
+/* 16 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN,THREE */
@@ -1148,7 +1420,7 @@ module.exports = AFRAME.registerComponent('ui-switch', {
     getRailObject(object){
         // Get the rounded shape geomtery.
         object.traverse(child=>{
-            if(child.geometry&&child.geometry.type==="ShapeGeometry"){
+            if(child.geometry&&child.geometry.type==="ShapeBufferGeometry"){
                 this.progress = new THREE.Mesh(child.geometry.clone(),new THREE.MeshBasicMaterial({color:this.data.progressColor}));
                 this.progress.position.set(-0.075,0,0.001);
                 this.progress.scale.set(0.00001,1,1);
@@ -1182,7 +1454,7 @@ module.exports = AFRAME.registerComponent('ui-switch', {
 });
 
 /***/ }),
-/* 13 */
+/* 17 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN,THREE */
@@ -1237,7 +1509,7 @@ module.exports = AFRAME.registerComponent('ui-toast', {
 });
 
 /***/ }),
-/* 14 */
+/* 18 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -1370,7 +1642,11 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 if (this.container.yoga_node&&child.yoga_node) {
                     this.container.yoga_node.removeChild(child.yoga_node);
                 }
+                if(child.object3D){
+                    UI.utils.clearObject(child.object3D);
+                }
                 this.container.removeChild(child);
+                this.container.firstChild = null;
             }
             // Set the content in the scroll pane.
             return new Promise(resolve=>{
@@ -1546,6 +1822,8 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 width = Number(geo?geo["radius-outer"]*2:(parent.getAttribute('radius-outer')||0)*2);
                 height = width;
                 break;
+            case "A-UI-SLIDER":
+            case "A-UI-NUMBER":
             case "A-UI-SWITCH":
             case "A-UI-CHECKBOX":
             case "A-UI-RADIO":
@@ -1599,30 +1877,30 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         for(let i = 0; i < parent.childNodes.length; i++){
             let child = parent.childNodes[i];
             if(child.nodeType === 1){
-                if(child.classList.contains('no-yoga-layout')){
-                    return;
+                if(!child.classList.contains('no-yoga-layout')){
+                    let position;
+                    if(child.tagName==="A-ENTITY"){
+                        position = {
+                            x:(child.yoga_node.getComputedLeft()/100),
+                            y:(child.yoga_node.getComputedTop()/100),
+                        };
+                    }else{
+                        position = {
+                            x:(child.yoga_node.getComputedLeft()/100)+(child.yoga_node.getComputedWidth()/200),
+                            y:(child.yoga_node.getComputedTop()/100)+(child.yoga_node.getComputedHeight()/200),
+                        };
+                    }
+                    let highest = (child.yoga_node.getComputedTop()/100)+(child.yoga_node.getComputedHeight()/100);
+                    if(highest>this.content_height){
+                        this.content_height = highest;
+                    }
+                    child.setAttribute('position',position.x+' '+(-position.y)+' 0.0001');//+child.getAttribute('position').z);
+                    this.updateYoga(child);
                 }
-                let position;
-                if(child.tagName==="A-ENTITY"){
-                    position = {
-                        x:(child.yoga_node.getComputedLeft()/100),
-                        y:(child.yoga_node.getComputedTop()/100),
-                    };
-                }else{
-                    position = {
-                        x:(child.yoga_node.getComputedLeft()/100)+(child.yoga_node.getComputedWidth()/200),
-                        y:(child.yoga_node.getComputedTop()/100)+(child.yoga_node.getComputedHeight()/200),
-                    };
-                }
-                let highest = (child.yoga_node.getComputedTop()/100)+(child.yoga_node.getComputedHeight()/100);
-                if(highest>this.content_height){
-                    this.content_height = highest;
-                }
-                child.setAttribute('position',position.x+' '+(-position.y)+' 0.0001');//+child.getAttribute('position').z);
             }
-            this.updateYoga(child);
         }
     },
+
     setChildClips(parent){
         // Traverse the entity tree inside the content container and add content clips to each material found.
         parent = parent||this.container;
@@ -1685,7 +1963,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
 });
 
 /***/ }),
-/* 15 */
+/* 19 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN */
@@ -1860,7 +2138,7 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
 });
 
 /***/ }),
-/* 16 */
+/* 20 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN */
@@ -1966,7 +2244,7 @@ module.exports = AFRAME.registerComponent('ui-radio', {
 });
 
 /***/ }),
-/* 17 */
+/* 21 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -2003,7 +2281,7 @@ module.exports = AFRAME.registerComponent('ui-curved-plane', {
 });
 
 /***/ }),
-/* 18 */
+/* 22 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -2024,7 +2302,9 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         renderResolution:{type:'vec2',default:{x:2048,y:1024}},
         debugRaycaster:{type:'boolean',default: false},
         fps:{type:'number',default:60},
-        intersectableClass:{default:'intersectable'}
+        intersectableClass:{default:'intersectable'},
+        debug:{type:'boolean',default:false},
+        initDelay:{type:'int',default:0},
     },
     init() {
         this.setupBackDrop();
@@ -2068,6 +2348,8 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         // Expose methods to the element to pause/play the renderer.
         this.el.pauseRender = this.pauseRender.bind(this);
         this.el.playRender = this.playRender.bind(this);
+        this.isReady = false;
+        setTimeout(()=>{this.isReady = true;},this.data.initDelay);
     },
     pauseRender(time){
         return this.playRender(time,true)
@@ -2222,7 +2504,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         this.prevIntersectionEls = intersectionEls;
     },
     tick(delta){
-        if(this.isFrozen||this.stoppedRendering)return;
+        if(this.isFrozen||this.stoppedRendering||!this.isReady)return;
         if(delta-this.lastRenderTime<(1000/this.data.fps)&&this.isRendering)return;
         this.el.object3D.traverse(child=>{
             child.updateMatrixWorld();
@@ -2233,7 +2515,6 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         renderer.vr.enabled = false;
         renderer.render(this.el.object3D,this.camera,this.renderTarget);
         renderer.vr.enabled = vrModeEnabled;
-        //console.log('render');
         this.lastRenderTime = delta;
         if(!this.isRendering){
             this.stoppedRendering = true;
@@ -2242,7 +2523,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
 });
 
 /***/ }),
-/* 19 */
+/* 23 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,Yoga */
@@ -2483,13 +2764,13 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
 });
 
 /***/ }),
-/* 20 */
+/* 24 */
 /***/ (function(module) {
 
 module.exports = {"name":"aframe-material-collection","version":"0.4.31","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
-/* 21 */
+/* 25 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -2515,7 +2796,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-text-input', AFRAME.utils.extend
 }));
 
 /***/ }),
-/* 22 */
+/* 26 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -2542,7 +2823,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-number-input', AFRAME.utils.exte
 }));
 
 /***/ }),
-/* 23 */
+/* 27 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -2569,7 +2850,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-int-input', AFRAME.utils.extendD
 }));
 
 /***/ }),
-/* 24 */
+/* 28 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -2596,7 +2877,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-password-input', AFRAME.utils.ex
 }));
 
 /***/ }),
-/* 25 */
+/* 29 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -2632,7 +2913,7 @@ module.exports = AFRAME.registerComponent('ui-text', {
 });
 
 /***/ }),
-/* 26 */
+/* 30 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -2657,7 +2938,7 @@ module.exports = AFRAME.registerComponent('ui-icon', {
 });
 
 /***/ }),
-/* 27 */
+/* 31 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -2696,7 +2977,7 @@ module.exports = AFRAME.registerComponent('ui-rounded', {
 });
 
 /***/ }),
-/* 28 */
+/* 32 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN,THREE */
@@ -2801,7 +3082,7 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
 });
 
 /***/ }),
-/* 29 */
+/* 33 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -2842,7 +3123,7 @@ module.exports = AFRAME.registerComponent('ui-mouse-shim', {
 });
 
 /***/ }),
-/* 30 */
+/* 34 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -2873,7 +3154,7 @@ module.exports = AFRAME.registerComponent('ui-double-click', {
 });
 
 /***/ }),
-/* 31 */
+/* 35 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -2930,7 +3211,7 @@ module.exports = AFRAME.registerComponent('ui-border', {
 });
 
 /***/ }),
-/* 32 */
+/* 36 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -3342,7 +3623,7 @@ module.exports = AFRAME.registerComponent('ui-color-picker', {
 
 
 /***/ }),
-/* 33 */
+/* 37 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -3420,10 +3701,6 @@ module.exports = AFRAME.registerComponent('ui-modal', {
 });
 
 /***/ }),
-/* 34 */,
-/* 35 */,
-/* 36 */,
-/* 37 */,
 /* 38 */,
 /* 39 */,
 /* 40 */,
@@ -3431,7 +3708,11 @@ module.exports = AFRAME.registerComponent('ui-modal', {
 /* 42 */,
 /* 43 */,
 /* 44 */,
-/* 45 */
+/* 45 */,
+/* 46 */,
+/* 47 */,
+/* 48 */,
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3493,6 +3774,34 @@ class Utils{
         delete this.changesDetected[ref];
         this.isFirstOrLastChange();
     }
+    copyToClipboard(text){
+        navigator.clipboard.writeText(text).then(()=>{
+        },(err)=> {
+            console.error('copy to clipboard failed:', err);
+        });
+    }
+    clearObject(object){
+        object.traverse(child=>{
+            if(child.material) {
+                if(child.material.length){
+                    for(let i =0; i < child.material.length; i++){
+                        if(child.material[i].map){
+                            child.material[i].map.dispose();
+                        }
+                        child.material[i].dispose();
+                    }
+                }else{
+                    if(child.material.map){
+                        child.material.map.dispose();
+                    }
+                    child.material.dispose();
+                }
+            }
+            if(child.geometry){
+                child.geometry.dispose();
+            }
+        });
+    }
 }
 // CONCATENATED MODULE: ./src/index.js
 /* global AFRAME */
@@ -3502,7 +3811,7 @@ class Utils{
  */
 
 
-let version = __webpack_require__(20).version;
+let version = __webpack_require__(24).version;
 console.log('aframe-material-collection version '+version);
 
 if (typeof AFRAME === 'undefined') {
@@ -3518,37 +3827,41 @@ window.UI = {
     a_ui_fab_button: __webpack_require__(1),
     a_ui_fab_button_small: __webpack_require__(2),
     a_ui_switch: __webpack_require__(3),
-    a_ui_toast: __webpack_require__(4),
-    a_ui_checkbox: __webpack_require__(5),
-    a_ui_radio: __webpack_require__(6),
-    a_ui_input_text: __webpack_require__(7),
-    a_ui_text_input: __webpack_require__(21),
-    a_ui_number_input: __webpack_require__(22),
-    a_ui_int_input: __webpack_require__(23),
-    a_ui_password_input: __webpack_require__(24),
-    a_ui_scroll_pane: __webpack_require__(8),
-    a_ui_renderer: __webpack_require__(9),
+    a_ui_slider: __webpack_require__(4),
+    a_ui_number: __webpack_require__(5),
+    a_ui_toast: __webpack_require__(6),
+    a_ui_checkbox: __webpack_require__(7),
+    a_ui_radio: __webpack_require__(8),
+    a_ui_input_text: __webpack_require__(9),
+    a_ui_text_input: __webpack_require__(25),
+    a_ui_number_input: __webpack_require__(26),
+    a_ui_int_input: __webpack_require__(27),
+    a_ui_password_input: __webpack_require__(28),
+    a_ui_scroll_pane: __webpack_require__(10),
+    a_ui_renderer: __webpack_require__(11),
 
     // Components
-    text: __webpack_require__(25),
-    input_text: __webpack_require__(10),
-    btn: __webpack_require__(11),
-    icon: __webpack_require__(26),
-    rounded: __webpack_require__(27),
-    ripple: __webpack_require__(28),
-    switch: __webpack_require__(12),
-    toast: __webpack_require__(13),
-    scroll_pane: __webpack_require__(14),
-    mouse_shim: __webpack_require__(29),
-    double_click: __webpack_require__(30),
-    checkbox: __webpack_require__(15),
-    radio: __webpack_require__(16),
-    border: __webpack_require__(31),
-    curvedPlane: __webpack_require__(17),
-    colorPicker: __webpack_require__(32),
-    modal: __webpack_require__(33),
-    renderer: __webpack_require__(18),
-    yoga_properties: __webpack_require__(19),
+    text: __webpack_require__(29),
+    input_text: __webpack_require__(12),
+    btn: __webpack_require__(13),
+    icon: __webpack_require__(30),
+    rounded: __webpack_require__(31),
+    ripple: __webpack_require__(32),
+    slider: __webpack_require__(14),
+    number: __webpack_require__(15),
+    switch: __webpack_require__(16),
+    toast: __webpack_require__(17),
+    scroll_pane: __webpack_require__(18),
+    mouse_shim: __webpack_require__(33),
+    double_click: __webpack_require__(34),
+    checkbox: __webpack_require__(19),
+    radio: __webpack_require__(20),
+    border: __webpack_require__(35),
+    curvedPlane: __webpack_require__(21),
+    colorPicker: __webpack_require__(36),
+    modal: __webpack_require__(37),
+    renderer: __webpack_require__(22),
+    yoga_properties: __webpack_require__(23),
 };
 //module.exports = UI;
 
