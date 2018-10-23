@@ -54,8 +54,8 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
             this.el.setAttribute('visible',false);
             setTimeout(()=>{
                 this.setValue();
-                this.setScrollClips();
                 this.el.setAttribute('visible',true);
+                this.setScrollClips();
             },150);
         });
         this.el.getValue = this.getValue.bind(this);
@@ -67,7 +67,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
             new THREE.Plane( new THREE.Vector3( -1, 0, 0 ), 0 ),
             new THREE.Plane( new THREE.Vector3( 1, 0, 0 ), 0 )
         ];
-        this.setScrollClips();
+        //this.setScrollClips();
     },
     selectAll(){
         this.text.selectionStart = 0;
@@ -86,7 +86,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
     },
     setScrollClips(){
         //this.text.object3D.updateMatrixWorld();
-        this.backing.object3D.parent.updateMatrixWorld();
+        //this.backing.object3D.parent.updateMatrixWorld();
         this.content_clips[0].set(new THREE.Vector3( -1, 0, 0 ), (this.data.width/2)+0.005);
         this.content_clips[1].set(new THREE.Vector3( 1, 0, 0 ), (this.data.width/2)+0.005);
         this.content_clips[0].applyMatrix4(this.backing.object3D.matrixWorld);

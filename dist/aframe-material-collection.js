@@ -546,8 +546,8 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
             this.el.setAttribute('visible',false);
             setTimeout(()=>{
                 this.setValue();
-                this.setScrollClips();
                 this.el.setAttribute('visible',true);
+                this.setScrollClips();
             },150);
         });
         this.el.getValue = this.getValue.bind(this);
@@ -559,7 +559,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
             new THREE.Plane( new THREE.Vector3( -1, 0, 0 ), 0 ),
             new THREE.Plane( new THREE.Vector3( 1, 0, 0 ), 0 )
         ];
-        this.setScrollClips();
+        //this.setScrollClips();
     },
     selectAll(){
         this.text.selectionStart = 0;
@@ -578,7 +578,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
     },
     setScrollClips(){
         //this.text.object3D.updateMatrixWorld();
-        this.backing.object3D.parent.updateMatrixWorld();
+        //this.backing.object3D.parent.updateMatrixWorld();
         this.content_clips[0].set(new THREE.Vector3( -1, 0, 0 ), (this.data.width/2)+0.005);
         this.content_clips[1].set(new THREE.Vector3( 1, 0, 0 ), (this.data.width/2)+0.005);
         this.content_clips[0].applyMatrix4(this.backing.object3D.matrixWorld);
@@ -2775,7 +2775,7 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
 /* 24 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.4.38","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.4.40","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
 
 /***/ }),
 /* 25 */
@@ -3666,15 +3666,17 @@ module.exports = AFRAME.registerComponent('ui-modal', {
                 });
             }
             // Add click handler for opening the modal, pause the main render screen and play the modal renderer
-            this.el.addEventListener('mousedown',()=>{
-                this.open();
-            });
+            this.openModal = this.open.bind(this);
+            this.el.addEventListener('mousedown',this.openModal);
             this.data.main.modal = this;
 
             // Expose methods to open/close the modal.
             this.el.open = this.open.bind(this);
             this.el.close = this.close.bind(this);
         }
+    },
+    remove(){
+        this.el.removeEventListener('mousedown',this.openModal);
     },
     open(){
         if(this.mainComponents&&this.mainComponents['ui-renderer']){

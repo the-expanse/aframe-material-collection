@@ -30,15 +30,17 @@ module.exports = AFRAME.registerComponent('ui-modal', {
                 });
             }
             // Add click handler for opening the modal, pause the main render screen and play the modal renderer
-            this.el.addEventListener('mousedown',()=>{
-                this.open();
-            });
+            this.openModal = this.open.bind(this);
+            this.el.addEventListener('mousedown',this.openModal);
             this.data.main.modal = this;
 
             // Expose methods to open/close the modal.
             this.el.open = this.open.bind(this);
             this.el.close = this.close.bind(this);
         }
+    },
+    remove(){
+        this.el.removeEventListener('mousedown',this.openModal);
     },
     open(){
         if(this.mainComponents&&this.mainComponents['ui-renderer']){
