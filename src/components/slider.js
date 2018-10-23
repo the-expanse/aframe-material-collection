@@ -23,6 +23,9 @@ module.exports = AFRAME.registerComponent('ui-slider', {
         scrollZOffset:{type:'number',default:0},
         cameraEl:{type:'selector'},
     },
+    getValue(){
+        return this.scroll_perc;
+    },
     init(){
         this.scroll_perc = this.data.value;
         this.width = this.data.width;
@@ -119,6 +122,7 @@ module.exports = AFRAME.registerComponent('ui-slider', {
             UI.utils.preventDefault(e);
         });
         this.el.slide = this.slide.bind(this);
+        this.el.getValue = this.getValue.bind(this);
         this.el.railEl = this.railEl;
     },
     slide(positionX,isPerc){
