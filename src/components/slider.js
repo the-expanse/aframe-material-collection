@@ -117,6 +117,8 @@ module.exports = AFRAME.registerComponent('ui-slider', {
             // Prevent default behaviour of event
             UI.utils.preventDefault(e);
         });
+        this.el.slide = this.slide.bind(this);
+        this.el.railEl = this.railEl;
     },
     slide(positionX,isPerc){
         let min = (-(this.data.width)/2)+this.data.handleRadius;

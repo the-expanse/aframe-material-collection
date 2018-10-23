@@ -38,6 +38,9 @@ export class Utils{
     shorten(string,length){
         return string.length>length?string.substr(0,length)+"...":string;
     }
+    ucFirst(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
     isChanging(scene,ref){
         let index = this.changesDetected[ref];
         if(!index){
