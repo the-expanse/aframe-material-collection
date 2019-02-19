@@ -81,21 +81,11 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 39);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
-/******/ ({
-
-/***/ 39:
-/***/ (function(module, exports, __webpack_require__) {
-
-// Yoga
-module.exports = window.Yoga = __webpack_require__(40);
-
-
-/***/ }),
-
-/***/ 40:
+/******/ ([
+/* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -113,8 +103,8 @@ module.exports = window.Yoga = __webpack_require__(40);
  * @format
  */
 
-var Yoga = __webpack_require__(41);
-var nbind = __webpack_require__(43);
+var Yoga = __webpack_require__(2);
+var nbind = __webpack_require__(4);
 
 var ran = false;
 var ret = null;
@@ -141,8 +131,128 @@ if (!ran) {
 module.exports = Yoga(ret.bind, ret.lib);
 
 /***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-/***/ 41:
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _vendor_yoga_layout_entry_browser__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
+/* harmony import */ var _vendor_yoga_layout_entry_browser__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_vendor_yoga_layout_entry_browser__WEBPACK_IMPORTED_MODULE_0__);
+
+let nodes = {};
+self.addEventListener('message', event => {
+    switch(event.data.type){
+
+        case "add-node":
+            let properties = event.data.properties;
+            let node = _vendor_yoga_layout_entry_browser__WEBPACK_IMPORTED_MODULE_0__["Node"].create();
+            nodes[event.data.uuid] = {
+                uuid:event.data.uuid,
+                node:node,
+                parent:null,
+                children:[],
+                width:event.data.width
+            };
+
+            for(let method in properties){
+                if(properties.hasOwnProperty(method)&&method.indexOf('Edge')===-1){
+                    if(["setMarginLeft","setMarginPercentLeft","setPaddingLeft","setBorderLeft","setPositionLeft","setPositionPercentLeft"]
+                        .indexOf(method)>-1){
+                        node[method.replace('Left','')](_vendor_yoga_layout_entry_browser__WEBPACK_IMPORTED_MODULE_0__["EDGE_LEFT"],properties[method]);
+                    }else if(["setMarginRight","setMarginPercentRight","setPaddingRight","setBorderRight","setPositionRight","setPositionPercentRight"]
+                        .indexOf(method)>-1){
+                        node[method.replace('Right','')](_vendor_yoga_layout_entry_browser__WEBPACK_IMPORTED_MODULE_0__["EDGE_RIGHT"],properties[method]);
+                    }else if(["setMarginTop","setMarginPercentTop","setPaddingTop","setBorderTop","setPositionTop","setPositionPercentTop"]
+                        .indexOf(method)>-1){
+                        node[method.replace('Top','')](_vendor_yoga_layout_entry_browser__WEBPACK_IMPORTED_MODULE_0__["EDGE_TOP"],properties[method]);
+                    }else if(["setMarginBottom","setMarginPercentBottom","setPaddingBottom","setBorderBottom","setPositionBottom","setPositionPercentBottom"]
+                        .indexOf(method)>-1){
+                        node[method.replace('Bottom','')](_vendor_yoga_layout_entry_browser__WEBPACK_IMPORTED_MODULE_0__["EDGE_BOTTOM"],properties[method]);
+                    }else if(["setMargin","setMarginPercent","setPadding","setBorder","setPosition","setPositionPercent"]
+                        .indexOf(method)>-1){
+                        node[method](_vendor_yoga_layout_entry_browser__WEBPACK_IMPORTED_MODULE_0__["EDGE_ALL"],properties[method]);
+                    }else if(method.indexOf('setMarginAuto')>-1){
+                        let side = method.replace('setMarginAuto','');
+                        let _method = method.replace(side,'');
+                        switch(side){
+                            case "":
+                                node[_method](_vendor_yoga_layout_entry_browser__WEBPACK_IMPORTED_MODULE_0__["EDGE_ALL"]);
+                                break;
+                            case "Left":
+                                node[_method](_vendor_yoga_layout_entry_browser__WEBPACK_IMPORTED_MODULE_0__["EDGE_LEFT"]);
+                                break;
+                            case "Right":
+                                node[_method](_vendor_yoga_layout_entry_browser__WEBPACK_IMPORTED_MODULE_0__["EDGE_RIGHT"]);
+                                break;
+                            case "Top":
+                                node[_method](_vendor_yoga_layout_entry_browser__WEBPACK_IMPORTED_MODULE_0__["EDGE_TOP"]);
+                                break;
+                            case "Bottom":
+                                node[_method](_vendor_yoga_layout_entry_browser__WEBPACK_IMPORTED_MODULE_0__["EDGE_BOTTOM"]);
+                                break;
+                        }
+                    }else if(["setWidthAuto","setHeightAuto"]
+                        .indexOf(method)>-1) {
+                        node[method]();
+                    }else{
+                        node[method](properties[method]);
+                    }
+                }
+            }
+            if(event.data.parentUuid&&nodes.hasOwnProperty(event.data.parentUuid)){
+                nodes[event.data.uuid].parent = nodes[event.data.parentUuid];
+                nodes[event.data.parentUuid].children.push(nodes[event.data.uuid]);
+                nodes[event.data.parentUuid].node.insertChild(node,nodes[event.data.parentUuid].node.getChildCount());
+            }
+            self.postMessage({uuid:event.data.uuid});
+            break;
+        case "get-layout":
+            let results = {content_height:0};
+            let traverse = (node)=>{
+                results[node.uuid] = {
+                    left:nodes[node.uuid].node.getComputedLeft(),
+                    top:nodes[node.uuid].node.getComputedTop(),
+                    width:nodes[node.uuid].node.getComputedWidth(),
+                    height:nodes[node.uuid].node.getComputedHeight(),
+                };
+                let height = results[node.uuid].top+results[node.uuid].height;
+                if(height>results.content_height){
+                    results.content_height = height;
+                }
+                for(let i = 0; i < nodes[node.uuid].children.length; i++){
+                    traverse(nodes[node.uuid].children[i]);
+                }
+            };
+            if(event.data.parentUuid&&nodes.hasOwnProperty(event.data.parentUuid)){
+                nodes[event.data.parentUuid].node.calculateLayout(nodes[event.data.parentUuid].width, 'auto', _vendor_yoga_layout_entry_browser__WEBPACK_IMPORTED_MODULE_0__["DIRECTION_LTR"]);
+                traverse(nodes[event.data.parentUuid]);
+            }
+            self.postMessage({uuid:event.data.uuid,data:results});
+            break;
+        case "reset-layout":
+            if(event.data.parentUuid&&nodes.hasOwnProperty(event.data.parentUuid)){
+                let traverse = (node)=>{
+                    node.children.forEach(_node=>{
+                        if(nodes.hasOwnProperty(_node.uuid)){
+                            delete nodes[_node.uuid];
+                        }
+                        traverse(_node);
+                    });
+                };
+                nodes[event.data.parentUuid].children.forEach(node=>{
+                    nodes[event.data.parentUuid].node.removeChild(node.node);
+                    node.node.freeRecursive();
+                });
+                traverse(nodes[event.data.parentUuid]);
+                nodes[event.data.parentUuid].children.length = 0;
+            }
+            self.postMessage({uuid:event.data.uuid});
+            break;
+    }
+});
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -168,7 +278,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * @format
  */
 
-var CONSTANTS = __webpack_require__(42);
+var CONSTANTS = __webpack_require__(3);
 
 var Layout = function () {
   function Layout(left, right, top, bottom, width, height) {
@@ -395,8 +505,7 @@ module.exports = function (bind, lib) {
 };
 
 /***/ }),
-
-/***/ 42:
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -512,8 +621,7 @@ var CONSTANTS = {
 module.exports = CONSTANTS;
 
 /***/ }),
-
-/***/ 43:
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process, Buffer) {var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, wrapper) {
@@ -10338,11 +10446,10 @@ module.exports = CONSTANTS;
   }run();
 });
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(44), __webpack_require__(45).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(5), __webpack_require__(6).Buffer))
 
 /***/ }),
-
-/***/ 44:
+/* 5 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -10532,8 +10639,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-
-/***/ 45:
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10547,9 +10653,9 @@ process.umask = function() { return 0; };
 
 
 
-var base64 = __webpack_require__(47)
-var ieee754 = __webpack_require__(48)
-var isArray = __webpack_require__(49)
+var base64 = __webpack_require__(8)
+var ieee754 = __webpack_require__(9)
+var isArray = __webpack_require__(10)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -12327,11 +12433,10 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(46)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(7)))
 
 /***/ }),
-
-/***/ 46:
+/* 7 */
 /***/ (function(module, exports) {
 
 var g;
@@ -12357,8 +12462,7 @@ module.exports = g;
 
 
 /***/ }),
-
-/***/ 47:
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12516,8 +12620,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-
-/***/ 48:
+/* 9 */
 /***/ (function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -12607,8 +12710,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-
-/***/ 49:
+/* 10 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -12619,6 +12721,5 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ })
-
-/******/ });
-//# sourceMappingURL=aframe-yoga-layout.js.map
+/******/ ]);
+//# sourceMappingURL=9097b79942535c629758.worker.js.map

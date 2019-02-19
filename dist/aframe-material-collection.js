@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 49);
+/******/ 	return __webpack_require__(__webpack_require__.s = 50);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -133,7 +133,8 @@ module.exports = AFRAME.registerPrimitive('a-ui-button', AFRAME.utils.extendDeep
         "curve-segments":"ui-rounded.curveSegments",
         disabled:'ui-btn.disabled',
         "hover-height":'ui-btn.hoverHeight',
-        "active-height":'ui-btn.activeHeight'
+        "active-height":'ui-btn.activeHeight',
+        "prevent-updates":'ui-btn.preventUpdates'
     }
 }));
 
@@ -173,7 +174,8 @@ module.exports = AFRAME.registerPrimitive('a-ui-fab-button', AFRAME.utils.extend
         "ripple-color":'ui-ripple.color',
         "ripple-size":'ui-ripple.size',
         "ripple-z-index":'ui-ripple.zIndex',
-        disabled:'ui-btn.disabled'
+        disabled:'ui-btn.disabled',
+        coords:'ui-icon.spriteCoords'
     }
 }));
 
@@ -212,7 +214,8 @@ module.exports = AFRAME.registerPrimitive('a-ui-fab-button-small', AFRAME.utils.
         "ripple-color":'ui-ripple.color',
         "ripple-size":'ui-ripple.size',
         "ripple-z-index":'ui-ripple.zIndex',
-        disabled:'ui-btn.disabled'
+        disabled:'ui-btn.disabled',
+        coords:'ui-icon.spriteCoords'
     }
 }));
 
@@ -424,6 +427,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-input-text', AFRAME.utils.extend
         "place-holder":"ui-input-text.placeHolder",
         "camera-el":"ui-input-text.cameraEl",
         "rig-el":"ui-input-text.rigEl",
+        "tab-next":"ui-input-text.tabNext",
         "look-controls-component":"ui-input-text.lookControlsComponent",
         "wasd-controls-component":"ui-input-text.wasdControlsComponent",
     }
@@ -482,7 +486,8 @@ module.exports = AFRAME.registerPrimitive('a-ui-renderer', AFRAME.utils.extendDe
         "debug-raycaster":"ui-renderer.debugRaycaster",
         "fps":"ui-renderer.fps",
         "intersectable-class":"ui-renderer.intersectableClass",
-        "render-debug":"ui-renderer.debug"
+        "render-debug":"ui-renderer.debug",
+        "init-delay":"ui-renderer.initDelay"
     }
 }));
 
@@ -506,6 +511,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         type: {default: 'text'},
         cameraEl:{type:'selector'},
         rigEl:{type:'selector'},
+        tabNext:{type:'selector'},
         width:{type:'number',default:1},
         height:{type:'number',default:0.2},
         backgroundColor:{default:'white'},
@@ -529,26 +535,37 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
             for(let i = 0; i < chars.length; i++){
                 this.chars.push({char:chars[i]});
             }
-            this.blurHandler = ()=>this.blur();
+            this.blurHandler = ()=>{
+                if(!this.el.sceneEl.defaultKeypressPrevented){
+                    this.blur();
+                }else{
+                    this.el.sceneEl.defaultKeypressPrevented = false;
+                }
+            };
             this.isMoving = false;
-            let mousemove = this.onMousemove.bind(this);
+            this.mousemove = this.onMousemove.bind(this);
+
             this.keydown = e=>this.handleKeyboardEvent(e);
+            this.keySelectAll = ()=>this.selectAll();
+            this.keyCut = ()=>this.cutText();
+            this.keyCopy = ()=>this.copyText();
+            this.keyPaste = ()=>this.pasteText();
             this.backing.addEventListener('mousedown',()=>{
                 this.focus();
-                this.playPauseCamera('pause');
-                this.backing.addEventListener('ui-mousemove',mousemove);
             });
             this.el.sceneEl.addEventListener('mouseup',()=>{
-                this.backing.removeEventListener('ui-mousemove',mousemove);
+                this.backing.removeEventListener('ui-mousemove',this.mousemove);
                 this.isMoving = false;
                 this.setSelection(this.text.selectionStart,this.text.selectionLength)
             });
             this.el.setAttribute('visible',false);
-            setTimeout(()=>{
-                this.setValue();
-                this.el.setAttribute('visible',true);
+            this.setValue();
+           // UI.utils.isChanging(this.el.sceneEl,this.text.object3D.uuid);
+            setTimeout(()=> {
                 this.setScrollClips();
-            },150);
+                this.el.setAttribute('visible',true);
+                //UI.utils.stoppedChanging(this.text.object3D.uuid);
+            },200);
         });
         this.el.getValue = this.getValue.bind(this);
         this.el.value = this.value.bind(this);
@@ -569,11 +586,14 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
     increaseWrap(){
         let child = this.text.object3D.children[this.text.object3D.children.length-1];
         if(!child)return;
-        if(child.geometry.layout._linesTotal>1){
+        if(child.geometry.layout&&child.geometry.layout._linesTotal>1){
+            this.text.setAttribute('visible',false);
             this.text.setAttribute('width',this.text.getAttribute('width')*1.2);
             this.text.setAttribute('wrap-pixels',this.text.getAttribute('width')*500);
             this.text.setAttribute('x-offset',((this.text.getAttribute('width')-this.data.width)/2));
-            this.increaseWrap();
+            setTimeout(()=>this.increaseWrap());
+        }else{
+            this.text.setAttribute('visible',true);
         }
     },
     setScrollClips(){
@@ -627,62 +647,82 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         if(this.isFocused)return;
         this.isFocused = true;
         this.setupCarret();
-        this.setValue();
         this.setScrollClips();
-        setTimeout(()=>this.el.sceneEl.addEventListener('mousedown',this.blurHandler),50);
+        setTimeout(()=>{
+            this.setValue();
+            this.el.sceneEl.addEventListener('mousedown',this.blurHandler);
+            this.playPauseCamera('pause');
+        });
+        this.backing.addEventListener('ui-mousemove',this.mousemove);
         window.addEventListener('keydown', this.keydown);
+        this.el.sceneEl.addEventListener('key-select',this.keySelectAll);
+        this.el.sceneEl.addEventListener('key-cut',this.keyCut);
+        this.el.sceneEl.addEventListener('key-copy',this.keyCopy);
+        this.el.sceneEl.addEventListener('key-paste',this.keyPaste);
         this.underline.setAttribute('height',0.008);
         this.underline.setAttribute('color','#009688');
     },
     blur(){
-        this.isFocused = false;
-        clearInterval(this.carretInterval)
-        this.carret.getObject3D('mesh').material.opacity = 0;
-        this.el.sceneEl.removeEventListener('mousedown',this.blurHandler);
-        this.playPauseCamera('play');
-        window.removeEventListener('keydown', this.keydown);
-        UI.utils.stoppedChanging(this.text.object3D.uuid);
-        this.underline.setAttribute('height',0.005);
-        this.underline.setAttribute('color','#bfbfbf');
         if(this.chars.length&&this.chars[this.chars.length-1].char==='.'&&this.data.type==="number"){
             this.chars.pop();
             this.setValue();
         }
+        this.setSelection(0,0);
+        setTimeout(()=>{
+            clearInterval(this.carretInterval);
+            this.carret.getObject3D('mesh').material.opacity = 0;
+            this.isFocused = false;
+        });
+        this.el.sceneEl.removeEventListener('mousedown',this.blurHandler);
+        this.playPauseCamera('play');
+        window.removeEventListener('keydown', this.keydown);
+        this.el.sceneEl.removeEventListener('key-select',this.keySelectAll);
+        this.el.sceneEl.removeEventListener('key-cut',this.keyCut);
+        this.el.sceneEl.removeEventListener('key-copy',this.keyCopy);
+        this.el.sceneEl.removeEventListener('key-paste',this.keyPaste);
+        UI.utils.stoppedChanging(this.text.object3D.uuid);
+        this.underline.setAttribute('height',0.005);
+        this.underline.setAttribute('color','#bfbfbf');
+    },
+    pasteText(){
+        navigator.clipboard.readText()
+            .then(text => {
+                let chars = [this.text.selectionStart, this.text.selectionLength].concat(text.split('').map(char=>({char:char})));
+                Array.prototype.splice.apply(this.chars, chars);
+                this.text.selectionStart = this.text.selectionStart+chars.length-2;
+                this.text.selectionLength = 0;
+                this.setValue();
+            });
+    },
+    cutText(){
+        this.copyText();
+        this.chars.splice(this.text.selectionStart,this.text.selectionLength);
+        this.setValue();
+    },
+    copyText(){
+        let value = this.chars.slice(this.text.selectionStart,this.text.selectionStart+this.text.selectionLength).map(c=>c.char).join("");
+        navigator.clipboard.writeText(value);
     },
     handleKeyboardEvent(e){
-        if(e.keyCode===88&&e.ctrlKey) { //CTRL + X
-            // let selection = window.getSelection();
-            // selection.removeAllRanges();
-            //
-            // let textNode = document.createTextNode('lol')
-            // document.body.appendChild(textNode)
-            //
-            // let range = document.createRange();
-            // range.setStart(textNode, 1);
-            // range.setEnd(textNode, 3);
-            //
-            // selection.addRange(range)
-            //
-            // document.execCommand('copy')
-            //
-            // document.body.removeChild(textNode)
-            // TODO: Clipboard API?? - https://stackoverflow.com/questions/6413036/get-current-clipboard-content
-
-
-            // const modifyCopy = e => {
-            //     console.log('copy executed!')
-            //     e.clipboardData.setData('text/plain', 'Please don\'t copy our work!');
-            //     e.preventDefault();
-            // };
-            //
-            // document.addEventListener('copy', modifyCopy);
-        }if(e.keyCode===67&&e.ctrlKey) { //CTRL + C
-
+        if(e.keyCode===13){
+            this.el.emit('submit');
+        }else if(e.keyCode===9){
+            if(this.data.tabNext){
+                this.carret.getObject3D('mesh').material.opacity = 1;
+                this.blur();
+                setTimeout(()=>this.data.tabNext.focus());
+            }
+        }else if(e.keyCode===88&&e.ctrlKey) { //CTRL + X
+           this.cutText();
+        }else if(e.keyCode===67&&e.ctrlKey) { //CTRL + C
+            this.copyText();
         }else if(e.keyCode===86&&e.ctrlKey) { //CTRL + V
-
+            this.pasteText();
         }else if(e.keyCode===65&&e.ctrlKey) { //CTRL + A
             this.text.selectionStart = 0;
             this.text.selectionLength = this.chars.length;
+            e.preventDefault();
+            e.stopPropagation();
         }else if(e.code.indexOf('Key')>-1||e.code.indexOf('Digit')>-1||this.charsAllowed.indexOf(e.key)>-1){
             let check = true;
             switch(this.data.type){
@@ -699,10 +739,14 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
                 this.text.selectionStart++;
                 this.text.selectionLength = 0;
             }
+            e.preventDefault();
+            e.stopPropagation();
         }else if(e.keyCode===46){// Delete
             this.chars.splice(this.text.selectionStart,this.text.selectionLength||1);
             this.text.selectionStart = this.text.selectionStart>this.chars.length?this.chars.length:this.text.selectionStart;
             this.text.selectionLength = 0;
+            e.preventDefault();
+            e.stopPropagation();
         }else if(e.keyCode===39){
             if(!e.shiftKey){
                 if(this.text.selectionLength){
@@ -725,6 +769,8 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
                 }
 
             }
+            e.preventDefault();
+            e.stopPropagation();
         }else if(e.keyCode===37){
             if(!e.shiftKey) {
                 if (!this.text.selectionLength) {
@@ -744,6 +790,8 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
                     this.text.selectionLength=Math.abs(this.shiftStartPos-this.text.selectionStart);
                 }
             }
+            e.preventDefault();
+            e.stopPropagation();
         }else{
             if(this.text.selectionLength) {
                 if(e.keyCode===8) {// Backspace
@@ -762,18 +810,21 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
                 }
             }
 
+            e.preventDefault();
+            e.stopPropagation();
         }
+
         this.el.emit('ui-keypress',e);
         this.setValue();
         this.carret.getObject3D('mesh').material.opacity = 1;
-        e.preventDefault();
-        e.stopPropagation();
     },
     setValue(){
         this.setScrolledValue();
-        this.setCharacters();
-        this.setSelection(this.text.selectionStart,this.text.selectionLength);
-        this.increaseWrap();
+        setTimeout(()=>{
+            this.setCharacters();
+            this.setSelection(this.text.selectionStart,this.text.selectionLength);
+            this.increaseWrap();
+        })
     },
     setScrolledValue(){
         let output = this.getValue();
@@ -794,7 +845,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         }
         let selection = this.getNearestGlyph(this.startSelection,currentSelection);
         this.selectionHighlight.setAttribute('scale',(selection.end-selection.start)+' 1 1');
-        this.selectionHighlight.setAttribute('position',(selection.start+((selection.end-selection.start)/2))+' 0 0.001');
+        this.selectionHighlight.setAttribute('position',(selection.start+((selection.end-selection.start)/2))+' 0 0.0005');
         this.carret.setAttribute('position',selection.end+' 0 0.001');
 
     },
@@ -808,6 +859,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         this.text.setAttribute('color','#2f2f2f');
         this.text.setAttribute('anchor','center');
         this.text.setAttribute('align','left');
+        this.text.setAttribute('position','0 0 0.003');
         this.text.setAttribute('width',this.data.width);
         this.text.setAttribute('wrap-pixels',this.data.width*500);
         this.text.className = 'no-yoga-layout';
@@ -815,21 +867,23 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         this.text.setAttribute('value',this.data.value);
         this.container.appendChild(this.text);
 
-        this.selectionHighlight = document.createElement('a-plane');
+        this.selectionHighlight = document.createElement('a-box');
         this.selectionHighlight.setAttribute('width',1);
         this.selectionHighlight.setAttribute('scale','0 1 1');
         this.selectionHighlight.setAttribute('height',0.16);
+        this.selectionHighlight.setAttribute('depth',0.00001);
         this.selectionHighlight.setAttribute('transparent',true);
         this.selectionHighlight.className = 'no-yoga-layout';
         this.selectionHighlight.setAttribute('color','#009688');
         this.selectionHighlight.setAttribute('shader','flat');
         this.selectionHighlight.setAttribute('opacity',0.3);
-        this.selectionHighlight.setAttribute('position','0 0 0.001');
+        this.selectionHighlight.setAttribute('position','0 0 0.0005');
         this.text.appendChild(this.selectionHighlight);
 
-        this.carret = document.createElement('a-plane');
+        this.carret = document.createElement('a-box');
         this.carret.setAttribute('width',0.01);
         this.carret.setAttribute('height',0.12);
+        this.carret.setAttribute('depth',0.00001);
         this.carret.setAttribute('transparent',true);
         this.carret.setAttribute('opacity',0);
         this.carret.setAttribute('shader','flat');
@@ -839,19 +893,21 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         this.text.appendChild(this.carret);
 
 
-        this.backing = document.createElement('a-plane');
-        this.backing.className = 'intersectable no-yoga-layout';
+        this.backing = document.createElement('a-box');
+        this.backing.className = 'intersectable no-yoga-layout text-backing';
         this.backing.setAttribute('width',this.data.width+0.1);
         this.backing.setAttribute('height',this.data.height);
+        this.backing.setAttribute('depth',0.00001);
         this.backing.setAttribute('color',this.data.backgroundColor);
         this.backing.setAttribute('shader','flat');
         this.container.appendChild(this.backing);
 
 
 
-        this.underline = document.createElement('a-plane');
+        this.underline = document.createElement('a-box');
         this.underline.setAttribute('width',this.data.width);
         this.underline.setAttribute('height',0.005);
+        this.underline.setAttribute('depth',0.00001);
         this.underline.className = 'no-yoga-layout';
         this.underline.setAttribute('shader','flat');
         this.underline.setAttribute('color','#bfbfbf');
@@ -871,7 +927,8 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
     },
     value(text){
         if(text||text===""){
-            this.chars = text.split('').map(char=>({char:char}))
+            this.chars = text.split('').map(char=>({char:char}));
+            this.text.selectionStart = this.chars.length;
             this.setValue();
             // set value
         }else{
@@ -912,6 +969,9 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         let lastPosition = 0;
         for(let i = 0; i < glyphs.length; i++){
             let glyph = glyphs[i];
+            if(!this.chars[i]){
+                console.log(glyphs.length,this.chars.length);
+            }
             let currentWidth = (this.chars[i].char===' '?20:glyph.data.width);
             let current = (((glyph.position[0]+currentWidth+glyph.position[1])*scale)+0.08);
             if(i===0){
@@ -983,25 +1043,25 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         }
         let parentWidth = this.data.width;
         this.selectionHighlight.setAttribute('scale',(right-left)+' 1 1');
-        this.selectionHighlight.setAttribute('position',(left+((right-left)/2)-((parentWidth)/2))+' 0 0.001')
+        this.selectionHighlight.setAttribute('position',(left+((right-left)/2)-((parentWidth)/2))+' 0 0.0005');
         let carretPosition = (right-((parentWidth)/2));
         this.carret.setAttribute('position',carretPosition+' 0 0.001');
 
         if(carretPosition>(parentWidth/2)-this.scrollOffset){
             this.scrollOffset = -(carretPosition-(parentWidth/2));
-            this.text.setAttribute('position',this.scrollOffset+' 0 0');
+            this.text.setAttribute('position',this.scrollOffset+' 0 0.003');
         }
 
         if((carretPosition+parentWidth/2)<-this.scrollOffset){
             this.scrollOffset+=(-this.scrollOffset-(carretPosition+parentWidth/2));
             if(this.scrollOffset>0)this.scrollOffset=0;
-            this.text.setAttribute('position',this.scrollOffset+' 0 0');
+            this.text.setAttribute('position',this.scrollOffset+' 0 0.003');
         }
     },
     updateSchema() {
+
     }
 });
-//
 
 /***/ }),
 /* 13 */
@@ -1020,7 +1080,8 @@ module.exports = AFRAME.registerComponent('ui-btn', {
         duration:{type:'int',default:250},
         hoverHeight:{type:'number',default:0.01},
         activeHeight:{type:'number',default:-0.001},
-        disabled:{type:'boolean',default:false}
+        disabled:{type:'boolean',default:false},
+        preventUpdates:{type:'boolean',default:false}
     },
     updateSchema(){
       // TODO: handle updates to the button state, disabled flag here.
@@ -1082,13 +1143,13 @@ module.exports = AFRAME.registerComponent('ui-btn', {
     tween(from,to,callback,complete){
         let _this = this;
         // Start changes
-        UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
+        if(!this.data.preventUpdates)UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
         return new TWEEN.Tween({x:from})
             .to({ x: to}, this.data.duration)
             .onUpdate(callback)
             .onComplete(function(){
                 // Stop changes
-                UI.utils.stoppedChanging(_this.el.object3D.uuid)
+                if(!_this.data.preventUpdates)UI.utils.stoppedChanging(_this.el.object3D.uuid)
                 return complete.call(this);
             })
             .easing(TWEEN.Easing.Exponential.Out).start();
@@ -1372,25 +1433,19 @@ module.exports = AFRAME.registerComponent('ui-switch', {
         this.width = 0.3;
         this.height = 0.1;
         // Setup handle circle entity.
-        this.handleEl = document.createElement('a-circle');
-        this.handleEl.setAttribute('radius',0.055);
-        this.handleEl.setAttribute('color',this.data.handleColor);
-        this.handleEl.setAttribute('shader','flat');
-        this.handleEl.setAttribute('ui-ripple','size:0.1 0.1;color:#999;fadeDelay:300;duration:500');
-        this.handleEl.setAttribute('class',this.data.intersectableClass+' no-yoga-layout');
-        this.handleEl.setAttribute('position','-0.05 0 '+this.data.handleZIndex);
-        this.handleEl.setAttribute('segments',6);
-        this.el.appendChild(this.handleEl);
+        let handle = `
+            <a-circle radius="0.055" shader="flat" color="`+this.data.handleColor+`" 
+            ui-ripple="size:0.1 0.1;color:#999;fadeDelay:300;duration:500" class="`+this.data.intersectableClass+` no-yoga-layout"
+            position="-0.05 0 `+this.data.handleZIndex+`" segments="6"></a-circle>`;
+        this.el.insertAdjacentHTML('beforeend',handle);
+        this.handleEl = this.el.lastChild;
 
         // Setup rail entity.
-        this.railEl = document.createElement('a-plane');
-        this.railEl.setAttribute('width','0.15');
-        this.railEl.setAttribute('height','0.05');
-        this.railEl.setAttribute('shader','flat');
-        this.railEl.setAttribute('ui-rounded','borderRadius:0.025');
-        this.railEl.setAttribute('color',this.data.railColor);
-        this.railEl.setAttribute('class',this.data.intersectableClass+' no-yoga-layout');
-        this.el.appendChild(this.railEl);
+        let rail = `<a-plane width="0.15" shader="flat" height="0.05" 
+            ui-rounded="borderRadius:0.025" class="`+this.data.intersectableClass+` no-yoga-layout"
+            color="`+this.data.railColor+`" segments="6"></a-plane>`;
+        this.el.insertAdjacentHTML('beforeend',rail);
+        this.railEl = this.el.lastChild;
         // Wait for the rounded edge on the rail to load to clone the geometry for the
         // selected progress bar part of the rail
         this.railEl.addEventListener('rounded-loaded',()=>{
@@ -1398,6 +1453,7 @@ module.exports = AFRAME.registerComponent('ui-switch', {
             this.setDisabled();
             this.click();
         });
+        this.el.getValue = this.getValue.bind(this);
         this.clickHandler = e=>{
             this.data.value = !this.data.value;
             this.click();
@@ -1406,6 +1462,9 @@ module.exports = AFRAME.registerComponent('ui-switch', {
                 e.detail.preventDefault();
             }
         };
+    },
+    getValue(){
+        return this.data.value;
     },
     setDisabled(){
         // Add / Remove click handlers based on disabled state.
@@ -1517,7 +1576,7 @@ module.exports = AFRAME.registerComponent('ui-toast', {
 
 /***/ }),
 /* 18 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
 /* global AFRAME,THREE */
 /**
@@ -1526,7 +1585,21 @@ module.exports = AFRAME.registerComponent('ui-toast', {
  * @component ui-scroll-pane
  * @author Shane Harris
  */
-
+const YogaWorker = __webpack_require__(19);
+let workerResolves = {};
+let yogaWorker = new YogaWorker();
+yogaWorker.onmessage = event=>{
+    if(workerResolves.hasOwnProperty(event.data.uuid)){
+        workerResolves[event.data.uuid](event.data);
+    }
+};
+let sendMessage = (type,properties,parentUuid,width)=>{
+    return new Promise(resolve=>{
+        let uuid = THREE.Math.generateUUID();
+        workerResolves[uuid] = resolve;
+        yogaWorker.postMessage({ type, properties, uuid, parentUuid, width});
+    });
+};
 module.exports = AFRAME.registerComponent('ui-scroll-pane', {
     schema: {
         height:{type:'number',default:1.2},
@@ -1552,7 +1625,6 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.rail.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' 0 '+(this.data.scrollZOffset+0.0002));
         this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' 0 '+(this.data.scrollZOffset+0.0005));
         this.el.sceneEl.renderer.localClippingEnabled = true;
-
         // Setup content clips.
         this.content_clips = [
             new THREE.Plane( new THREE.Vector3( 0, 1, 0 ), (this.data.height/2) ),
@@ -1641,14 +1713,11 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.content_clips[3].applyMatrix4(this.el.object3D.matrixWorld);
 
     },
-    setContent(body,noAutoReload){
+    async setContent(body,noAutoReload){
         if(this.container) {
             // Remove all children in the container and all yoga nodes
             while (this.container.firstChild) {
                 let child = this.container.firstChild;
-                if (this.container.yoga_node&&child.yoga_node) {
-                    this.container.yoga_node.removeChild(child.yoga_node);
-                }
                 if(child.object3D){
                     UI.utils.clearObject(child.object3D);
                 }
@@ -1662,33 +1731,43 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 loadedWrapper.insertAdjacentHTML('afterbegin',body);
                 loadedWrapper.addEventListener('loaded',e=>{
                     // Trigger an update to redraw scrollbars and fire change events.
-                    if(!noAutoReload)this.updateContent();
-                    resolve(loadedWrapper);
-                    loadedWrapper.setAttribute('visible',true)
+                    sendMessage('reset-layout',null,this.container.yoga_uuid)
+                        .then(async ()=>{
+                            loadedWrapper.setAttribute('visible',true);
+                            if(!noAutoReload){
+                                return this.updateContent();
+                            }
+                        })
+                        .then(()=>resolve(loadedWrapper));
                 });
                 this.container.appendChild(loadedWrapper);
             })
         }
     },
-    updateContent(should_not_scroll){
+    async updateContent(should_not_scroll){
         this.updateContentClips();
         this.currentUuid = THREE.Math.generateUUID();
         UI.utils.isChanging(this.el.sceneEl,this.currentUuid);
         this.setChildClips();
-        if(typeof Yoga !== 'undefined')this.initialiseYoga(this.container,this.data.width*100);
-        this.container.yoga_node.calculateLayout(this.data.width*100, 'auto', Yoga.DIRECTION_LTR);
-        this.content_height = Number.NEGATIVE_INFINITY;
-        if(typeof Yoga !== 'undefined')this.updateYoga(this.container);
+        await this.initialiseYoga(this.container);
+        await sendMessage('get-layout',null,this.container.yoga_uuid)
+            .then(layout=>{
+                this.content_height = layout.data.content_height/100;
+                //console.log(layout.data.content_height/100);
+                this.updateYoga(this.container,layout.data);
 
-        this.handleSize = THREE.Math.clamp((this.data.height/this.content_height),0.1,1);
-        this.handle.setAttribute('width',this.handleSize===1?0.00000001:0.1);
-        this.rail.setAttribute('width',this.handleSize===1?0.00000001:0.1);
-        this.rail.setAttribute('color',this.handleSize===1?'#efefef':'#fff');
-        this.handle.setAttribute('height',this.data.height*this.handleSize);
-        if(!should_not_scroll){
-            this.container.object3D.position.y = this.data.height/2;
-            this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+(this.data.height-(this.data.height*this.handleSize))/2+' '+(this.data.scrollZOffset+0.0005));
-        }
+                this.handleSize = THREE.Math.clamp((this.data.height/this.content_height),0.1,1);
+
+                this.handle.setAttribute('visible',this.handleSize!==1);
+                this.rail.setAttribute('visible',this.handleSize!==1);
+                this.rail.setAttribute('color',this.handleSize===1?'#efefef':'#fff');
+                this.handle.setAttribute('height',this.data.height*this.handleSize);
+                if(!should_not_scroll){
+                    this.container.object3D.position.y = this.data.height/2;
+                    this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+(this.data.height-(this.data.height*this.handleSize))/2+' '+(this.data.scrollZOffset+0.0005));
+                }
+                setTimeout(()=>UI.utils.stoppedChanging(this.currentUuid),3000);
+            });
     },
     mouseMove(e){
         if(this.isDragging){
@@ -1724,7 +1803,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.backgroundPanel.setAttribute('width',this.data.width+1);
         this.backgroundPanel.setAttribute('height',this.data.height+1);
         this.backgroundPanel.setAttribute('position','0 0 -0.013');
-        this.backgroundPanel.setAttribute('opacity',0.0001);//
+        this.backgroundPanel.setAttribute('opacity',0.0001);
         this.backgroundPanel.setAttribute('transparent',true);
 
         this.el.appendChild(this.backgroundPanel);
@@ -1748,54 +1827,54 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
     },
     setupYogaNode(node,width,height,properties){
         // Parse yoga properties and call the yoga methods to setup this layout node.
-        if(!properties.hasOwnProperty('setWidth'))node.setWidth(width);
-        if(!properties.hasOwnProperty('setHeight'))node.setHeight(height);
-        for(let method in properties){
-            if(properties.hasOwnProperty(method)&&method.indexOf('Edge')===-1){
-                if(["setMarginLeft","setMarginPercentLeft","setPaddingLeft","setBorderLeft","setPositionLeft","setPositionPercentLeft"]
-                    .indexOf(method)>-1){
-                    node[method](Yoga.EDGE_LEFT,properties[method]);
-                }else if(["setMarginRight","setMarginPercentRight","setPaddingRight","setBorderRight","setPositionRight","setPositionPercentRight"]
-                    .indexOf(method)>-1){
-                    node[method](Yoga.EDGE_RIGHT,properties[method]);
-                }else if(["setMarginTop","setMarginPercentTop","setPaddingTop","setBorderTop","setPositionTop","setPositionPercentTop"]
-                    .indexOf(method)>-1){
-                    node[method](Yoga.EDGE_TOP,properties[method]);
-                }else if(["setMarginBottom","setMarginPercentBottom","setPaddingBottom","setBorderBottom","setPositionBottom","setPositionPercentBottom"]
-                    .indexOf(method)>-1){
-                    node[method](Yoga.EDGE_BOTTOM,properties[method]);
-                }else if(["setMargin","setMarginPercent","setPadding","setBorder","setPosition","setPositionPercent"]
-                    .indexOf(method)>-1){
-                    node[method](Yoga.EDGE_ALL,properties[method]);
-                }else if(method.indexOf('setMarginAuto')>-1){
-                    let side = method.replace('setMarginAuto','');
-                    switch(side){
-                        case "":
-                            node[method](Yoga.EDGE_ALL);
-                            break;
-                        case "Left":
-                            node[method](Yoga.EDGE_LEFT);
-                            break;
-                        case "Right":
-                            node[method](Yoga.EDGE_RIGHT);
-                            break;
-                        case "Top":
-                            node[method](Yoga.EDGE_TOP);
-                            break;
-                        case "Bottom":
-                            node[method](Yoga.EDGE_BOTTOM);
-                            break;
-                    }
-                }else if(["setWidthAuto","setHeightAuto"]
-                    .indexOf(method)>-1) {
-                    node[method]();
-                }else{
-                    node[method](properties[method]);
-                }
-            }
-        }
+        // for(let method in properties){
+        //     if(properties.hasOwnProperty(method)&&method.indexOf('Edge')===-1){
+        //         if(["setMarginLeft","setMarginPercentLeft","setPaddingLeft","setBorderLeft","setPositionLeft","setPositionPercentLeft"]
+        //             .indexOf(method)>-1){
+        //             node[method.replace('Left','')](Yoga.EDGE_LEFT,properties[method]);
+        //         }else if(["setMarginRight","setMarginPercentRight","setPaddingRight","setBorderRight","setPositionRight","setPositionPercentRight"]
+        //             .indexOf(method)>-1){
+        //             node[method.replace('Right','')](Yoga.EDGE_RIGHT,properties[method]);
+        //         }else if(["setMarginTop","setMarginPercentTop","setPaddingTop","setBorderTop","setPositionTop","setPositionPercentTop"]
+        //             .indexOf(method)>-1){
+        //             node[method.replace('Top','')](Yoga.EDGE_TOP,properties[method]);
+        //         }else if(["setMarginBottom","setMarginPercentBottom","setPaddingBottom","setBorderBottom","setPositionBottom","setPositionPercentBottom"]
+        //             .indexOf(method)>-1){
+        //             node[method.replace('Bottom','')](Yoga.EDGE_BOTTOM,properties[method]);
+        //         }else if(["setMargin","setMarginPercent","setPadding","setBorder","setPosition","setPositionPercent"]
+        //             .indexOf(method)>-1){
+        //             node[method](Yoga.EDGE_ALL,properties[method]);
+        //         }else if(method.indexOf('setMarginAuto')>-1){
+        //             let side = method.replace('setMarginAuto','');
+        //             let _method = method.replace(side,'');
+        //             switch(side){
+        //                 case "":
+        //                     node[_method](Yoga.EDGE_ALL);
+        //                     break;
+        //                 case "Left":
+        //                     node[_method](Yoga.EDGE_LEFT);
+        //                     break;
+        //                 case "Right":
+        //                     node[_method](Yoga.EDGE_RIGHT);
+        //                     break;
+        //                 case "Top":
+        //                     node[_method](Yoga.EDGE_TOP);
+        //                     break;
+        //                 case "Bottom":
+        //                     node[_method](Yoga.EDGE_BOTTOM);
+        //                     break;
+        //             }
+        //         }else if(["setWidthAuto","setHeightAuto"]
+        //             .indexOf(method)>-1) {
+        //             node[method]();
+        //         }else{
+        //             node[method](properties[method]);
+        //         }
+        //     }
+        // }
     },
-    initialiseYoga(parent){
+
+    async initialiseYoga(parent){
         // Traverse the tree and setup Yoga layout nodes with default settings
         // or settings specified in the elements yoga properties component.
         parent = parent||this.container;
@@ -1839,47 +1918,59 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 height = parent.getAttribute(componentName).height;
                 break;
         }
-
-        if(!parent.yoga_node){
-            parent.yoga_node = Yoga.Node.create();
-            let ui_yoga = parent.getAttribute("ui-yoga");
-            if(ui_yoga&&parent.getYogaProperties){
-                this.setupYogaNode(parent.yoga_node,width ? width * 100 : 'auto',height ? height * 100 : 'auto',
-                    parent.getYogaProperties());
-            }else{
-                parent.yoga_node.setWidth(width ? width * 100 : 'auto');
-                parent.yoga_node.setHeight(height ? height * 100 : 'auto');
-                parent.yoga_node.setJustifyContent(Yoga.JUSTIFY_FLEX_START);
-                parent.yoga_node.setFlexDirection(Yoga.FLEX_DIRECTION_ROW);
-                parent.yoga_node.setAlignContent(Yoga.ALIGN_AUTO);
-                parent.yoga_node.setFlexWrap(Yoga.WRAP_WRAP);
-            }
-            // Add the yoga node to the Yoga tree.
-            if(parent.parentElement&&parent.parentElement.yoga_node){
+        // width = Math.round(width);
+        // height = Math.round(height);
+        //parent.yoga_node = Yoga.Node.create();
+        let ui_yoga = parent.getAttribute("ui-yoga");
+        let properties = {};
+        if(ui_yoga&&parent.getYogaProperties){
+            properties = parent.getYogaProperties();
+        }else{
+            properties.setJustifyContent = Yoga.JUSTIFY_FLEX_START;
+            properties.setFlexDirection = Yoga.FLEX_DIRECTION_ROW;
+            properties.setAlignContent = Yoga.ALIGN_AUTO;
+            properties.setFlexWrap = Yoga.WRAP_WRAP;
+            if(parent.parentElement&&parent.parentElement.yoga_uuid){
                 // Default margin if none set;
-                if(!ui_yoga){
-                    parent.yoga_node.setMargin(Yoga.EDGE_RIGHT, 5);
-                    parent.yoga_node.setMargin(Yoga.EDGE_BOTTOM, 5);
-                }
-                parent.parentElement.yoga_node.insertChild(parent.yoga_node,parent.parentElement.yoga_node.getChildCount());
+                properties.setMarginRight = 5;
+                properties.setMarginBottom = 5;
             }else{
                 // Default root padding if none set;
-                if(!ui_yoga){
-                    parent.yoga_node.setPadding(Yoga.EDGE_ALL,2);
-                }
+                properties.setPadding = 2;
             }
         }
-        for(let i = 0; i < parent.childNodes.length; i++) {
-            let child = parent.childNodes[i];
-            if (child.nodeType === 1) {
-                if(child.classList.contains('no-yoga-layout')){
-                    return;
-                }
-                this.initialiseYoga(child);
-            }
+        if(!properties.hasOwnProperty('setWidth')){
+            properties.setWidth = width ? width * 100 : 'auto';
         }
+        if(!properties.hasOwnProperty('setHeight')){
+            properties.setHeight = height ? height * 100 : 'auto';
+        }
+        //this.setupYogaNode(parent.yoga_node,width ? width * 100 : 'auto',height ? height * 100 : 'auto',properties);
+        // if(parent.parentElement&&parent.parentElement.yoga_node){
+        //     parent.parentElement.yoga_node.insertChild(parent.yoga_node,parent.parentElement.yoga_node.getChildCount());
+        // }
+        let promise;
+        if(parent.parentElement&&parent.parentElement.yoga_uuid){
+            promise = sendMessage('add-node',properties,parent.parentElement.yoga_uuid);
+        }else{
+            promise = sendMessage('add-node',properties,null,this.data.width*100);
+        }
+        await promise.then(resp=>{
+            parent.yoga_uuid = resp.uuid;
+            let promises = [];
+            for(let i = 0; i < parent.childNodes.length; i++) {
+                let child = parent.childNodes[i];
+                if (child.nodeType === 1) {
+                    if(!child.classList.contains('no-yoga-layout')){
+                        promises.push(this.initialiseYoga(child));
+                    }
+                }
+            }
+            return Promise.all(promises);
+        });
     },
-    updateYoga(parent){
+
+    updateYoga(parent,layout){
         // Update the entity positions from the Yoga layout.
         for(let i = 0; i < parent.childNodes.length; i++){
             let child = parent.childNodes[i];
@@ -1888,24 +1979,24 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                     return;
                 }
                 let position;
+
+                if(!layout[child.yoga_uuid]){
+                    console.log(child,layout);
+                }
                 if(child.tagName==="A-ENTITY"){
                     position = {
-                        x:(child.yoga_node.getComputedLeft()/100),
-                        y:(child.yoga_node.getComputedTop()/100),
+                        x:(layout[child.yoga_uuid].left/100),
+                        y:(layout[child.yoga_uuid].top/100),
                     };
                 }else{
                     position = {
-                        x:(child.yoga_node.getComputedLeft()/100)+(child.yoga_node.getComputedWidth()/200),
-                        y:(child.yoga_node.getComputedTop()/100)+(child.yoga_node.getComputedHeight()/200),
+                        x:(layout[child.yoga_uuid].left/100)+(layout[child.yoga_uuid].width/200),
+                        y:(layout[child.yoga_uuid].top/100)+(layout[child.yoga_uuid].height/200),
                     };
                 }
-                let highest = (child.yoga_node.getComputedTop()/100)+(child.yoga_node.getComputedHeight()/100);
-                if(highest>this.content_height){
-                    this.content_height = highest;
-                }
-                child.setAttribute('position',position.x+' '+(-position.y)+' 0.0001');//+child.getAttribute('position').z);
+                child.setAttribute('position',position.x+' '+(-position.y)+' 0.0001');
             }
-            this.updateYoga(child);
+            this.updateYoga(child,layout);
         }
     },
 
@@ -1972,6 +2063,14 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
 
 /***/ }),
 /* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = function() {
+  return new Worker(__webpack_require__.p + "9097b79942535c629758.worker.js");
+};
+
+/***/ }),
+/* 20 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN */
@@ -2146,7 +2245,7 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
 });
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN */
@@ -2174,40 +2273,38 @@ module.exports = AFRAME.registerComponent('ui-radio', {
         this.width = 0.15;
         this.height = 0.15;
         // Create center circle for checked state.
-        this.filled_circle = document.createElement('a-circle');
-        this.filled_circle.setAttribute('radius',this.data.selectedRadius);
-        this.filled_circle.setAttribute('scale','0 0 0');
-        this.filled_circle.setAttribute('color',this.data.disabled?this.data.disabledColor:this.data.selectedColor);
-        this.filled_circle.setAttribute('shader','flat');
-        this.filled_circle.setAttribute('class','no-yoga-layout');
-        this.filled_circle.setAttribute('segments',6);
-        this.el.components.material.material.color = new THREE.Color(this.data.disabled?this.data.disabledColor:this.data.unselectedColor);
-        this.el.appendChild(this.filled_circle);
-        // Create backing for getting click events.
-        let backing = document.createElement('a-circle');
-        backing.setAttribute('radius',this.data.selectedRadius);
-        backing.setAttribute('position','0 0 -0.002');
-        backing.setAttribute('class',this.data.intersectableClass+' no-yoga-layout');
-        backing.setAttribute('shader','flat');
-        backing.setAttribute('segments',6);
-        backing.setAttribute('opacity',0.0001);
-        backing.setAttribute('transparent',true);
-        this.el.appendChild(backing);
-        // Set this if it is checked.
-        if(this.data.selected){
-            this.click();
-        }
-        // TODO: need to add play/pause methods for registering/unregistering events.
-        if(!this.data.disabled){
-            this.el.addEventListener('mousedown',e=>this.click(e));
-        }
+        this.el.addEventListener('loaded',()=>{
+
+            let handle = `
+            <a-circle radius="`+this.data.selectedRadius+`" color="`+(this.data.disabled?this.data.disabledColor:this.data.selectedColor)+`" 
+            position="0 0 0" scale="0 0 0" shader="flat" class="no-yoga-layout" segments="6"></a-circle>`;
+            this.el.insertAdjacentHTML('beforeend',handle);
+            this.filled_circle = this.el.lastChild;
+            this.el.components.material.material.color = new THREE.Color(this.data.disabled?this.data.disabledColor:this.data.unselectedColor);
+
+            // Create backing for getting click events.
+            let backing = `
+            <a-circle radius="`+this.data.selectedRadius+`" position="0 0 -0.002" opacity="0.0001" transparent="true" 
+            shader="flat" class="`+this.data.intersectableClass+` no-yoga-layout" segments="6"></a-circle>`;
+            this.el.insertAdjacentHTML('beforeend',backing);
+            // Set this if it is checked.
+            if(this.data.selected){
+                this.filled_circle.addEventListener('loaded',()=>{
+                    this.click();
+                });
+            }
+            // TODO: need to add play/pause methods for registering/unregistering events.
+            if(!this.data.disabled){
+                this.el.addEventListener('mousedown',e=>this.click(e));
+            }
+        });
     },
     deselect(){
         // Deselect this radio with a scale animation on the circle.
         this.el.setAttribute('selected',false);
         let _this = this;
         // Start changes
-        UI.utils.isChanging(this.el.sceneEl,this.filled_circle.object3D.uuid);
+        UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
         new TWEEN.Tween({x:1})
             .to({ x: 0.000001}, 200)
             .onUpdate(function(){
@@ -2215,7 +2312,7 @@ module.exports = AFRAME.registerComponent('ui-radio', {
             })
             .onComplete(()=>{
                 // Stop changes
-                UI.utils.stoppedChanging(_this.filled_circle.object3D.uuid);
+                UI.utils.stoppedChanging(_this.el.object3D.uuid);
                 this.isRippling = false;
             })
             .easing(TWEEN.Easing.Exponential.Out).start();
@@ -2252,7 +2349,7 @@ module.exports = AFRAME.registerComponent('ui-radio', {
 });
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -2289,7 +2386,7 @@ module.exports = AFRAME.registerComponent('ui-curved-plane', {
 });
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -2307,12 +2404,12 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         lookControlsComponent:{default:'look-controls'},
         panelPosition:{type:'vec3',default:{x:0,y:1.6,z:-1}},
         panelSize:{type:'vec2',default:{x:6,y:3}},
-        renderResolution:{type:'vec2',default:{x:2048,y:1024}},
+        renderResolution:{type:'vec2',default:{x:1024,y:512}},
         debugRaycaster:{type:'boolean',default: false},
-        fps:{type:'number',default:60},
+        fps:{type:'number',default:45},
         intersectableClass:{default:'intersectable'},
         debug:{type:'boolean',default:false},
-        initDelay:{type:'int',default:0},
+        initDelay:{type:'int',default:500},
     },
     init() {
         this.setupBackDrop();
@@ -2357,7 +2454,13 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         this.el.pauseRender = this.pauseRender.bind(this);
         this.el.playRender = this.playRender.bind(this);
         this.isReady = false;
-        setTimeout(()=>{this.isReady = true;},this.data.initDelay);
+        setTimeout(()=>{
+            this.isReady = true;
+            UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
+                setTimeout(()=>{
+                    UI.utils.stoppedChanging(this.el.object3D.uuid);
+                },250);
+        },this.data.initDelay);
     },
     pauseRender(time){
         return this.playRender(time,true)
@@ -2376,7 +2479,8 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
                 _this.play();
             }
             UI.utils.isChanging(_this.el.sceneEl,_this.backdrop.uuid);
-            new TWEEN.Tween({x:fromScale})
+            if(_this.renderTween)_this.renderTween.stop();
+            _this.renderTween = new TWEEN.Tween({x:fromScale})
                 .to({x:toScale}, duration)
                 .onUpdate(function(){
                     _this.backdrop.setAttribute('opacity',this.x);
@@ -2443,9 +2547,10 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         this.el.sceneEl.appendChild(uiPanel);
         return uiPanel;
     },
+
     mouseEvent(type,e){
         let mouse = {x:0,y:0};
-        if(e.detail.intersection){
+        if(e.detail&&e.detail.intersection){
             let localPoint = this.meshEl.object3D.worldToLocal(e.detail.intersection.point.clone());
 
             mouse = {
@@ -2453,20 +2558,23 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
                 y:localPoint.y/this.meshEl.getAttribute('height')*2
             };
         }
-        if(type==='ui-mousewheel'&&e.detail.evt){
-            mouse.deltaY = e.detail.deltaY;
-            mouse.deltaX = e.detail.deltaX;
+        if(type==='ui-mousewheel'&&(e.detail||(e.deltaX||e.deltaY))){
+            mouse.deltaX = e.detail?e.detail.deltaX:e.deltaX;
+            mouse.deltaY = e.detail?e.detail.deltaY:e.deltaY;
         }
         if(type==='mousedown'&&this.lookControlsEl&&this.lookControlsEl.components['look-controls']){
-            this.lookControlsEl.components[this.data.lookControlsComponent].pause()
+            this.lookControlsEl.components[this.data.lookControlsComponent].pause();
         }
         if(type==='mouseup'&&this.lookControlsEl&&this.lookControlsEl.components['look-controls']){
-            this.lookControlsEl.components[this.data.lookControlsComponent].play()
+            this.lookControlsEl.components[this.data.lookControlsComponent].play();
         }
+        // if(type==="mousedown"){
+        //     console.log("mousedown on menu/editor",mouse);
+        // }
         this.raycastIntersections(e,mouse,type);
     },
     raycastIntersections(e,mouse,type){
-        if(!this.camera)return;
+        if(!this.camera||this.isFrozen||this.isAnimatingBackground)return;
         //console.log(mouse);
         this.raycaster.setFromCamera( mouse, this.camera );
         // this.helper.setDirection(this.raycaster.ray.direction);
@@ -2517,7 +2625,6 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         this.el.object3D.traverse(child=>{
             child.updateMatrixWorld();
         });
-
         let renderer = this.el.sceneEl.renderer;
         let vrModeEnabled = renderer.vr.enabled;
         renderer.vr.enabled = false;
@@ -2531,7 +2638,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
 });
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,Yoga */
@@ -2542,9 +2649,9 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
  * @author Shane Harris
  */
 
-if (typeof Yoga === 'undefined') {
-    throw 'ui-yoga component requires the Yoga Layout Engine to be loaded - https://yogalayout.com';
-}
+// if (typeof Yoga === 'undefined') {
+//     throw 'ui-yoga component requires the Yoga Layout Engine to be loaded - https://yogalayout.com';
+// }
 // Map yoga enums to frendly names.
 // TODO: Need to expose the padding/border/margin side as seperate options to allow for combinations.
 module.exports = AFRAME.registerComponent('ui-yoga', {
@@ -2772,13 +2879,13 @@ module.exports = AFRAME.registerComponent('ui-yoga', {
 });
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module) {
 
-module.exports = {"name":"aframe-material-collection","version":"0.4.40","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.4"},"author":"Shane Harris","license":"MIT","dependencies":{}};
+module.exports = {"name":"aframe-material-collection","version":"0.4.40","description":"Material UI based primitives and components for use in your aframe projects.","homepage":"https://github.com/shaneharris/aframe-material-collection","keywords":["AFRAME","UI","Material"],"scripts":{"start":"webpack-dev-server --mode development","build":"webpack --mode production"},"repository":{"type":"git","url":"git@github.com:shaneharris/aframe-material-collection.git"},"bugs":{"url":"https://github.com/shaneharris/aframe-material-collection/issues"},"devDependencies":{"uglifyjs-webpack-plugin":"^1.2.7","webpack":"^4.16.1","webpack-cli":"^3.1.0","webpack-dev-server":"^3.1.14"},"author":"Shane Harris","license":"MIT","dependencies":{"worker-loader":"^2.0.0"}};
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -2804,7 +2911,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-text-input', AFRAME.utils.extend
 }));
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -2831,7 +2938,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-number-input', AFRAME.utils.exte
 }));
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -2858,7 +2965,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-int-input', AFRAME.utils.extendD
 }));
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -2885,7 +2992,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-password-input', AFRAME.utils.ex
 }));
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -2921,7 +3028,7 @@ module.exports = AFRAME.registerComponent('ui-text', {
 });
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -2934,19 +3041,26 @@ module.exports = AFRAME.registerComponent('ui-text', {
 module.exports = AFRAME.registerComponent('ui-icon', {
     schema: {
         src: {default: 'icons/send_white_64dp.png'},
+        spriteCoords:{type:'vec4'},
         size:{type:'vec2',default:{x:0.1,y:0.1}},
         zIndex:{type:'number',default:0.003},
         color:{default:'#fff'}
     },
     init() {
-        this.icon = new THREE.Mesh(new THREE.PlaneGeometry(this.data.size.x,this.data.size.y),new THREE.MeshBasicMaterial({color:this.data.color,alphaTest:0.4,transparent:true,map:new THREE.TextureLoader().load(this.data.src)}));
-        this.icon.position.set(0,0,this.data.zIndex);
-        this.el.object3D.add(this.icon);
+        this.icon = document.createElement('a-entity');
+        this.icon.className = 'no-yoga-layout';
+        this.icon.setAttribute('geometry','primitive:plane; width: '+this.data.size.x+'; height: '+this.data.size.y+';skipCache: true;');
+        this.icon.setAttribute('material','shader: flat; color:'+this.data.color+';alpha-test:0.4; transparent:true;src:'+this.data.src);
+        if(this.data.spriteCoords){
+            this.icon.setAttribute('sprite-sheet','coords:'+this.data.spriteCoords.x+' '+this.data.spriteCoords.y+' '+this.data.spriteCoords.z+' '+this.data.spriteCoords.w+';shape:square');
+        }
+        this.icon.setAttribute('position',"0 0 "+this.data.zIndex);
+        this.el.appendChild(this.icon);
     }
 });
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -2985,7 +3099,7 @@ module.exports = AFRAME.registerComponent('ui-rounded', {
 });
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,TWEEN,THREE */
@@ -3090,7 +3204,7 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
 });
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -3100,6 +3214,7 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
  * @component ui-mouse-shim
  * @author Shane Harris
  */
+
 module.exports = AFRAME.registerComponent('ui-mouse-shim', {
     schema:{
         fps:{type:'number',default:45}
@@ -3109,7 +3224,14 @@ module.exports = AFRAME.registerComponent('ui-mouse-shim', {
             throw 'ui-mouse-move component needs the raycaster component to be added.'
         }
         // Add support for mouse wheel
-        this.el.sceneEl.renderer.domElement.addEventListener( 'wheel', this.onMouseWheel.bind(this), false);
+        this.onmousewheele = this.onMouseWheel.bind(this);
+        this.el.sceneEl.raycaster = this.el.components.raycaster;
+    },
+    pause(){
+        this.el.sceneEl.renderer.domElement.removeEventListener( 'wheel',this.onmousewheele , false);
+    },
+    play(){
+        this.el.sceneEl.renderer.domElement.addEventListener( 'wheel',this.onmousewheele , false);
     },
     onMouseWheel(e){
         this.emitMouseEvent('ui-mousewheel',e);
@@ -3120,6 +3242,14 @@ module.exports = AFRAME.registerComponent('ui-mouse-shim', {
         this.lastMouseMoveTime = new Date().getTime();
     },
     emitMouseEvent(eventType,event){
+        if(this.el.sceneEl.cursorPoint&&this.el.components.raycaster.intersections.length&&this.el.sceneEl.renderer.vr.enabled){
+            this.el.sceneEl.cursorPoint.position.copy(this.el.components.raycaster.intersections[0].point);
+            this.el.sceneEl.cursorPoint.scale.set(1,1,1);
+        }else{
+            if(this.el.sceneEl.cursorPoint&&!this.el.sceneEl.hasSceneCursor){
+                this.el.sceneEl.cursorPoint.scale.set(0.00001,0.00001,0.00001);
+            }
+        }
         // Get current intersections from raycaster component.
         this.el.components.raycaster.intersections.forEach(intersection=>{
             if(intersection.object.el){
@@ -3131,7 +3261,7 @@ module.exports = AFRAME.registerComponent('ui-mouse-shim', {
 });
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -3162,7 +3292,7 @@ module.exports = AFRAME.registerComponent('ui-double-click', {
 });
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -3219,7 +3349,7 @@ module.exports = AFRAME.registerComponent('ui-border', {
 });
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports) {
 
 /* global AFRAME */
@@ -3519,6 +3649,7 @@ module.exports = AFRAME.registerComponent('ui-color-picker', {
             UI.utils.preventDefault(e);
         });
         this.colorWheel.addEventListener('mouseup',e=>{
+            console.log('mouseup on color picker')
             this.isMouseDown = false;
             UI.utils.preventDefault(e);
         });
@@ -3631,7 +3762,7 @@ module.exports = AFRAME.registerComponent('ui-color-picker', {
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports) {
 
 /* global AFRAME,THREE */
@@ -3698,7 +3829,8 @@ module.exports = AFRAME.registerComponent('ui-modal', {
     tweenModalScale(from,to){
         return new Promise(r=>{
             let _this = this;
-            new TWEEN.Tween({x:from})
+            if(this.modalTween)this.modalTween.stop();
+            this.modalTween = new TWEEN.Tween({x:from})
                 .to({x:to}, 250)
                 .onUpdate(function(){
                     if(_this.modalPanel)
@@ -3711,7 +3843,6 @@ module.exports = AFRAME.registerComponent('ui-modal', {
 });
 
 /***/ }),
-/* 38 */,
 /* 39 */,
 /* 40 */,
 /* 41 */,
@@ -3722,7 +3853,8 @@ module.exports = AFRAME.registerComponent('ui-modal', {
 /* 46 */,
 /* 47 */,
 /* 48 */,
-/* 49 */
+/* 49 */,
+/* 50 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3761,6 +3893,14 @@ class Utils{
             }
         }
     }
+    getPointInBetweenByPerc(pointA, pointB, percentage) {
+
+        var dir = pointB.clone().sub(pointA);
+        var len = dir.length();
+        dir = dir.normalize().multiplyScalar(len*percentage);
+        return pointA.clone().add(dir);
+
+    }
     preventDefault(e){
         if(e.detail && e.detail.preventDefault && typeof e.detail.preventDefault === "function"){
             e.detail.preventDefault();
@@ -3769,15 +3909,40 @@ class Utils{
     shorten(string,length){
         return string.length>length?string.substr(0,length)+"...":string;
     }
+    uniqueNumberedName(newName,names,key){
+        let currentNumber = 0;
+        let nameLessNumber = newName;
+        for(let i = 0; i < names.length; i++){
+            let name;
+            if(key){
+                name = names[i][key].split('~#');
+            }else{
+                name = names[i].split('~#');
+            }
+            let existingNumber = name.length>1?Number(name.pop()):0;
+            existingNumber = existingNumber || 0;
+            nameLessNumber = name.join('');
+            if(newName===nameLessNumber&&existingNumber>currentNumber){
+                currentNumber = existingNumber;
+            }
+        }
+        if(currentNumber>0){
+            newName+="~# "+(currentNumber+1)
+        }
+        return newName;
+    }
     ucFirst(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+    zeroPad(number,length){
+        return ("0000000"+number).slice(-length);
     }
     isChanging(scene,ref){
         let index = this.changesDetected[ref];
         if(!index){
             this.scene = this.scene||scene;
             let now = new Date().getTime();
-            this.changesDetected[ref] = {t:now};
+            this.changesDetected[ref] = {t:now,e:new Error().stack};
             this.isFirstOrLastChange();
         }else{
             this.changesDetected[ref].t = new Date().getTime();
@@ -3824,7 +3989,7 @@ class Utils{
  */
 
 
-let version = __webpack_require__(24).version;
+let version = __webpack_require__(25).version;
 console.log('aframe-material-collection version '+version);
 
 if (typeof AFRAME === 'undefined') {
@@ -3846,35 +4011,35 @@ window.UI = {
     a_ui_checkbox: __webpack_require__(7),
     a_ui_radio: __webpack_require__(8),
     a_ui_input_text: __webpack_require__(9),
-    a_ui_text_input: __webpack_require__(25),
-    a_ui_number_input: __webpack_require__(26),
-    a_ui_int_input: __webpack_require__(27),
-    a_ui_password_input: __webpack_require__(28),
+    a_ui_text_input: __webpack_require__(26),
+    a_ui_number_input: __webpack_require__(27),
+    a_ui_int_input: __webpack_require__(28),
+    a_ui_password_input: __webpack_require__(29),
     a_ui_scroll_pane: __webpack_require__(10),
     a_ui_renderer: __webpack_require__(11),
 
     // Components
-    text: __webpack_require__(29),
+    text: __webpack_require__(30),
     input_text: __webpack_require__(12),
     btn: __webpack_require__(13),
-    icon: __webpack_require__(30),
-    rounded: __webpack_require__(31),
-    ripple: __webpack_require__(32),
+    icon: __webpack_require__(31),
+    rounded: __webpack_require__(32),
+    ripple: __webpack_require__(33),
     slider: __webpack_require__(14),
     number: __webpack_require__(15),
     switch: __webpack_require__(16),
     toast: __webpack_require__(17),
     scroll_pane: __webpack_require__(18),
-    mouse_shim: __webpack_require__(33),
-    double_click: __webpack_require__(34),
-    checkbox: __webpack_require__(19),
-    radio: __webpack_require__(20),
-    border: __webpack_require__(35),
-    curvedPlane: __webpack_require__(21),
-    colorPicker: __webpack_require__(36),
-    modal: __webpack_require__(37),
-    renderer: __webpack_require__(22),
-    yoga_properties: __webpack_require__(23),
+    mouse_shim: __webpack_require__(34),
+    double_click: __webpack_require__(35),
+    checkbox: __webpack_require__(20),
+    radio: __webpack_require__(21),
+    border: __webpack_require__(36),
+    curvedPlane: __webpack_require__(22),
+    colorPicker: __webpack_require__(37),
+    modal: __webpack_require__(38),
+    renderer: __webpack_require__(23),
+    yoga_properties: __webpack_require__(24),
 };
 //module.exports = UI;
 
