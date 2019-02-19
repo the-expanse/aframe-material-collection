@@ -14,6 +14,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         type: {default: 'text'},
         cameraEl:{type:'selector'},
         rigEl:{type:'selector'},
+        tabNext:{type:'selector'},
         width:{type:'number',default:1},
         height:{type:'number',default:0.2},
         backgroundColor:{default:'white'},
@@ -37,26 +38,37 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
             for(let i = 0; i < chars.length; i++){
                 this.chars.push({char:chars[i]});
             }
-            this.blurHandler = ()=>this.blur();
+            this.blurHandler = ()=>{
+                if(!this.el.sceneEl.defaultKeypressPrevented){
+                    this.blur();
+                }else{
+                    this.el.sceneEl.defaultKeypressPrevented = false;
+                }
+            };
             this.isMoving = false;
-            let mousemove = this.onMousemove.bind(this);
+            this.mousemove = this.onMousemove.bind(this);
+
             this.keydown = e=>this.handleKeyboardEvent(e);
+            this.keySelectAll = ()=>this.selectAll();
+            this.keyCut = ()=>this.cutText();
+            this.keyCopy = ()=>this.copyText();
+            this.keyPaste = ()=>this.pasteText();
             this.backing.addEventListener('mousedown',()=>{
                 this.focus();
-                this.playPauseCamera('pause');
-                this.backing.addEventListener('ui-mousemove',mousemove);
             });
             this.el.sceneEl.addEventListener('mouseup',()=>{
-                this.backing.removeEventListener('ui-mousemove',mousemove);
+                this.backing.removeEventListener('ui-mousemove',this.mousemove);
                 this.isMoving = false;
                 this.setSelection(this.text.selectionStart,this.text.selectionLength)
             });
             this.el.setAttribute('visible',false);
-            setTimeout(()=>{
-                this.setValue();
-                this.el.setAttribute('visible',true);
+            this.setValue();
+           // UI.utils.isChanging(this.el.sceneEl,this.text.object3D.uuid);
+            setTimeout(()=> {
                 this.setScrollClips();
-            },150);
+                this.el.setAttribute('visible',true);
+                //UI.utils.stoppedChanging(this.text.object3D.uuid);
+            },200);
         });
         this.el.getValue = this.getValue.bind(this);
         this.el.value = this.value.bind(this);
@@ -77,11 +89,14 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
     increaseWrap(){
         let child = this.text.object3D.children[this.text.object3D.children.length-1];
         if(!child)return;
-        if(child.geometry.layout._linesTotal>1){
+        if(child.geometry.layout&&child.geometry.layout._linesTotal>1){
+            this.text.setAttribute('visible',false);
             this.text.setAttribute('width',this.text.getAttribute('width')*1.2);
             this.text.setAttribute('wrap-pixels',this.text.getAttribute('width')*500);
             this.text.setAttribute('x-offset',((this.text.getAttribute('width')-this.data.width)/2));
-            this.increaseWrap();
+            setTimeout(()=>this.increaseWrap());
+        }else{
+            this.text.setAttribute('visible',true);
         }
     },
     setScrollClips(){
@@ -135,62 +150,82 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         if(this.isFocused)return;
         this.isFocused = true;
         this.setupCarret();
-        this.setValue();
         this.setScrollClips();
-        setTimeout(()=>this.el.sceneEl.addEventListener('mousedown',this.blurHandler),50);
+        setTimeout(()=>{
+            this.setValue();
+            this.el.sceneEl.addEventListener('mousedown',this.blurHandler);
+            this.playPauseCamera('pause');
+        });
+        this.backing.addEventListener('ui-mousemove',this.mousemove);
         window.addEventListener('keydown', this.keydown);
+        this.el.sceneEl.addEventListener('key-select',this.keySelectAll);
+        this.el.sceneEl.addEventListener('key-cut',this.keyCut);
+        this.el.sceneEl.addEventListener('key-copy',this.keyCopy);
+        this.el.sceneEl.addEventListener('key-paste',this.keyPaste);
         this.underline.setAttribute('height',0.008);
         this.underline.setAttribute('color','#009688');
     },
     blur(){
-        this.isFocused = false;
-        clearInterval(this.carretInterval)
-        this.carret.getObject3D('mesh').material.opacity = 0;
-        this.el.sceneEl.removeEventListener('mousedown',this.blurHandler);
-        this.playPauseCamera('play');
-        window.removeEventListener('keydown', this.keydown);
-        UI.utils.stoppedChanging(this.text.object3D.uuid);
-        this.underline.setAttribute('height',0.005);
-        this.underline.setAttribute('color','#bfbfbf');
         if(this.chars.length&&this.chars[this.chars.length-1].char==='.'&&this.data.type==="number"){
             this.chars.pop();
             this.setValue();
         }
+        this.setSelection(0,0);
+        setTimeout(()=>{
+            clearInterval(this.carretInterval);
+            this.carret.getObject3D('mesh').material.opacity = 0;
+            this.isFocused = false;
+        });
+        this.el.sceneEl.removeEventListener('mousedown',this.blurHandler);
+        this.playPauseCamera('play');
+        window.removeEventListener('keydown', this.keydown);
+        this.el.sceneEl.removeEventListener('key-select',this.keySelectAll);
+        this.el.sceneEl.removeEventListener('key-cut',this.keyCut);
+        this.el.sceneEl.removeEventListener('key-copy',this.keyCopy);
+        this.el.sceneEl.removeEventListener('key-paste',this.keyPaste);
+        UI.utils.stoppedChanging(this.text.object3D.uuid);
+        this.underline.setAttribute('height',0.005);
+        this.underline.setAttribute('color','#bfbfbf');
+    },
+    pasteText(){
+        navigator.clipboard.readText()
+            .then(text => {
+                let chars = [this.text.selectionStart, this.text.selectionLength].concat(text.split('').map(char=>({char:char})));
+                Array.prototype.splice.apply(this.chars, chars);
+                this.text.selectionStart = this.text.selectionStart+chars.length-2;
+                this.text.selectionLength = 0;
+                this.setValue();
+            });
+    },
+    cutText(){
+        this.copyText();
+        this.chars.splice(this.text.selectionStart,this.text.selectionLength);
+        this.setValue();
+    },
+    copyText(){
+        let value = this.chars.slice(this.text.selectionStart,this.text.selectionStart+this.text.selectionLength).map(c=>c.char).join("");
+        navigator.clipboard.writeText(value);
     },
     handleKeyboardEvent(e){
-        if(e.keyCode===88&&e.ctrlKey) { //CTRL + X
-            // let selection = window.getSelection();
-            // selection.removeAllRanges();
-            //
-            // let textNode = document.createTextNode('lol')
-            // document.body.appendChild(textNode)
-            //
-            // let range = document.createRange();
-            // range.setStart(textNode, 1);
-            // range.setEnd(textNode, 3);
-            //
-            // selection.addRange(range)
-            //
-            // document.execCommand('copy')
-            //
-            // document.body.removeChild(textNode)
-            // TODO: Clipboard API?? - https://stackoverflow.com/questions/6413036/get-current-clipboard-content
-
-
-            // const modifyCopy = e => {
-            //     console.log('copy executed!')
-            //     e.clipboardData.setData('text/plain', 'Please don\'t copy our work!');
-            //     e.preventDefault();
-            // };
-            //
-            // document.addEventListener('copy', modifyCopy);
-        }if(e.keyCode===67&&e.ctrlKey) { //CTRL + C
-
+        if(e.keyCode===13){
+            this.el.emit('submit');
+        }else if(e.keyCode===9){
+            if(this.data.tabNext){
+                this.carret.getObject3D('mesh').material.opacity = 1;
+                this.blur();
+                setTimeout(()=>this.data.tabNext.focus());
+            }
+        }else if(e.keyCode===88&&e.ctrlKey) { //CTRL + X
+           this.cutText();
+        }else if(e.keyCode===67&&e.ctrlKey) { //CTRL + C
+            this.copyText();
         }else if(e.keyCode===86&&e.ctrlKey) { //CTRL + V
-
+            this.pasteText();
         }else if(e.keyCode===65&&e.ctrlKey) { //CTRL + A
             this.text.selectionStart = 0;
             this.text.selectionLength = this.chars.length;
+            e.preventDefault();
+            e.stopPropagation();
         }else if(e.code.indexOf('Key')>-1||e.code.indexOf('Digit')>-1||this.charsAllowed.indexOf(e.key)>-1){
             let check = true;
             switch(this.data.type){
@@ -207,10 +242,14 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
                 this.text.selectionStart++;
                 this.text.selectionLength = 0;
             }
+            e.preventDefault();
+            e.stopPropagation();
         }else if(e.keyCode===46){// Delete
             this.chars.splice(this.text.selectionStart,this.text.selectionLength||1);
             this.text.selectionStart = this.text.selectionStart>this.chars.length?this.chars.length:this.text.selectionStart;
             this.text.selectionLength = 0;
+            e.preventDefault();
+            e.stopPropagation();
         }else if(e.keyCode===39){
             if(!e.shiftKey){
                 if(this.text.selectionLength){
@@ -233,6 +272,8 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
                 }
 
             }
+            e.preventDefault();
+            e.stopPropagation();
         }else if(e.keyCode===37){
             if(!e.shiftKey) {
                 if (!this.text.selectionLength) {
@@ -252,6 +293,8 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
                     this.text.selectionLength=Math.abs(this.shiftStartPos-this.text.selectionStart);
                 }
             }
+            e.preventDefault();
+            e.stopPropagation();
         }else{
             if(this.text.selectionLength) {
                 if(e.keyCode===8) {// Backspace
@@ -270,18 +313,21 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
                 }
             }
 
+            e.preventDefault();
+            e.stopPropagation();
         }
+
         this.el.emit('ui-keypress',e);
         this.setValue();
         this.carret.getObject3D('mesh').material.opacity = 1;
-        e.preventDefault();
-        e.stopPropagation();
     },
     setValue(){
         this.setScrolledValue();
-        this.setCharacters();
-        this.setSelection(this.text.selectionStart,this.text.selectionLength);
-        this.increaseWrap();
+        setTimeout(()=>{
+            this.setCharacters();
+            this.setSelection(this.text.selectionStart,this.text.selectionLength);
+            this.increaseWrap();
+        })
     },
     setScrolledValue(){
         let output = this.getValue();
@@ -302,7 +348,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         }
         let selection = this.getNearestGlyph(this.startSelection,currentSelection);
         this.selectionHighlight.setAttribute('scale',(selection.end-selection.start)+' 1 1');
-        this.selectionHighlight.setAttribute('position',(selection.start+((selection.end-selection.start)/2))+' 0 0.001');
+        this.selectionHighlight.setAttribute('position',(selection.start+((selection.end-selection.start)/2))+' 0 0.0005');
         this.carret.setAttribute('position',selection.end+' 0 0.001');
 
     },
@@ -316,6 +362,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         this.text.setAttribute('color','#2f2f2f');
         this.text.setAttribute('anchor','center');
         this.text.setAttribute('align','left');
+        this.text.setAttribute('position','0 0 0.003');
         this.text.setAttribute('width',this.data.width);
         this.text.setAttribute('wrap-pixels',this.data.width*500);
         this.text.className = 'no-yoga-layout';
@@ -323,21 +370,23 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         this.text.setAttribute('value',this.data.value);
         this.container.appendChild(this.text);
 
-        this.selectionHighlight = document.createElement('a-plane');
+        this.selectionHighlight = document.createElement('a-box');
         this.selectionHighlight.setAttribute('width',1);
         this.selectionHighlight.setAttribute('scale','0 1 1');
         this.selectionHighlight.setAttribute('height',0.16);
+        this.selectionHighlight.setAttribute('depth',0.00001);
         this.selectionHighlight.setAttribute('transparent',true);
         this.selectionHighlight.className = 'no-yoga-layout';
         this.selectionHighlight.setAttribute('color','#009688');
         this.selectionHighlight.setAttribute('shader','flat');
         this.selectionHighlight.setAttribute('opacity',0.3);
-        this.selectionHighlight.setAttribute('position','0 0 0.001');
+        this.selectionHighlight.setAttribute('position','0 0 0.0005');
         this.text.appendChild(this.selectionHighlight);
 
-        this.carret = document.createElement('a-plane');
+        this.carret = document.createElement('a-box');
         this.carret.setAttribute('width',0.01);
         this.carret.setAttribute('height',0.12);
+        this.carret.setAttribute('depth',0.00001);
         this.carret.setAttribute('transparent',true);
         this.carret.setAttribute('opacity',0);
         this.carret.setAttribute('shader','flat');
@@ -347,19 +396,21 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         this.text.appendChild(this.carret);
 
 
-        this.backing = document.createElement('a-plane');
-        this.backing.className = 'intersectable no-yoga-layout';
+        this.backing = document.createElement('a-box');
+        this.backing.className = 'intersectable no-yoga-layout text-backing';
         this.backing.setAttribute('width',this.data.width+0.1);
         this.backing.setAttribute('height',this.data.height);
+        this.backing.setAttribute('depth',0.00001);
         this.backing.setAttribute('color',this.data.backgroundColor);
         this.backing.setAttribute('shader','flat');
         this.container.appendChild(this.backing);
 
 
 
-        this.underline = document.createElement('a-plane');
+        this.underline = document.createElement('a-box');
         this.underline.setAttribute('width',this.data.width);
         this.underline.setAttribute('height',0.005);
+        this.underline.setAttribute('depth',0.00001);
         this.underline.className = 'no-yoga-layout';
         this.underline.setAttribute('shader','flat');
         this.underline.setAttribute('color','#bfbfbf');
@@ -379,7 +430,8 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
     },
     value(text){
         if(text||text===""){
-            this.chars = text.split('').map(char=>({char:char}))
+            this.chars = text.split('').map(char=>({char:char}));
+            this.text.selectionStart = this.chars.length;
             this.setValue();
             // set value
         }else{
@@ -420,6 +472,9 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         let lastPosition = 0;
         for(let i = 0; i < glyphs.length; i++){
             let glyph = glyphs[i];
+            if(!this.chars[i]){
+                console.log(glyphs.length,this.chars.length);
+            }
             let currentWidth = (this.chars[i].char===' '?20:glyph.data.width);
             let current = (((glyph.position[0]+currentWidth+glyph.position[1])*scale)+0.08);
             if(i===0){
@@ -491,22 +546,22 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         }
         let parentWidth = this.data.width;
         this.selectionHighlight.setAttribute('scale',(right-left)+' 1 1');
-        this.selectionHighlight.setAttribute('position',(left+((right-left)/2)-((parentWidth)/2))+' 0 0.001')
+        this.selectionHighlight.setAttribute('position',(left+((right-left)/2)-((parentWidth)/2))+' 0 0.0005');
         let carretPosition = (right-((parentWidth)/2));
         this.carret.setAttribute('position',carretPosition+' 0 0.001');
 
         if(carretPosition>(parentWidth/2)-this.scrollOffset){
             this.scrollOffset = -(carretPosition-(parentWidth/2));
-            this.text.setAttribute('position',this.scrollOffset+' 0 0');
+            this.text.setAttribute('position',this.scrollOffset+' 0 0.003');
         }
 
         if((carretPosition+parentWidth/2)<-this.scrollOffset){
             this.scrollOffset+=(-this.scrollOffset-(carretPosition+parentWidth/2));
             if(this.scrollOffset>0)this.scrollOffset=0;
-            this.text.setAttribute('position',this.scrollOffset+' 0 0');
+            this.text.setAttribute('position',this.scrollOffset+' 0 0.003');
         }
     },
     updateSchema() {
+
     }
 });
-//

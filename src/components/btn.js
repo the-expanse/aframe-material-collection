@@ -11,7 +11,8 @@ module.exports = AFRAME.registerComponent('ui-btn', {
         duration:{type:'int',default:250},
         hoverHeight:{type:'number',default:0.01},
         activeHeight:{type:'number',default:-0.001},
-        disabled:{type:'boolean',default:false}
+        disabled:{type:'boolean',default:false},
+        preventUpdates:{type:'boolean',default:false}
     },
     updateSchema(){
       // TODO: handle updates to the button state, disabled flag here.
@@ -73,13 +74,13 @@ module.exports = AFRAME.registerComponent('ui-btn', {
     tween(from,to,callback,complete){
         let _this = this;
         // Start changes
-        UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
+        if(!this.data.preventUpdates)UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
         return new TWEEN.Tween({x:from})
             .to({ x: to}, this.data.duration)
             .onUpdate(callback)
             .onComplete(function(){
                 // Stop changes
-                UI.utils.stoppedChanging(_this.el.object3D.uuid)
+                if(!_this.data.preventUpdates)UI.utils.stoppedChanging(_this.el.object3D.uuid)
                 return complete.call(this);
             })
             .easing(TWEEN.Easing.Exponential.Out).start();

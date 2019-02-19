@@ -23,40 +23,38 @@ module.exports = AFRAME.registerComponent('ui-radio', {
         this.width = 0.15;
         this.height = 0.15;
         // Create center circle for checked state.
-        this.filled_circle = document.createElement('a-circle');
-        this.filled_circle.setAttribute('radius',this.data.selectedRadius);
-        this.filled_circle.setAttribute('scale','0 0 0');
-        this.filled_circle.setAttribute('color',this.data.disabled?this.data.disabledColor:this.data.selectedColor);
-        this.filled_circle.setAttribute('shader','flat');
-        this.filled_circle.setAttribute('class','no-yoga-layout');
-        this.filled_circle.setAttribute('segments',6);
-        this.el.components.material.material.color = new THREE.Color(this.data.disabled?this.data.disabledColor:this.data.unselectedColor);
-        this.el.appendChild(this.filled_circle);
-        // Create backing for getting click events.
-        let backing = document.createElement('a-circle');
-        backing.setAttribute('radius',this.data.selectedRadius);
-        backing.setAttribute('position','0 0 -0.002');
-        backing.setAttribute('class',this.data.intersectableClass+' no-yoga-layout');
-        backing.setAttribute('shader','flat');
-        backing.setAttribute('segments',6);
-        backing.setAttribute('opacity',0.0001);
-        backing.setAttribute('transparent',true);
-        this.el.appendChild(backing);
-        // Set this if it is checked.
-        if(this.data.selected){
-            this.click();
-        }
-        // TODO: need to add play/pause methods for registering/unregistering events.
-        if(!this.data.disabled){
-            this.el.addEventListener('mousedown',e=>this.click(e));
-        }
+        this.el.addEventListener('loaded',()=>{
+
+            let handle = `
+            <a-circle radius="`+this.data.selectedRadius+`" color="`+(this.data.disabled?this.data.disabledColor:this.data.selectedColor)+`" 
+            position="0 0 0" scale="0 0 0" shader="flat" class="no-yoga-layout" segments="6"></a-circle>`;
+            this.el.insertAdjacentHTML('beforeend',handle);
+            this.filled_circle = this.el.lastChild;
+            this.el.components.material.material.color = new THREE.Color(this.data.disabled?this.data.disabledColor:this.data.unselectedColor);
+
+            // Create backing for getting click events.
+            let backing = `
+            <a-circle radius="`+this.data.selectedRadius+`" position="0 0 -0.002" opacity="0.0001" transparent="true" 
+            shader="flat" class="`+this.data.intersectableClass+` no-yoga-layout" segments="6"></a-circle>`;
+            this.el.insertAdjacentHTML('beforeend',backing);
+            // Set this if it is checked.
+            if(this.data.selected){
+                this.filled_circle.addEventListener('loaded',()=>{
+                    this.click();
+                });
+            }
+            // TODO: need to add play/pause methods for registering/unregistering events.
+            if(!this.data.disabled){
+                this.el.addEventListener('mousedown',e=>this.click(e));
+            }
+        });
     },
     deselect(){
         // Deselect this radio with a scale animation on the circle.
         this.el.setAttribute('selected',false);
         let _this = this;
         // Start changes
-        UI.utils.isChanging(this.el.sceneEl,this.filled_circle.object3D.uuid);
+        UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
         new TWEEN.Tween({x:1})
             .to({ x: 0.000001}, 200)
             .onUpdate(function(){
@@ -64,7 +62,7 @@ module.exports = AFRAME.registerComponent('ui-radio', {
             })
             .onComplete(()=>{
                 // Stop changes
-                UI.utils.stoppedChanging(_this.filled_circle.object3D.uuid);
+                UI.utils.stoppedChanging(_this.el.object3D.uuid);
                 this.isRippling = false;
             })
             .easing(TWEEN.Easing.Exponential.Out).start();

@@ -13,12 +13,12 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         lookControlsComponent:{default:'look-controls'},
         panelPosition:{type:'vec3',default:{x:0,y:1.6,z:-1}},
         panelSize:{type:'vec2',default:{x:6,y:3}},
-        renderResolution:{type:'vec2',default:{x:2048,y:1024}},
+        renderResolution:{type:'vec2',default:{x:1024,y:512}},
         debugRaycaster:{type:'boolean',default: false},
-        fps:{type:'number',default:60},
+        fps:{type:'number',default:45},
         intersectableClass:{default:'intersectable'},
         debug:{type:'boolean',default:false},
-        initDelay:{type:'int',default:0},
+        initDelay:{type:'int',default:500},
     },
     init() {
         this.setupBackDrop();
@@ -63,7 +63,13 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         this.el.pauseRender = this.pauseRender.bind(this);
         this.el.playRender = this.playRender.bind(this);
         this.isReady = false;
-        setTimeout(()=>{this.isReady = true;},this.data.initDelay);
+        setTimeout(()=>{
+            this.isReady = true;
+            UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
+                setTimeout(()=>{
+                    UI.utils.stoppedChanging(this.el.object3D.uuid);
+                },250);
+        },this.data.initDelay);
     },
     pauseRender(time){
         return this.playRender(time,true)
@@ -82,7 +88,8 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
                 _this.play();
             }
             UI.utils.isChanging(_this.el.sceneEl,_this.backdrop.uuid);
-            new TWEEN.Tween({x:fromScale})
+            if(_this.renderTween)_this.renderTween.stop();
+            _this.renderTween = new TWEEN.Tween({x:fromScale})
                 .to({x:toScale}, duration)
                 .onUpdate(function(){
                     _this.backdrop.setAttribute('opacity',this.x);
@@ -149,9 +156,10 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         this.el.sceneEl.appendChild(uiPanel);
         return uiPanel;
     },
+
     mouseEvent(type,e){
         let mouse = {x:0,y:0};
-        if(e.detail.intersection){
+        if(e.detail&&e.detail.intersection){
             let localPoint = this.meshEl.object3D.worldToLocal(e.detail.intersection.point.clone());
 
             mouse = {
@@ -159,20 +167,23 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
                 y:localPoint.y/this.meshEl.getAttribute('height')*2
             };
         }
-        if(type==='ui-mousewheel'&&e.detail.evt){
-            mouse.deltaY = e.detail.deltaY;
-            mouse.deltaX = e.detail.deltaX;
+        if(type==='ui-mousewheel'&&(e.detail||(e.deltaX||e.deltaY))){
+            mouse.deltaX = e.detail?e.detail.deltaX:e.deltaX;
+            mouse.deltaY = e.detail?e.detail.deltaY:e.deltaY;
         }
         if(type==='mousedown'&&this.lookControlsEl&&this.lookControlsEl.components['look-controls']){
-            this.lookControlsEl.components[this.data.lookControlsComponent].pause()
+            this.lookControlsEl.components[this.data.lookControlsComponent].pause();
         }
         if(type==='mouseup'&&this.lookControlsEl&&this.lookControlsEl.components['look-controls']){
-            this.lookControlsEl.components[this.data.lookControlsComponent].play()
+            this.lookControlsEl.components[this.data.lookControlsComponent].play();
         }
+        // if(type==="mousedown"){
+        //     console.log("mousedown on menu/editor",mouse);
+        // }
         this.raycastIntersections(e,mouse,type);
     },
     raycastIntersections(e,mouse,type){
-        if(!this.camera)return;
+        if(!this.camera||this.isFrozen||this.isAnimatingBackground)return;
         //console.log(mouse);
         this.raycaster.setFromCamera( mouse, this.camera );
         // this.helper.setDirection(this.raycaster.ray.direction);
@@ -223,7 +234,6 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         this.el.object3D.traverse(child=>{
             child.updateMatrixWorld();
         });
-
         let renderer = this.el.sceneEl.renderer;
         let vrModeEnabled = renderer.vr.enabled;
         renderer.vr.enabled = false;

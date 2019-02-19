@@ -30,6 +30,14 @@ export class Utils{
             }
         }
     }
+    getPointInBetweenByPerc(pointA, pointB, percentage) {
+
+        var dir = pointB.clone().sub(pointA);
+        var len = dir.length();
+        dir = dir.normalize().multiplyScalar(len*percentage);
+        return pointA.clone().add(dir);
+
+    }
     preventDefault(e){
         if(e.detail && e.detail.preventDefault && typeof e.detail.preventDefault === "function"){
             e.detail.preventDefault();
@@ -38,15 +46,40 @@ export class Utils{
     shorten(string,length){
         return string.length>length?string.substr(0,length)+"...":string;
     }
+    uniqueNumberedName(newName,names,key){
+        let currentNumber = 0;
+        let nameLessNumber = newName;
+        for(let i = 0; i < names.length; i++){
+            let name;
+            if(key){
+                name = names[i][key].split('~#');
+            }else{
+                name = names[i].split('~#');
+            }
+            let existingNumber = name.length>1?Number(name.pop()):0;
+            existingNumber = existingNumber || 0;
+            nameLessNumber = name.join('');
+            if(newName===nameLessNumber&&existingNumber>currentNumber){
+                currentNumber = existingNumber;
+            }
+        }
+        if(currentNumber>0){
+            newName+="~# "+(currentNumber+1)
+        }
+        return newName;
+    }
     ucFirst(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+    zeroPad(number,length){
+        return ("0000000"+number).slice(-length);
     }
     isChanging(scene,ref){
         let index = this.changesDetected[ref];
         if(!index){
             this.scene = this.scene||scene;
             let now = new Date().getTime();
-            this.changesDetected[ref] = {t:now};
+            this.changesDetected[ref] = {t:now,e:new Error().stack};
             this.isFirstOrLastChange();
         }else{
             this.changesDetected[ref].t = new Date().getTime();

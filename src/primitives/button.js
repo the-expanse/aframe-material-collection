@@ -43,6 +43,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-button', AFRAME.utils.extendDeep
         "curve-segments":"ui-rounded.curveSegments",
         disabled:'ui-btn.disabled',
         "hover-height":'ui-btn.hoverHeight',
-        "active-height":'ui-btn.activeHeight'
+        "active-height":'ui-btn.activeHeight',
+        "prevent-updates":'ui-btn.preventUpdates'
     }
 }));

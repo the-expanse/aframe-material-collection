@@ -62,7 +62,8 @@ module.exports = AFRAME.registerComponent('ui-modal', {
     tweenModalScale(from,to){
         return new Promise(r=>{
             let _this = this;
-            new TWEEN.Tween({x:from})
+            if(this.modalTween)this.modalTween.stop();
+            this.modalTween = new TWEEN.Tween({x:from})
                 .to({x:to}, 250)
                 .onUpdate(function(){
                     if(_this.modalPanel)

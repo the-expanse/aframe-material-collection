@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require("webpack");
+const WorkerLoader = require('worker-loader');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 module.exports = {
     entry: {
@@ -29,6 +30,14 @@ module.exports = {
         stats: "errors-only",
         contentBase: __dirname+"/dist",
         open:true
+    },
+    module: {
+        rules: [
+            {
+                test: /\.worker\.js$/,
+                use: { loader: 'worker-loader', options: { inline: true, fallback: false, publicPath: '/' } }
+            }
+        ]
     },
     optimization: {
         minimize: true,

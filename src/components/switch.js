@@ -37,25 +37,19 @@ module.exports = AFRAME.registerComponent('ui-switch', {
         this.width = 0.3;
         this.height = 0.1;
         // Setup handle circle entity.
-        this.handleEl = document.createElement('a-circle');
-        this.handleEl.setAttribute('radius',0.055);
-        this.handleEl.setAttribute('color',this.data.handleColor);
-        this.handleEl.setAttribute('shader','flat');
-        this.handleEl.setAttribute('ui-ripple','size:0.1 0.1;color:#999;fadeDelay:300;duration:500');
-        this.handleEl.setAttribute('class',this.data.intersectableClass+' no-yoga-layout');
-        this.handleEl.setAttribute('position','-0.05 0 '+this.data.handleZIndex);
-        this.handleEl.setAttribute('segments',6);
-        this.el.appendChild(this.handleEl);
+        let handle = `
+            <a-circle radius="0.055" shader="flat" color="`+this.data.handleColor+`" 
+            ui-ripple="size:0.1 0.1;color:#999;fadeDelay:300;duration:500" class="`+this.data.intersectableClass+` no-yoga-layout"
+            position="-0.05 0 `+this.data.handleZIndex+`" segments="6"></a-circle>`;
+        this.el.insertAdjacentHTML('beforeend',handle);
+        this.handleEl = this.el.lastChild;
 
         // Setup rail entity.
-        this.railEl = document.createElement('a-plane');
-        this.railEl.setAttribute('width','0.15');
-        this.railEl.setAttribute('height','0.05');
-        this.railEl.setAttribute('shader','flat');
-        this.railEl.setAttribute('ui-rounded','borderRadius:0.025');
-        this.railEl.setAttribute('color',this.data.railColor);
-        this.railEl.setAttribute('class',this.data.intersectableClass+' no-yoga-layout');
-        this.el.appendChild(this.railEl);
+        let rail = `<a-plane width="0.15" shader="flat" height="0.05" 
+            ui-rounded="borderRadius:0.025" class="`+this.data.intersectableClass+` no-yoga-layout"
+            color="`+this.data.railColor+`" segments="6"></a-plane>`;
+        this.el.insertAdjacentHTML('beforeend',rail);
+        this.railEl = this.el.lastChild;
         // Wait for the rounded edge on the rail to load to clone the geometry for the
         // selected progress bar part of the rail
         this.railEl.addEventListener('rounded-loaded',()=>{
@@ -63,6 +57,7 @@ module.exports = AFRAME.registerComponent('ui-switch', {
             this.setDisabled();
             this.click();
         });
+        this.el.getValue = this.getValue.bind(this);
         this.clickHandler = e=>{
             this.data.value = !this.data.value;
             this.click();
@@ -71,6 +66,9 @@ module.exports = AFRAME.registerComponent('ui-switch', {
                 e.detail.preventDefault();
             }
         };
+    },
+    getValue(){
+        return this.data.value;
     },
     setDisabled(){
         // Add / Remove click handlers based on disabled state.

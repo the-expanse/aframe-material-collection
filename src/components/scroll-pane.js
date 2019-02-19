@@ -5,7 +5,21 @@
  * @component ui-scroll-pane
  * @author Shane Harris
  */
-
+const YogaWorker = require('worker-loader!../yoga-worker.js');
+let workerResolves = {};
+let yogaWorker = new YogaWorker();
+yogaWorker.onmessage = event=>{
+    if(workerResolves.hasOwnProperty(event.data.uuid)){
+        workerResolves[event.data.uuid](event.data);
+    }
+};
+let sendMessage = (type,properties,parentUuid,width)=>{
+    return new Promise(resolve=>{
+        let uuid = THREE.Math.generateUUID();
+        workerResolves[uuid] = resolve;
+        yogaWorker.postMessage({ type, properties, uuid, parentUuid, width});
+    });
+};
 module.exports = AFRAME.registerComponent('ui-scroll-pane', {
     schema: {
         height:{type:'number',default:1.2},
@@ -31,7 +45,6 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.rail.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' 0 '+(this.data.scrollZOffset+0.0002));
         this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' 0 '+(this.data.scrollZOffset+0.0005));
         this.el.sceneEl.renderer.localClippingEnabled = true;
-
         // Setup content clips.
         this.content_clips = [
             new THREE.Plane( new THREE.Vector3( 0, 1, 0 ), (this.data.height/2) ),
@@ -120,14 +133,11 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.content_clips[3].applyMatrix4(this.el.object3D.matrixWorld);
 
     },
-    setContent(body,noAutoReload){
+    async setContent(body,noAutoReload){
         if(this.container) {
             // Remove all children in the container and all yoga nodes
             while (this.container.firstChild) {
                 let child = this.container.firstChild;
-                if (this.container.yoga_node&&child.yoga_node) {
-                    this.container.yoga_node.removeChild(child.yoga_node);
-                }
                 if(child.object3D){
                     UI.utils.clearObject(child.object3D);
                 }
@@ -141,33 +151,43 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 loadedWrapper.insertAdjacentHTML('afterbegin',body);
                 loadedWrapper.addEventListener('loaded',e=>{
                     // Trigger an update to redraw scrollbars and fire change events.
-                    if(!noAutoReload)this.updateContent();
-                    resolve(loadedWrapper);
-                    loadedWrapper.setAttribute('visible',true)
+                    sendMessage('reset-layout',null,this.container.yoga_uuid)
+                        .then(async ()=>{
+                            loadedWrapper.setAttribute('visible',true);
+                            if(!noAutoReload){
+                                return this.updateContent();
+                            }
+                        })
+                        .then(()=>resolve(loadedWrapper));
                 });
                 this.container.appendChild(loadedWrapper);
             })
         }
     },
-    updateContent(should_not_scroll){
+    async updateContent(should_not_scroll){
         this.updateContentClips();
         this.currentUuid = THREE.Math.generateUUID();
         UI.utils.isChanging(this.el.sceneEl,this.currentUuid);
         this.setChildClips();
-        if(typeof Yoga !== 'undefined')this.initialiseYoga(this.container,this.data.width*100);
-        this.container.yoga_node.calculateLayout(this.data.width*100, 'auto', Yoga.DIRECTION_LTR);
-        this.content_height = Number.NEGATIVE_INFINITY;
-        if(typeof Yoga !== 'undefined')this.updateYoga(this.container);
+        await this.initialiseYoga(this.container);
+        await sendMessage('get-layout',null,this.container.yoga_uuid)
+            .then(layout=>{
+                this.content_height = layout.data.content_height/100;
+                //console.log(layout.data.content_height/100);
+                this.updateYoga(this.container,layout.data);
 
-        this.handleSize = THREE.Math.clamp((this.data.height/this.content_height),0.1,1);
-        this.handle.setAttribute('width',this.handleSize===1?0.00000001:0.1);
-        this.rail.setAttribute('width',this.handleSize===1?0.00000001:0.1);
-        this.rail.setAttribute('color',this.handleSize===1?'#efefef':'#fff');
-        this.handle.setAttribute('height',this.data.height*this.handleSize);
-        if(!should_not_scroll){
-            this.container.object3D.position.y = this.data.height/2;
-            this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+(this.data.height-(this.data.height*this.handleSize))/2+' '+(this.data.scrollZOffset+0.0005));
-        }
+                this.handleSize = THREE.Math.clamp((this.data.height/this.content_height),0.1,1);
+
+                this.handle.setAttribute('visible',this.handleSize!==1);
+                this.rail.setAttribute('visible',this.handleSize!==1);
+                this.rail.setAttribute('color',this.handleSize===1?'#efefef':'#fff');
+                this.handle.setAttribute('height',this.data.height*this.handleSize);
+                if(!should_not_scroll){
+                    this.container.object3D.position.y = this.data.height/2;
+                    this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+(this.data.height-(this.data.height*this.handleSize))/2+' '+(this.data.scrollZOffset+0.0005));
+                }
+                setTimeout(()=>UI.utils.stoppedChanging(this.currentUuid),3000);
+            });
     },
     mouseMove(e){
         if(this.isDragging){
@@ -203,7 +223,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         this.backgroundPanel.setAttribute('width',this.data.width+1);
         this.backgroundPanel.setAttribute('height',this.data.height+1);
         this.backgroundPanel.setAttribute('position','0 0 -0.013');
-        this.backgroundPanel.setAttribute('opacity',0.0001);//
+        this.backgroundPanel.setAttribute('opacity',0.0001);
         this.backgroundPanel.setAttribute('transparent',true);
 
         this.el.appendChild(this.backgroundPanel);
@@ -227,54 +247,54 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
     },
     setupYogaNode(node,width,height,properties){
         // Parse yoga properties and call the yoga methods to setup this layout node.
-        if(!properties.hasOwnProperty('setWidth'))node.setWidth(width);
-        if(!properties.hasOwnProperty('setHeight'))node.setHeight(height);
-        for(let method in properties){
-            if(properties.hasOwnProperty(method)&&method.indexOf('Edge')===-1){
-                if(["setMarginLeft","setMarginPercentLeft","setPaddingLeft","setBorderLeft","setPositionLeft","setPositionPercentLeft"]
-                    .indexOf(method)>-1){
-                    node[method](Yoga.EDGE_LEFT,properties[method]);
-                }else if(["setMarginRight","setMarginPercentRight","setPaddingRight","setBorderRight","setPositionRight","setPositionPercentRight"]
-                    .indexOf(method)>-1){
-                    node[method](Yoga.EDGE_RIGHT,properties[method]);
-                }else if(["setMarginTop","setMarginPercentTop","setPaddingTop","setBorderTop","setPositionTop","setPositionPercentTop"]
-                    .indexOf(method)>-1){
-                    node[method](Yoga.EDGE_TOP,properties[method]);
-                }else if(["setMarginBottom","setMarginPercentBottom","setPaddingBottom","setBorderBottom","setPositionBottom","setPositionPercentBottom"]
-                    .indexOf(method)>-1){
-                    node[method](Yoga.EDGE_BOTTOM,properties[method]);
-                }else if(["setMargin","setMarginPercent","setPadding","setBorder","setPosition","setPositionPercent"]
-                    .indexOf(method)>-1){
-                    node[method](Yoga.EDGE_ALL,properties[method]);
-                }else if(method.indexOf('setMarginAuto')>-1){
-                    let side = method.replace('setMarginAuto','');
-                    switch(side){
-                        case "":
-                            node[method](Yoga.EDGE_ALL);
-                            break;
-                        case "Left":
-                            node[method](Yoga.EDGE_LEFT);
-                            break;
-                        case "Right":
-                            node[method](Yoga.EDGE_RIGHT);
-                            break;
-                        case "Top":
-                            node[method](Yoga.EDGE_TOP);
-                            break;
-                        case "Bottom":
-                            node[method](Yoga.EDGE_BOTTOM);
-                            break;
-                    }
-                }else if(["setWidthAuto","setHeightAuto"]
-                    .indexOf(method)>-1) {
-                    node[method]();
-                }else{
-                    node[method](properties[method]);
-                }
-            }
-        }
+        // for(let method in properties){
+        //     if(properties.hasOwnProperty(method)&&method.indexOf('Edge')===-1){
+        //         if(["setMarginLeft","setMarginPercentLeft","setPaddingLeft","setBorderLeft","setPositionLeft","setPositionPercentLeft"]
+        //             .indexOf(method)>-1){
+        //             node[method.replace('Left','')](Yoga.EDGE_LEFT,properties[method]);
+        //         }else if(["setMarginRight","setMarginPercentRight","setPaddingRight","setBorderRight","setPositionRight","setPositionPercentRight"]
+        //             .indexOf(method)>-1){
+        //             node[method.replace('Right','')](Yoga.EDGE_RIGHT,properties[method]);
+        //         }else if(["setMarginTop","setMarginPercentTop","setPaddingTop","setBorderTop","setPositionTop","setPositionPercentTop"]
+        //             .indexOf(method)>-1){
+        //             node[method.replace('Top','')](Yoga.EDGE_TOP,properties[method]);
+        //         }else if(["setMarginBottom","setMarginPercentBottom","setPaddingBottom","setBorderBottom","setPositionBottom","setPositionPercentBottom"]
+        //             .indexOf(method)>-1){
+        //             node[method.replace('Bottom','')](Yoga.EDGE_BOTTOM,properties[method]);
+        //         }else if(["setMargin","setMarginPercent","setPadding","setBorder","setPosition","setPositionPercent"]
+        //             .indexOf(method)>-1){
+        //             node[method](Yoga.EDGE_ALL,properties[method]);
+        //         }else if(method.indexOf('setMarginAuto')>-1){
+        //             let side = method.replace('setMarginAuto','');
+        //             let _method = method.replace(side,'');
+        //             switch(side){
+        //                 case "":
+        //                     node[_method](Yoga.EDGE_ALL);
+        //                     break;
+        //                 case "Left":
+        //                     node[_method](Yoga.EDGE_LEFT);
+        //                     break;
+        //                 case "Right":
+        //                     node[_method](Yoga.EDGE_RIGHT);
+        //                     break;
+        //                 case "Top":
+        //                     node[_method](Yoga.EDGE_TOP);
+        //                     break;
+        //                 case "Bottom":
+        //                     node[_method](Yoga.EDGE_BOTTOM);
+        //                     break;
+        //             }
+        //         }else if(["setWidthAuto","setHeightAuto"]
+        //             .indexOf(method)>-1) {
+        //             node[method]();
+        //         }else{
+        //             node[method](properties[method]);
+        //         }
+        //     }
+        // }
     },
-    initialiseYoga(parent){
+
+    async initialiseYoga(parent){
         // Traverse the tree and setup Yoga layout nodes with default settings
         // or settings specified in the elements yoga properties component.
         parent = parent||this.container;
@@ -318,47 +338,59 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 height = parent.getAttribute(componentName).height;
                 break;
         }
-
-        if(!parent.yoga_node){
-            parent.yoga_node = Yoga.Node.create();
-            let ui_yoga = parent.getAttribute("ui-yoga");
-            if(ui_yoga&&parent.getYogaProperties){
-                this.setupYogaNode(parent.yoga_node,width ? width * 100 : 'auto',height ? height * 100 : 'auto',
-                    parent.getYogaProperties());
-            }else{
-                parent.yoga_node.setWidth(width ? width * 100 : 'auto');
-                parent.yoga_node.setHeight(height ? height * 100 : 'auto');
-                parent.yoga_node.setJustifyContent(Yoga.JUSTIFY_FLEX_START);
-                parent.yoga_node.setFlexDirection(Yoga.FLEX_DIRECTION_ROW);
-                parent.yoga_node.setAlignContent(Yoga.ALIGN_AUTO);
-                parent.yoga_node.setFlexWrap(Yoga.WRAP_WRAP);
-            }
-            // Add the yoga node to the Yoga tree.
-            if(parent.parentElement&&parent.parentElement.yoga_node){
+        // width = Math.round(width);
+        // height = Math.round(height);
+        //parent.yoga_node = Yoga.Node.create();
+        let ui_yoga = parent.getAttribute("ui-yoga");
+        let properties = {};
+        if(ui_yoga&&parent.getYogaProperties){
+            properties = parent.getYogaProperties();
+        }else{
+            properties.setJustifyContent = Yoga.JUSTIFY_FLEX_START;
+            properties.setFlexDirection = Yoga.FLEX_DIRECTION_ROW;
+            properties.setAlignContent = Yoga.ALIGN_AUTO;
+            properties.setFlexWrap = Yoga.WRAP_WRAP;
+            if(parent.parentElement&&parent.parentElement.yoga_uuid){
                 // Default margin if none set;
-                if(!ui_yoga){
-                    parent.yoga_node.setMargin(Yoga.EDGE_RIGHT, 5);
-                    parent.yoga_node.setMargin(Yoga.EDGE_BOTTOM, 5);
-                }
-                parent.parentElement.yoga_node.insertChild(parent.yoga_node,parent.parentElement.yoga_node.getChildCount());
+                properties.setMarginRight = 5;
+                properties.setMarginBottom = 5;
             }else{
                 // Default root padding if none set;
-                if(!ui_yoga){
-                    parent.yoga_node.setPadding(Yoga.EDGE_ALL,2);
-                }
+                properties.setPadding = 2;
             }
         }
-        for(let i = 0; i < parent.childNodes.length; i++) {
-            let child = parent.childNodes[i];
-            if (child.nodeType === 1) {
-                if(child.classList.contains('no-yoga-layout')){
-                    return;
-                }
-                this.initialiseYoga(child);
-            }
+        if(!properties.hasOwnProperty('setWidth')){
+            properties.setWidth = width ? width * 100 : 'auto';
         }
+        if(!properties.hasOwnProperty('setHeight')){
+            properties.setHeight = height ? height * 100 : 'auto';
+        }
+        //this.setupYogaNode(parent.yoga_node,width ? width * 100 : 'auto',height ? height * 100 : 'auto',properties);
+        // if(parent.parentElement&&parent.parentElement.yoga_node){
+        //     parent.parentElement.yoga_node.insertChild(parent.yoga_node,parent.parentElement.yoga_node.getChildCount());
+        // }
+        let promise;
+        if(parent.parentElement&&parent.parentElement.yoga_uuid){
+            promise = sendMessage('add-node',properties,parent.parentElement.yoga_uuid);
+        }else{
+            promise = sendMessage('add-node',properties,null,this.data.width*100);
+        }
+        await promise.then(resp=>{
+            parent.yoga_uuid = resp.uuid;
+            let promises = [];
+            for(let i = 0; i < parent.childNodes.length; i++) {
+                let child = parent.childNodes[i];
+                if (child.nodeType === 1) {
+                    if(!child.classList.contains('no-yoga-layout')){
+                        promises.push(this.initialiseYoga(child));
+                    }
+                }
+            }
+            return Promise.all(promises);
+        });
     },
-    updateYoga(parent){
+
+    updateYoga(parent,layout){
         // Update the entity positions from the Yoga layout.
         for(let i = 0; i < parent.childNodes.length; i++){
             let child = parent.childNodes[i];
@@ -367,24 +399,24 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                     return;
                 }
                 let position;
+
+                if(!layout[child.yoga_uuid]){
+                    console.log(child,layout);
+                }
                 if(child.tagName==="A-ENTITY"){
                     position = {
-                        x:(child.yoga_node.getComputedLeft()/100),
-                        y:(child.yoga_node.getComputedTop()/100),
+                        x:(layout[child.yoga_uuid].left/100),
+                        y:(layout[child.yoga_uuid].top/100),
                     };
                 }else{
                     position = {
-                        x:(child.yoga_node.getComputedLeft()/100)+(child.yoga_node.getComputedWidth()/200),
-                        y:(child.yoga_node.getComputedTop()/100)+(child.yoga_node.getComputedHeight()/200),
+                        x:(layout[child.yoga_uuid].left/100)+(layout[child.yoga_uuid].width/200),
+                        y:(layout[child.yoga_uuid].top/100)+(layout[child.yoga_uuid].height/200),
                     };
                 }
-                let highest = (child.yoga_node.getComputedTop()/100)+(child.yoga_node.getComputedHeight()/100);
-                if(highest>this.content_height){
-                    this.content_height = highest;
-                }
-                child.setAttribute('position',position.x+' '+(-position.y)+' 0.0001');//+child.getAttribute('position').z);
+                child.setAttribute('position',position.x+' '+(-position.y)+' 0.0001');
             }
-            this.updateYoga(child);
+            this.updateYoga(child,layout);
         }
     },
 

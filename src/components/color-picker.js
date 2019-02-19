@@ -295,6 +295,7 @@ module.exports = AFRAME.registerComponent('ui-color-picker', {
             UI.utils.preventDefault(e);
         });
         this.colorWheel.addEventListener('mouseup',e=>{
+            console.log('mouseup on color picker')
             this.isMouseDown = false;
             UI.utils.preventDefault(e);
         });

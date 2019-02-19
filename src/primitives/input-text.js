@@ -24,6 +24,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-input-text', AFRAME.utils.extend
         "place-holder":"ui-input-text.placeHolder",
         "camera-el":"ui-input-text.cameraEl",
         "rig-el":"ui-input-text.rigEl",
+        "tab-next":"ui-input-text.tabNext",
         "look-controls-component":"ui-input-text.lookControlsComponent",
         "wasd-controls-component":"ui-input-text.wasdControlsComponent",
     }

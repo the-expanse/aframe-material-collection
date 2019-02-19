@@ -30,6 +30,7 @@ module.exports = AFRAME.registerPrimitive('a-ui-fab-button', AFRAME.utils.extend
         "ripple-color":'ui-ripple.color',
         "ripple-size":'ui-ripple.size',
         "ripple-z-index":'ui-ripple.zIndex',
-        disabled:'ui-btn.disabled'
+        disabled:'ui-btn.disabled',
+        coords:'ui-icon.spriteCoords'
     }
 }));

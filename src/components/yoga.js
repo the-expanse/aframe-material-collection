@@ -6,9 +6,9 @@
  * @author Shane Harris
  */
 
-if (typeof Yoga === 'undefined') {
-    throw 'ui-yoga component requires the Yoga Layout Engine to be loaded - https://yogalayout.com';
-}
+// if (typeof Yoga === 'undefined') {
+//     throw 'ui-yoga component requires the Yoga Layout Engine to be loaded - https://yogalayout.com';
+// }
 // Map yoga enums to frendly names.
 // TODO: Need to expose the padding/border/margin side as seperate options to allow for combinations.
 module.exports = AFRAME.registerComponent('ui-yoga', {
