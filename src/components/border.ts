@@ -5,7 +5,9 @@
  * @component ui-border
  * @author Shane Harris
  */
-module.exports = AFRAME.registerComponent('ui-border', {
+import {Mesh, MeshBasicMaterial, Path, Shape, ShapeGeometry} from "three";
+
+export = AFRAME.registerComponent('ui-border', {
     schema: {
         borderRadius: {type: 'number', default: 0.01},
         curveSegments:{type: 'int', default: 5},
@@ -14,18 +16,19 @@ module.exports = AFRAME.registerComponent('ui-border', {
         numberOfPoints:{type:'int',default:180}
     },
     init() {
-        let mesh = this.el.getObject3D('mesh');
-        let roundedRectShape = new THREE.Shape();
+        let mesh = this.el.getObject3D('mesh') as Mesh;
+        let metadata = (mesh.geometry as any).metadata;
+        let roundedRectShape = new Shape();
         this.roundedRect(roundedRectShape,
-            mesh.geometry.metadata.parameters.width,
-            mesh.geometry.metadata.parameters.height,
-            this.data.borderRadius);
+            metadata.parameters.width,
+            metadata.parameters.height,
+            this.data.borderRadius, false);
         this.roundedRect(roundedRectShape,
-            mesh.geometry.metadata.parameters.width-this.data.borderWidth*2,
-            mesh.geometry.metadata.parameters.height-this.data.borderWidth*2,
+            metadata.parameters.width-this.data.borderWidth*2,
+            metadata.parameters.height-this.data.borderWidth*2,
             this.data.borderRadius,true);
 
-        this.el.setObject3D('mesh',new THREE.Mesh( new THREE.ShapeGeometry(roundedRectShape,this.data.curveSegments), new THREE.MeshBasicMaterial( { color: this.data.color } ) ));
+        this.el.setObject3D('mesh',new Mesh( new ShapeGeometry(roundedRectShape,this.data.curveSegments), new MeshBasicMaterial( { color: this.data.color } ) ));
     
     },
     roundedRect( ctx, width, height, radius, isHole) {
@@ -34,7 +37,7 @@ module.exports = AFRAME.registerComponent('ui-border', {
         let shapeCtx;
         if(isHole){
             shapeCtx = ctx;
-            ctx = new THREE.Path()
+            ctx = new Path()
         }
         ctx.moveTo( x, y + radius );
         ctx.lineTo( x, y + height - radius );

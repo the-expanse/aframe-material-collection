@@ -6,7 +6,7 @@
  * @author Shane Harris
  */
 
-module.exports = AFRAME.registerComponent('ui-btn', {
+export = AFRAME.registerComponent('ui-btn', {
     schema:{
         duration:{type:'int',default:250},
         hoverHeight:{type:'number',default:0.01},
@@ -80,7 +80,7 @@ module.exports = AFRAME.registerComponent('ui-btn', {
             .onUpdate(callback)
             .onComplete(function(){
                 // Stop changes
-                if(!_this.data.preventUpdates)UI.utils.stoppedChanging(_this.el.object3D.uuid)
+                if(!_this.data.preventUpdates)UI.utils.stoppedChanging(_this.el.object3D.uuid);
                 return complete.call(this);
             })
             .easing(TWEEN.Easing.Exponential.Out).start();
