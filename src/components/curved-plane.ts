@@ -1,4 +1,7 @@
-/* global AFRAME */
+import AFRAME from "aframe";
+import THREE from "three";
+import UI from '../ui';
+
 /**
  * A curved-plane component to curve a plane primitive.
  * @namespace aframe-material-collection
@@ -6,12 +9,12 @@
  * @author Shane Harris
  */
 
-module.exports = AFRAME.registerComponent('ui-curved-plane', {
+export = AFRAME.registerComponent('ui-curved-plane', {
     schema: {
         depth:{type:'number',default:0.03}
     },
     init(){
-        let mesh = this.el.getObject3D('mesh');
+        let mesh = this.el.getObject3D('mesh') as THREE.Mesh;
         let width = this.el.getAttribute('width');
         let height = this.el.getAttribute('height');
         let browser_pane = new THREE.PlaneGeometry(width, height, 5, 1);

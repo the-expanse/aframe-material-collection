@@ -1,7 +1,13 @@
+import {Scene} from "aframe";
+import {Mesh, Object3D} from "three";
+
 export class Utils{
+    changesDetected: any = {};
+    is_changeing: boolean = false;
+    scene: Scene | undefined;
+
+
     constructor(){
-        this.changesDetected = {};
-        this.is_changeing = false;
         // setInterval(()=>{
         //     let now = new Date().getTime();
         //     for(let key in this.changesDetected){
@@ -21,32 +27,32 @@ export class Utils{
         }
 
         if(!this.is_changeing&&!empty){
-            this.scene.emit('ui-changing');
+            this.scene!!.emit('ui-changing');
             this.is_changeing = true;
         }else if(this.is_changeing&&empty){
             if(this.is_changeing){
-                this.scene.emit('ui-changing-stopped');
+                this.scene!!.emit('ui-changing-stopped');
                 this.is_changeing = false;
             }
         }
     }
-    getPointInBetweenByPerc(pointA, pointB, percentage) {
+    /*getPointInBetweenByPerc(pointA, pointB, percentage) {
 
         var dir = pointB.clone().sub(pointA);
         var len = dir.length();
         dir = dir.normalize().multiplyScalar(len*percentage);
         return pointA.clone().add(dir);
 
-    }
-    preventDefault(e){
+    }*/
+    preventDefault(e: any){
         if(e.detail && e.detail.preventDefault && typeof e.detail.preventDefault === "function"){
             e.detail.preventDefault();
         }
     }
-    shorten(string,length){
+    shorten(string: string, length: number){
         return string.length>length?string.substr(0,length)+"...":string;
     }
-    uniqueNumberedName(newName,names,key){
+    /*uniqueNumberedName(newName: string,names: Array<string>, key: string){
         let currentNumber = 0;
         let nameLessNumber = newName;
         for(let i = 0; i < names.length; i++){
@@ -67,14 +73,14 @@ export class Utils{
             newName+="~# "+(currentNumber+1)
         }
         return newName;
-    }
-    ucFirst(string) {
+    }*/
+    /*ucFirst(string: string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
     zeroPad(number,length){
         return ("0000000"+number).slice(-length);
-    }
-    isChanging(scene,ref){
+    }*/
+    isChanging(scene: Scene | undefined, ref: string){
         let index = this.changesDetected[ref];
         if(!index){
             this.scene = this.scene||scene;
@@ -85,18 +91,18 @@ export class Utils{
             this.changesDetected[ref].t = new Date().getTime();
         }
     }
-    stoppedChanging(ref){
+    stoppedChanging(ref: string){
         delete this.changesDetected[ref];
         this.isFirstOrLastChange();
     }
-    copyToClipboard(text){
+    /*copyToClipboard(text: string){
         navigator.clipboard.writeText(text).then(()=>{
-        },(err)=> {
+        },(err: Error)=> {
             console.error('copy to clipboard failed:', err);
         });
-    }
-    clearObject(object){
-        object.traverse(child=>{
+    }*/
+    clearObject(object: any){
+        object.traverse((child: any) =>{
             if(child.material) {
                 if(child.material.length){
                     for(let i =0; i < child.material.length; i++){

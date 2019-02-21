@@ -1,11 +1,12 @@
-/* global AFRAME */
+import AFRAME from "aframe";
+
 /**
  * Renderer Primitive for aframe-material-collection.
  * @namespace aframe-material-collection
  * @primitive a-ui-renderer
  * @author Shane Harris
  */
-module.exports = AFRAME.registerPrimitive('a-ui-renderer', AFRAME.utils.extendDeep({}, AFRAME.primitives.getMeshMixin(), {
+export = AFRAME.registerPrimitive('a-ui-renderer', AFRAME.utils.extendDeep({}, AFRAME.primitives.getMeshMixin(), {
     defaultComponents: {
         "ui-renderer":{}
     },

@@ -1,11 +1,14 @@
-/* global AFRAME */
+import AFRAME from "aframe";
+import THREE from "three";
+import UI from '../ui';
+
 /**
  * Checkbox A simple component to listen for two click events in quick succession.
  * @namespace aframe-material-collection
  * @component ui-double-click
  * @author Shane Harris
  */
-module.exports = AFRAME.registerComponent('ui-double-click', {
+export = AFRAME.registerComponent('ui-double-click', {
     schema:{
         timeout:{type:'int',default:200}
     },

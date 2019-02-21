@@ -1,4 +1,9 @@
-/* global AFRAME,TWEEN,THREE */
+/* global TWEEN */
+
+import AFRAME, {Entity} from "aframe";
+import THREE, {Mesh, MeshLambertMaterial} from "three";
+import UI from '../ui';
+
 /**
  * Text input component Component for aframe-material-collection. Includes support for number/int only input.
  * @namespace aframe-material-collection
@@ -6,8 +11,36 @@
  * @author Shane Harris
  */
 
-module.exports = AFRAME.registerComponent('ui-input-text', {
+export = AFRAME.registerComponent('ui-input-text', {
+    container: {} as Entity,
+    backing: {} as Entity,
+    underline: {} as Entity,
+    selectionHighlight: {} as Entity,
+    carret: {} as Entity,
+    text: {} as any,
+    alphabet: {},
+    startSelection: 0,
+    scrollOffset: 0,
+    scrollIndex: 0,
+    carretInterval: 0,
+    shiftStartPos: undefined as number | undefined,
+    chars: new Array<any>(),
+    charsAllowed: new Array<string>(),
+    blurHandler: ()=>{},
+    isMoving: false,
+    isFocused: false,
+    mousemove: (e: any) => {},
+    keydown: (e: any) => {},
+    keySelectAll: () => {},
+    keyCut: () => {},
+    keyCopy: () => {},
+    keyPaste: () => {},
+    positions: new Array<number>(),
     depends:['text'],
+    content_clips: [
+        new THREE.Plane( new THREE.Vector3( -1, 0, 0 ), 0 ),
+        new THREE.Plane( new THREE.Vector3( 1, 0, 0 ), 0 )
+    ],
     schema: {
         value: {default: ''},
         disabled: {type: 'boolean', default: false},
@@ -39,10 +72,10 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
                 this.chars.push({char:chars[i]});
             }
             this.blurHandler = ()=>{
-                if(!this.el.sceneEl.defaultKeypressPrevented){
+                if(!(this.el.sceneEl as any).defaultKeypressPrevented){
                     this.blur();
                 }else{
-                    this.el.sceneEl.defaultKeypressPrevented = false;
+                    (this.el.sceneEl as any).defaultKeypressPrevented = false;
                 }
             };
             this.isMoving = false;
@@ -56,7 +89,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
             this.backing.addEventListener('mousedown',()=>{
                 this.focus();
             });
-            this.el.sceneEl.addEventListener('mouseup',()=>{
+            this.el.sceneEl!!.addEventListener('mouseup',()=>{
                 this.backing.removeEventListener('ui-mousemove',this.mousemove);
                 this.isMoving = false;
                 this.setSelection(this.text.selectionStart,this.text.selectionLength)
@@ -70,8 +103,8 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
                 //UI.utils.stoppedChanging(this.text.object3D.uuid);
             },200);
         });
-        this.el.getValue = this.getValue.bind(this);
-        this.el.value = this.value.bind(this);
+        (this.el as any).getValue = this.getValue.bind(this);
+        (this.el as any).value = this.value.bind(this);
         this.el.focus = this.focus.bind(this);
     },
     setupScrollClips(){
@@ -110,15 +143,15 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
             let child = this.text.object3D.children[this.text.object3D.children.length-1];
             if(child)child.material.clippingPlanes = this.text._content_clips?this.text._content_clips.concat(this.content_clips):this.content_clips;
         },0);
-        let selectionHeight = this.selectionHighlight.getObject3D('mesh');
+        let selectionHeight = this.selectionHighlight.getObject3D('mesh') as Mesh;
         if(selectionHeight){
-            selectionHeight.material.clippingPlanes = this.text._content_clips?this.text._content_clips.concat(this.content_clips):this.content_clips;
+            (selectionHeight.material as any).clippingPlanes = this.text._content_clips?this.text._content_clips.concat(this.content_clips):this.content_clips;
         }
-        let carret = this.carret.getObject3D('mesh');
+        let carret = this.carret.getObject3D('mesh') as Mesh;
         if(carret){
-            carret.material.clipShadows = true;
-            carret.material.needsUpdate = true;
-            carret.material.clippingPlanes = this.text._content_clips?this.text._content_clips.concat(this.content_clips):this.content_clips;
+            (carret.material as any).clipShadows = true;
+            (carret.material as any).needsUpdate = true;
+            (carret.material as any).clippingPlanes = this.text._content_clips?this.text._content_clips.concat(this.content_clips):this.content_clips;
         }
     },
     numberOnly(e,is_float){
@@ -153,15 +186,15 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         this.setScrollClips();
         setTimeout(()=>{
             this.setValue();
-            this.el.sceneEl.addEventListener('mousedown',this.blurHandler);
+            this.el.sceneEl!!.addEventListener('mousedown',this.blurHandler);
             this.playPauseCamera('pause');
         });
         this.backing.addEventListener('ui-mousemove',this.mousemove);
         window.addEventListener('keydown', this.keydown);
-        this.el.sceneEl.addEventListener('key-select',this.keySelectAll);
-        this.el.sceneEl.addEventListener('key-cut',this.keyCut);
-        this.el.sceneEl.addEventListener('key-copy',this.keyCopy);
-        this.el.sceneEl.addEventListener('key-paste',this.keyPaste);
+        this.el.sceneEl!!.addEventListener('key-select',this.keySelectAll);
+        this.el.sceneEl!!.addEventListener('key-cut',this.keyCut);
+        this.el.sceneEl!!.addEventListener('key-copy',this.keyCopy);
+        this.el.sceneEl!!.addEventListener('key-paste',this.keyPaste);
         this.underline.setAttribute('height',0.008);
         this.underline.setAttribute('color','#009688');
     },
@@ -173,25 +206,25 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         this.setSelection(0,0);
         setTimeout(()=>{
             clearInterval(this.carretInterval);
-            this.carret.getObject3D('mesh').material.opacity = 0;
+            ((this.carret.getObject3D('mesh')as Mesh).material as MeshLambertMaterial).opacity = 0;
             this.isFocused = false;
         });
-        this.el.sceneEl.removeEventListener('mousedown',this.blurHandler);
+        this.el.sceneEl!!.removeEventListener('mousedown',this.blurHandler);
         this.playPauseCamera('play');
         window.removeEventListener('keydown', this.keydown);
-        this.el.sceneEl.removeEventListener('key-select',this.keySelectAll);
-        this.el.sceneEl.removeEventListener('key-cut',this.keyCut);
-        this.el.sceneEl.removeEventListener('key-copy',this.keyCopy);
-        this.el.sceneEl.removeEventListener('key-paste',this.keyPaste);
+        this.el.sceneEl!!.removeEventListener('key-select',this.keySelectAll);
+        this.el.sceneEl!!.removeEventListener('key-cut',this.keyCut);
+        this.el.sceneEl!!.removeEventListener('key-copy',this.keyCopy);
+        this.el.sceneEl!!.removeEventListener('key-paste',this.keyPaste);
         UI.utils.stoppedChanging(this.text.object3D.uuid);
         this.underline.setAttribute('height',0.005);
         this.underline.setAttribute('color','#bfbfbf');
     },
     pasteText(){
-        navigator.clipboard.readText()
+        (navigator as any).clipboard.readText()
             .then(text => {
                 let chars = [this.text.selectionStart, this.text.selectionLength].concat(text.split('').map(char=>({char:char})));
-                Array.prototype.splice.apply(this.chars, chars);
+                Array.prototype.splice.apply(this.chars, chars as any);
                 this.text.selectionStart = this.text.selectionStart+chars.length-2;
                 this.text.selectionLength = 0;
                 this.setValue();
@@ -204,14 +237,14 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
     },
     copyText(){
         let value = this.chars.slice(this.text.selectionStart,this.text.selectionStart+this.text.selectionLength).map(c=>c.char).join("");
-        navigator.clipboard.writeText(value);
+        (navigator as any).clipboard.writeText(value);
     },
     handleKeyboardEvent(e){
         if(e.keyCode===13){
             this.el.emit('submit');
         }else if(e.keyCode===9){
             if(this.data.tabNext){
-                this.carret.getObject3D('mesh').material.opacity = 1;
+                ((this.carret.getObject3D('mesh') as Mesh).material as MeshLambertMaterial).opacity = 1;
                 this.blur();
                 setTimeout(()=>this.data.tabNext.focus());
             }
@@ -227,14 +260,14 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
             e.preventDefault();
             e.stopPropagation();
         }else if(e.code.indexOf('Key')>-1||e.code.indexOf('Digit')>-1||this.charsAllowed.indexOf(e.key)>-1){
-            let check = true;
+            let check: boolean | undefined = true;
             switch(this.data.type){
                 case "number":
                     check = this.floatOnly(e);
                     break;
                 case "int":
-                    console.log(this.numberOnly(e));
-                    check = this.numberOnly(e);
+                    console.log(this.numberOnly(e, false));
+                    check = this.numberOnly(e, false);
                     break;
             }
             if(check){
@@ -264,9 +297,9 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
                 if(!this.shiftStartPos){
                     this.shiftStartPos = this.text.selectionStart;
                 }
-                if(this.text.selectionStart<this.shiftStartPos){
+                if(this.text.selectionStart<this.shiftStartPos!!){
                     this.text.selectionStart++;
-                    this.text.selectionLength=Math.abs(this.shiftStartPos-this.text.selectionStart);
+                    this.text.selectionLength=Math.abs(this.shiftStartPos!!-this.text.selectionStart);
                 }else{
                     this.text.selectionLength++;
                 }
@@ -286,11 +319,11 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
                 if(!this.shiftStartPos){
                     this.shiftStartPos = this.text.selectionStart;
                 }
-                if(this.text.selectionStart+this.text.selectionLength>this.shiftStartPos){
+                if(this.text.selectionStart+this.text.selectionLength>this.shiftStartPos!!){
                     this.text.selectionLength--;
                 }else{
                     this.text.selectionStart--;
-                    this.text.selectionLength=Math.abs(this.shiftStartPos-this.text.selectionStart);
+                    this.text.selectionLength=Math.abs(this.shiftStartPos!!-this.text.selectionStart);
                 }
             }
             e.preventDefault();
@@ -319,7 +352,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
 
         this.el.emit('ui-keypress',e);
         this.setValue();
-        this.carret.getObject3D('mesh').material.opacity = 1;
+        ((this.carret.getObject3D('mesh')as Mesh).material as MeshLambertMaterial).opacity = 1;
     },
     setValue(){
         this.setScrolledValue();
@@ -422,7 +455,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
 
     },
     setupCarret(){
-        let material = this.carret.getObject3D('mesh').material;
+        let material = ((this.carret.getObject3D('mesh') as Mesh).material as MeshLambertMaterial);
         this.carretInterval = setInterval(()=>{
             material.opacity = material.opacity?0:1;
             UI.utils.isChanging(this.el.sceneEl,this.text.object3D.uuid);
@@ -446,7 +479,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         return output;
     },
     getSelectionPosition(e){
-        this.el.object3D.updateMatrixWorld();
+        this.el.object3D.updateMatrixWorld(false);
         return this.text.object3D.worldToLocal(e.detail.intersection.point.clone()).x
     },
     playPauseCamera(method){
@@ -464,7 +497,7 @@ module.exports = AFRAME.registerComponent('ui-input-text', {
         }
     },
     setCharacters(){
-        this.positions = [];
+        this.positions = new Array<number>();
         let child = this.text.object3D.children[this.text.object3D.children.length-1];
         if(!this.chars.length||!child)return;
         let glyphs = child.geometry.layout.glyphs;

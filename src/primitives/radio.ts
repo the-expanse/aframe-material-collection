@@ -1,11 +1,12 @@
-/* global AFRAME */
+import AFRAME from "aframe";
+
 /**
  * Radio Primitive for aframe-material-collection.
  * @namespace aframe-material-collection
  * @primitive a-ui-radio
  * @author Shane Harris
  */
-module.exports = AFRAME.registerPrimitive('a-ui-radio', AFRAME.utils.extendDeep({}, AFRAME.primitives.getMeshMixin(), {
+export = AFRAME.registerPrimitive('a-ui-radio', AFRAME.utils.extendDeep({}, AFRAME.primitives.getMeshMixin(), {
     defaultComponents: {
         "ui-radio":{},
         "geometry":{

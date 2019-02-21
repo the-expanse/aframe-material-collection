@@ -1,4 +1,9 @@
-/* global AFRAME,TWEEN,THREE */
+/* global TWEEN */
+
+import AFRAME from "aframe";
+import THREE from "three";
+import UI from '../ui';
+
 /**
  * NUmber widget Component for aframe-material-collection. Includes up/down buttons
  * @namespace aframe-material-collection
@@ -6,7 +11,7 @@
  * @author Shane Harris
  */
 
-module.exports = AFRAME.registerComponent('ui-number', {
+export = AFRAME.registerComponent('ui-number', {
     schema: {
         value: {type: 'number', default: 0},
         increment: {type: 'number', default: 0.001},

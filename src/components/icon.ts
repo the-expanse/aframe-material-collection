@@ -1,11 +1,15 @@
-/* global AFRAME,THREE */
+import AFRAME, {Entity} from "aframe";
+import THREE from "three";
+import UI from '../ui';
+
 /**
  * A component to load an icon and set some defaults for positioning and transparency.
  * @namespace aframe-material-collection
  * @component ui-icon
  * @author Shane Harris
  */
-module.exports = AFRAME.registerComponent('ui-icon', {
+export = AFRAME.registerComponent('ui-icon', {
+    icon: {} as Entity,
     schema: {
         src: {default: 'icons/send_white_64dp.png'},
         spriteCoords:{type:'vec4'},

@@ -1,12 +1,16 @@
-/* global AFRAME,TWEEN,THREE */
+/* global TWEEN */
+
+import AFRAME from "aframe";
+import THREE from "three";
+import UI from '../ui';
+
 /**
  * Toast Component for aframe-material-collection.
  * @namespace aframe-material-collection
  * @component ui-toast
  * @author Shane Harris
  */
-
-module.exports = AFRAME.registerComponent('ui-toast', {
+export = AFRAME.registerComponent('ui-toast', {
     schema: {
         toastEl:{type:'selector'},
         message:{default:'Hello from toast!'}

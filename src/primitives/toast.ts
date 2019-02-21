@@ -1,4 +1,5 @@
-/* global AFRAME */
+import AFRAME from "aframe";
+
 /**
  * Toast Message Primitive for aframe-material-collection.
  * @namespace aframe-material-collection
@@ -6,7 +7,7 @@
  * @author Shane Harris
  */
 
-module.exports = AFRAME.registerPrimitive('a-ui-toast', AFRAME.utils.extendDeep({}, AFRAME.primitives.getMeshMixin(), {
+export = AFRAME.registerPrimitive('a-ui-toast', AFRAME.utils.extendDeep({}, AFRAME.primitives.getMeshMixin(), {
     defaultComponents: {
         geometry: {
             primitive: 'plane',

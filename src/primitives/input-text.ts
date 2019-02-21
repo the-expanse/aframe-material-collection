@@ -1,11 +1,12 @@
-/* global AFRAME */
+import AFRAME from "aframe";
+
 /**
  * Text Input Primitive for aframe-material-collection.
  * @namespace aframe-material-collection
  * @primitive a-ui-input-text
  * @author Shane Harris
  */
-module.exports = AFRAME.registerPrimitive('a-ui-input-text', AFRAME.utils.extendDeep({}, AFRAME.primitives.getMeshMixin(), {
+export = AFRAME.registerPrimitive('a-ui-input-text', AFRAME.utils.extendDeep({}, AFRAME.primitives.getMeshMixin(), {
     defaultComponents: {
         "ui-input-text":{
             placeHolder:'Text...',

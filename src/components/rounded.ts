@@ -1,4 +1,7 @@
-/* global AFRAME,THREE */
+import AFRAME from "aframe";
+import THREE, {Mesh} from "three";
+import UI from '../ui';
+
 /**
  * Rounded corners Component for aframe-material-collection. Expects an a-plane entity.
  * @namespace aframe-material-collection
@@ -6,13 +9,13 @@
  * @author Shane Harris
  */
 
-module.exports = AFRAME.registerComponent('ui-rounded', {
+export = AFRAME.registerComponent('ui-rounded', {
     schema: {
         borderRadius: {type: 'number', default: 0.01},
         curveSegments:{type: 'int', default: 1},
     },
     init() {
-        let mesh = this.el.getObject3D('mesh');
+        let mesh = this.el.getObject3D('mesh') as Mesh;
         let roundedRectShape = new THREE.Shape();
         // Draw the Rounded rectangle shape centered in the object - from three.js shapes example.
         ( function roundedRect( ctx, x, y, width, height, radius ) {
@@ -25,7 +28,7 @@ module.exports = AFRAME.registerComponent('ui-rounded', {
             ctx.quadraticCurveTo( x + width, y, x + width - radius, y );
             ctx.lineTo( x + radius, y );
             ctx.quadraticCurveTo( x, y, x, y + radius );
-        } )( roundedRectShape, -mesh.geometry.metadata.parameters.width/2, -mesh.geometry.metadata.parameters.height/2, mesh.geometry.metadata.parameters.width, mesh.geometry.metadata.parameters.height, this.data.borderRadius );
+        } )( roundedRectShape, -(mesh.geometry as any).metadata.parameters.width/2, -(mesh.geometry as any).metadata.parameters.height/2, (mesh.geometry as any).metadata.parameters.width, (mesh.geometry as any).metadata.parameters.height, this.data.borderRadius );
         // Update the geometry.
         mesh.geometry = new THREE.ShapeBufferGeometry(roundedRectShape,this.data.curveSegments);
         // Emit rounded-loaded event once the geometry has been updated.

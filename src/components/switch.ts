@@ -1,12 +1,16 @@
-/* global AFRAME,TWEEN,THREE */
+/* global TWEEN */
+
+import AFRAME from "aframe";
+import THREE from "three";
+import UI from '../ui';
+
 /**
  * Switch Component for aframe-material-collection. Includes a disabled state.
  * @namespace aframe-material-collection
  * @component ui-switch
  * @author Shane Harris
  */
-
-module.exports = AFRAME.registerComponent('ui-switch', {
+export = AFRAME.registerComponent('ui-switch', {
     schema: {
         value: {type:'boolean',default: false},
         disabled:{type:'boolean',default: false},

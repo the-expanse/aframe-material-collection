@@ -1,11 +1,12 @@
-/* global AFRAME */
+import AFRAME from "aframe";
+
 /**
  * Floating Action Button Small Primitive for aframe-material-collection.
  * @namespace aframe-material-collection
  * @primitive a-ui-fab-button-small
  * @author Shane Harris
  */
-module.exports = AFRAME.registerPrimitive('a-ui-fab-button-small', AFRAME.utils.extendDeep({}, AFRAME.primitives.getMeshMixin(), {
+export = AFRAME.registerPrimitive('a-ui-fab-button-small', AFRAME.utils.extendDeep({}, AFRAME.primitives.getMeshMixin(), {
     defaultComponents: {
         geometry: {
             primitive: 'circle',

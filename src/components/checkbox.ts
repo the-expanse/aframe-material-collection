@@ -1,4 +1,9 @@
-/* global AFRAME,TWEEN */
+/* global TWEEN */
+
+import AFRAME from "aframe";
+import THREE from "three";
+import UI from '../ui';
+
 /**
  * Checkbox Component for aframe-material-collection. Includes animation and disabled state.
  * @namespace aframe-material-collection
@@ -6,7 +11,15 @@
  * @author Shane Harris
  */
 
-module.exports = AFRAME.registerComponent('ui-checkbox', {
+export = AFRAME.registerComponent('ui-checkbox', {
+    width: 0,
+    height: 0,
+    container: {} as AFRAME.Entity,
+    topLine: {} as AFRAME.Entity,
+    bottomLine: {} as AFRAME.Entity,
+    leftLine: {} as AFRAME.Entity,
+    rightLine: {} as AFRAME.Entity,
+    clickHandler: () => {},
     schema: {
         value: {type:'boolean',default: false},
         selectedColor: {default: '#009688'},
@@ -58,7 +71,7 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
             }
         }
     },
-    setTransform(x){
+    setTransform(x: number){
         // Adjust position and rotation based on the interpolated value x between 0 and 1.
         // Used to offset the checkbox when in a checked state
         if(this.data.value){
@@ -83,7 +96,7 @@ module.exports = AFRAME.registerComponent('ui-checkbox', {
         UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
         new TWEEN.Tween({x:0})
             .to({ x: 1}, 200)
-            .onUpdate(function(){
+            .onUpdate(function () {
                 _this.setTransform(this.x);
             })
             .onComplete(function(){

@@ -1,4 +1,10 @@
-/* global AFRAME,Yoga */
+/* global Yoga */
+
+import AFRAME from "aframe";
+import THREE from "three";
+import UI from '../ui';
+import Yoga from "yoga-layout";
+
 /**
  * Yogo Layout Engine mapped to a Component for aframe-material-collection - https://yogalayout.com
  * @namespace aframe-material-collection
@@ -11,7 +17,7 @@
 // }
 // Map yoga enums to frendly names.
 // TODO: Need to expose the padding/border/margin side as seperate options to allow for combinations.
-module.exports = AFRAME.registerComponent('ui-yoga', {
+export = AFRAME.registerComponent('ui-yoga', {
     schema: {
         alignContent: {default: 'flex-start'},
         alignItems: {default: 'auto'},

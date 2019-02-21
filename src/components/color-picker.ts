@@ -1,11 +1,15 @@
-/* global AFRAME */
+import AFRAME from "aframe";
+import THREE from "three";
+import UI from '../ui';
+
 /**
  * A component to pick a color - based on https://github.com/mokargas/aframe-colorwheel-component
  * @namespace aframe-material-collection
  * @component ui-renderer
  * @author Shane Harris
  */
-module.exports = AFRAME.registerComponent('ui-color-picker', {
+
+export = AFRAME.registerComponent('ui-color-picker', {
     schema: {
         backingColor:{default:"#dfdfdf"},
         backingColorBottom:{default:"#4db6ac"},
@@ -20,8 +24,8 @@ module.exports = AFRAME.registerComponent('ui-color-picker', {
         this.el.setAttribute('visible',false);
         this.el.setAttribute('scale','0.00001 0.00001 0.00001');
         // Expose methods to open/close the color picker.
-        this.el.open = this.open.bind(this);
-        this.el.close = this.close.bind(this);
+        (this.el as any).open = this.open.bind(this);
+        (this.el as any).close = this.close.bind(this);
     },
     open(){
         return new Promise(resolve=>{

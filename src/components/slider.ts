@@ -1,12 +1,16 @@
-/* global AFRAME,TWEEN,THREE */
+/* global TWEEN */
+
+import AFRAME from "aframe";
+import THREE from "three";
+import UI from '../ui';
+
 /**
  * Slider Component for aframe-material-collection. Includes a disabled state.
  * @namespace aframe-material-collection
  * @component ui-slider
  * @author Shane Harris
  */
-
-module.exports = AFRAME.registerComponent('ui-slider', {
+export = AFRAME.registerComponent('ui-slider', {
     schema: {
         value: {type:'number',default: 0},
         disabled:{type:'boolean',default: false},

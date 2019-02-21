@@ -5,8 +5,16 @@
  * @component ui-radio
  * @author Shane Harris
  */
+import AFRAME from "aframe";
+import THREE from "three";
+import UI from '../ui';
 
-module.exports = AFRAME.registerComponent('ui-radio', {
+export = AFRAME.registerComponent('ui-radio', {
+    width: 0,
+    height: 0,
+    filled_circle: undefined as any as AFRAME.Entity | null,
+    isRippling: false,
+    isSelecting: false,
     schema: {
         value: {default: ''},
         selected:{type: 'boolean', default: false},
@@ -29,8 +37,8 @@ module.exports = AFRAME.registerComponent('ui-radio', {
             <a-circle radius="`+this.data.selectedRadius+`" color="`+(this.data.disabled?this.data.disabledColor:this.data.selectedColor)+`" 
             position="0 0 0" scale="0 0 0" shader="flat" class="no-yoga-layout" segments="6"></a-circle>`;
             this.el.insertAdjacentHTML('beforeend',handle);
-            this.filled_circle = this.el.lastChild;
-            this.el.components.material.material.color = new THREE.Color(this.data.disabled?this.data.disabledColor:this.data.unselectedColor);
+            this.filled_circle = this.el.lastChild as AFRAME.Entity | null;
+            (this.el.components.material as any).material.color = new THREE.Color(this.data.disabled?this.data.disabledColor:this.data.unselectedColor);
 
             // Create backing for getting click events.
             let backing = `
@@ -39,13 +47,13 @@ module.exports = AFRAME.registerComponent('ui-radio', {
             this.el.insertAdjacentHTML('beforeend',backing);
             // Set this if it is checked.
             if(this.data.selected){
-                this.filled_circle.addEventListener('loaded',()=>{
+                this.filled_circle!!.addEventListener('loaded',()=>{
                     this.click();
                 });
             }
             // TODO: need to add play/pause methods for registering/unregistering events.
             if(!this.data.disabled){
-                this.el.addEventListener('mousedown',e=>this.click(e));
+                this.el.addEventListener('mousedown',e => (this.click as any)(e));
             }
         });
     },
@@ -58,7 +66,7 @@ module.exports = AFRAME.registerComponent('ui-radio', {
         new TWEEN.Tween({x:1})
             .to({ x: 0.000001}, 200)
             .onUpdate(function(){
-                _this.filled_circle.object3D.scale.set(this.x,this.x,this.x);
+                _this.filled_circle!!.object3D.scale.set(this.x,this.x,this.x);
             })
             .onComplete(()=>{
                 // Stop changes
@@ -69,9 +77,9 @@ module.exports = AFRAME.registerComponent('ui-radio', {
     },
     click(){
         // Get all other radio siblings and reset their state if they are selected.
-        [].slice.call(this.el.parentNode.querySelectorAll('a-ring,a-ui-radio')).filter(el=>el!==this.el).forEach(ring=>{
+        [].slice.call(this.el.parentNode!!.querySelectorAll('a-ring,a-ui-radio')).filter(el=>el!==this.el).forEach((ring: AFRAME.Entity)=>{
             if(ring.components['ui-radio']&&ring.getAttribute('selected')==="true"){
-                ring.components['ui-radio'].deselect();
+                (ring.components['ui-radio'] as any).deselect();
             }
         });
         // Emit the current selected value
@@ -83,15 +91,15 @@ module.exports = AFRAME.registerComponent('ui-radio', {
         this.isSelecting = true;
         let _this = this;
         // Start changes
-        UI.utils.isChanging(this.el.sceneEl,this.filled_circle.object3D.uuid);
+        UI.utils.isChanging(this.el.sceneEl,this.filled_circle!!.object3D.uuid);
         new TWEEN.Tween({x:0.000001})
             .to({ x: 1}, 250)
             .onUpdate(function(){
-                _this.filled_circle.object3D.scale.set(this.x,this.x,this.x);
+                _this.filled_circle!!.object3D.scale.set(this.x,this.x,this.x);
             })
             .onComplete(()=>{
                 // Stop changes
-                UI.utils.stoppedChanging(this.filled_circle.object3D.uuid);
+                UI.utils.stoppedChanging(this.filled_circle!!.object3D.uuid);
                 this.isSelecting = false;
             })
             .easing(TWEEN.Easing.Exponential.Out).start();

@@ -1,4 +1,7 @@
-/* global AFRAME */
+import AFRAME from "aframe";
+import THREE from "three";
+import UI from '../ui';
+
 /**
  * A component to render the UI to a flat plane, removing the objects from the scene and rendering them separately to a
  * render target.
@@ -6,7 +9,7 @@
  * @component ui-renderer
  * @author Shane Harris
  */
-module.exports = AFRAME.registerComponent('ui-renderer', {
+export = AFRAME.registerComponent('ui-renderer', {
     schema: {
         uiPanel: {type: 'selector'},
         lookControlsEl: {type: 'selector'},
@@ -32,7 +35,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         // Setup fixed camera nd render target.
         this.camera = new THREE.PerspectiveCamera( 100, 2, 0.1, 1000 );
         // Setup render target
-        this.renderTarget = new THREE.WebGLRenderTarget(this.data.renderResolution.x,this.data.renderResolution.y, { antialias: true } );
+        this.renderTarget = new THREE.WebGLRenderTarget(this.data.renderResolution.x,this.data.renderResolution.y);
         // Set the texture to the ui panel mesh.
         this.meshEl.getObject3D('mesh').material.map = this.renderTarget.texture;
         // emit ready event for anythng wanting to use this texture.
@@ -168,8 +171,8 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
             };
         }
         if(type==='ui-mousewheel'&&(e.detail||(e.deltaX||e.deltaY))){
-            mouse.deltaX = e.detail?e.detail.deltaX:e.deltaX;
-            mouse.deltaY = e.detail?e.detail.deltaY:e.deltaY;
+            (mouse as any).deltaX = e.detail?e.detail.deltaX:e.deltaX;
+            (mouse as any).deltaY = e.detail?e.detail.deltaY:e.deltaY;
         }
         if(type==='mousedown'&&this.lookControlsEl&&this.lookControlsEl.components['look-controls']){
             this.lookControlsEl.components[this.data.lookControlsComponent].pause();
@@ -189,7 +192,7 @@ module.exports = AFRAME.registerComponent('ui-renderer', {
         // this.helper.setDirection(this.raycaster.ray.direction);
         let intersections = this.raycaster.intersectObjects( this.el.object3D.children, true );
         this.prevIntersectionEls = this.prevIntersectionEls||[];
-        let intersectionEls = [];
+        let intersectionEls = new Array<Element>();
         if(intersections.length&&this.data.debugRaycaster){
             let intersectionPoint = intersections[0].point;
             if(intersections[0].object===this.helper&&intersections.length>1){

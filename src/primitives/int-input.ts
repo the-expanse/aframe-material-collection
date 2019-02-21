@@ -1,11 +1,12 @@
-/* global AFRAME */
+import AFRAME from "aframe";
+
 /**
  * Integer Input Primitive for aframe-material-collection.
  * @namespace aframe-material-collection
  * @primitive a-ui-int-input
  * @author Shane Harris
  */
-module.exports = AFRAME.registerPrimitive('a-ui-int-input', AFRAME.utils.extendDeep({}, AFRAME.primitives.getMeshMixin(), {
+export = AFRAME.registerPrimitive('a-ui-int-input', AFRAME.utils.extendDeep({}, AFRAME.primitives.getMeshMixin(), {
     defaultComponents: {
         "ui-text":{
             type:'int',

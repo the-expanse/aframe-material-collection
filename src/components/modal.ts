@@ -1,11 +1,19 @@
-/* global AFRAME,THREE */
+import AFRAME from "aframe";
+import THREE from "three";
+import UI from '../ui';
+
 /**
  * Modal Component for aframe-material-collection.
  * @namespace aframe-material-collection
  * @component ui-modal
  * @author Shane Harris
  */
-module.exports = AFRAME.registerComponent('ui-modal', {
+export = AFRAME.registerComponent('ui-modal', {
+    modalPanel: {} as AFRAME.Entity,
+    mainComponents: {},
+    modalComponents: {},
+    openModal: () => {},
+    modalTween: undefined as any,
     schema: {
         modal:{type:'selector'},
         main:{type:'selector'}
@@ -35,8 +43,8 @@ module.exports = AFRAME.registerComponent('ui-modal', {
             this.data.main.modal = this;
 
             // Expose methods to open/close the modal.
-            this.el.open = this.open.bind(this);
-            this.el.close = this.close.bind(this);
+            (this.el as any).open = this.open.bind(this);
+            (this.el as any).close = this.close.bind(this);
         }
     },
     remove(){
@@ -56,7 +64,7 @@ module.exports = AFRAME.registerComponent('ui-modal', {
         this.mainComponents['ui-renderer'].playRender();
         this.tweenModalScale(1,0.0000001)
             .then(()=>{
-                this.el.sceneEl.emit('modal-closed');
+                this.el.sceneEl!!.emit('modal-closed');
             });
     },
     tweenModalScale(from,to){
@@ -65,7 +73,7 @@ module.exports = AFRAME.registerComponent('ui-modal', {
             if(this.modalTween)this.modalTween.stop();
             this.modalTween = new TWEEN.Tween({x:from})
                 .to({x:to}, 250)
-                .onUpdate(function(){
+                .onUpdate(function () {
                     if(_this.modalPanel)
                         _this.modalPanel.setAttribute('scale',this.x+' '+this.x+' '+this.x);
                 })

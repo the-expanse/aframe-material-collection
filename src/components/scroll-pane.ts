@@ -1,11 +1,15 @@
-/* global AFRAME,THREE */
+import AFRAME from "aframe";
+import THREE from "three";
+import UI from '../ui';
+import Yoga from "yoga-layout";
+
 /**
  * Scroll Pane for aframe-material-collection. Expects
  * @namespace aframe-material-collection
  * @component ui-scroll-pane
  * @author Shane Harris
  */
-const YogaWorker = require('worker-loader!../yoga-worker.js');
+import YogaWorker from 'worker-loader!../yoga-worker.js';
 let workerResolves = {};
 let yogaWorker = new YogaWorker();
 yogaWorker.onmessage = event=>{
@@ -20,7 +24,7 @@ let sendMessage = (type,properties,parentUuid,width)=>{
         yogaWorker.postMessage({ type, properties, uuid, parentUuid, width});
     });
 };
-module.exports = AFRAME.registerComponent('ui-scroll-pane', {
+export = AFRAME.registerComponent('ui-scroll-pane', {
     schema: {
         height:{type:'number',default:1.2},
         width:{type:'number',default:2.9},
@@ -151,7 +155,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
                 loadedWrapper.insertAdjacentHTML('afterbegin',body);
                 loadedWrapper.addEventListener('loaded',e=>{
                     // Trigger an update to redraw scrollbars and fire change events.
-                    sendMessage('reset-layout',null,this.container.yoga_uuid)
+                    sendMessage('reset-layout',null,this.container.yoga_uuid, undefined)
                         .then(async ()=>{
                             loadedWrapper.setAttribute('visible',true);
                             if(!noAutoReload){
@@ -170,11 +174,11 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         UI.utils.isChanging(this.el.sceneEl,this.currentUuid);
         this.setChildClips();
         await this.initialiseYoga(this.container);
-        await sendMessage('get-layout',null,this.container.yoga_uuid)
+        await sendMessage('get-layout',null,this.container.yoga_uuid, undefined)
             .then(layout=>{
-                this.content_height = layout.data.content_height/100;
+                this.content_height = (layout as any).data.content_height/100;
                 //console.log(layout.data.content_height/100);
-                this.updateYoga(this.container,layout.data);
+                this.updateYoga(this.container,(layout as any).data);
 
                 this.handleSize = THREE.Math.clamp((this.data.height/this.content_height),0.1,1);
 
@@ -342,7 +346,7 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         // height = Math.round(height);
         //parent.yoga_node = Yoga.Node.create();
         let ui_yoga = parent.getAttribute("ui-yoga");
-        let properties = {};
+        let properties = {} as any;
         if(ui_yoga&&parent.getYogaProperties){
             properties = parent.getYogaProperties();
         }else{
@@ -371,13 +375,13 @@ module.exports = AFRAME.registerComponent('ui-scroll-pane', {
         // }
         let promise;
         if(parent.parentElement&&parent.parentElement.yoga_uuid){
-            promise = sendMessage('add-node',properties,parent.parentElement.yoga_uuid);
+            promise = sendMessage('add-node',properties,parent.parentElement.yoga_uuid, undefined);
         }else{
             promise = sendMessage('add-node',properties,null,this.data.width*100);
         }
         await promise.then(resp=>{
             parent.yoga_uuid = resp.uuid;
-            let promises = [];
+            let promises = new Array<any>();
             for(let i = 0; i < parent.childNodes.length; i++) {
                 let child = parent.childNodes[i];
                 if (child.nodeType === 1) {

@@ -1,12 +1,14 @@
-/* global AFRAME,THREE */
+import AFRAME from "aframe";
+import THREE from "three";
+import UI from '../ui';
+
 /**
  * Text input component Component for aframe-material-collection. Includes support for number/int only input.
  * @namespace aframe-material-collection
  * @component ui-text
  * @author Shane Harris
  */
-
-module.exports = AFRAME.registerComponent('ui-text', {
+export = AFRAME.registerComponent('ui-text', {
     schema: {
         width:{type:'number',default:0.5},
         height:{type:'number',default:0.1},

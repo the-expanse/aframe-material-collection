@@ -1,4 +1,9 @@
-/* global AFRAME,TWEEN,THREE */
+/* global TWEEN */
+
+import AFRAME from "aframe";
+import THREE from "three";
+import UI from '../ui';
+
 /**
  * Ripple Component for aframe-material-collection. Add a ripple to an entity with options for controlling
  * clamping the animation and offsetting the ripple z position to place on top or bottom
@@ -7,7 +12,11 @@
  * @author Shane Harris
  */
 
-module.exports = AFRAME.registerComponent('ui-ripple',{
+export = AFRAME.registerComponent('ui-ripple',{
+    rippleGeometry: undefined as any as THREE.CircleGeometry,
+    ripple: undefined as any as THREE.Mesh,
+    content_clips: new Array<THREE.Plane>(),
+    isRippling: false,
     schema:{
         color: {default: '#fff'},
         duration:{type:'int',default:1000},
@@ -45,7 +54,7 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
         this.isRippling = true;
         // Set clipping planes if clamping to square
         if(this.data.clampToSquare){
-            this.setRippleClips(this.ripple.material);
+            this.setRippleClips();
         }
         // Animate the size of the circle ripple from the center of the entity.
         this.tweenSize(this.ripple.geometry);
@@ -63,9 +72,9 @@ module.exports = AFRAME.registerComponent('ui-ripple',{
         this.content_clips[1].applyMatrix4(this.el.object3D.matrixWorld);
         this.content_clips[2].applyMatrix4(this.el.object3D.matrixWorld);
         this.content_clips[3].applyMatrix4(this.el.object3D.matrixWorld);
-        this.ripple.material.clippingPlanes = this.el._content_clips?this.el._content_clips.concat(this.content_clips):this.content_clips;
-        this.ripple.material.clipShadows = true;
-        this.ripple.material.needsUpdate = true;
+        (this.ripple.material as any).clippingPlanes = (this.el as any)._content_clips?(this.el as any)._content_clips.concat(this.content_clips):this.content_clips;
+        (this.ripple.material as any).clipShadows = true;
+        (this.ripple.material as any).needsUpdate = true;
     },
     tweenSize(geometry){
         let _this = this;

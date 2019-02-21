@@ -1,12 +1,13 @@
-/* global AFRAME,THREE */
+import AFRAME from "aframe";
+import THREE from "three";
+import UI from '../ui';
+
 /**
  * Rounded borders Component for aframe-material-collection. Expects an a-plane entity.
  * @namespace aframe-material-collection
  * @component ui-border
  * @author Shane Harris
  */
-import {Mesh, MeshBasicMaterial, Path, Shape, ShapeGeometry} from "three";
-
 export = AFRAME.registerComponent('ui-border', {
     schema: {
         borderRadius: {type: 'number', default: 0.01},
@@ -16,9 +17,9 @@ export = AFRAME.registerComponent('ui-border', {
         numberOfPoints:{type:'int',default:180}
     },
     init() {
-        let mesh = this.el.getObject3D('mesh') as Mesh;
+        let mesh = this.el.getObject3D('mesh') as THREE.Mesh;
         let metadata = (mesh.geometry as any).metadata;
-        let roundedRectShape = new Shape();
+        let roundedRectShape = new THREE.Shape();
         this.roundedRect(roundedRectShape,
             metadata.parameters.width,
             metadata.parameters.height,
@@ -28,7 +29,7 @@ export = AFRAME.registerComponent('ui-border', {
             metadata.parameters.height-this.data.borderWidth*2,
             this.data.borderRadius,true);
 
-        this.el.setObject3D('mesh',new Mesh( new ShapeGeometry(roundedRectShape,this.data.curveSegments), new MeshBasicMaterial( { color: this.data.color } ) ));
+        this.el.setObject3D('mesh',new THREE.Mesh( new THREE.ShapeGeometry(roundedRectShape,this.data.curveSegments), new THREE.MeshBasicMaterial( { color: this.data.color } ) ));
     
     },
     roundedRect( ctx, width, height, radius, isHole) {
@@ -37,7 +38,7 @@ export = AFRAME.registerComponent('ui-border', {
         let shapeCtx;
         if(isHole){
             shapeCtx = ctx;
-            ctx = new Path()
+            ctx = new THREE.Path()
         }
         ctx.moveTo( x, y + radius );
         ctx.lineTo( x, y + height - radius );

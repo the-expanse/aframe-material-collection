@@ -1,2 +1,4 @@
 // Yoga
-module.exports = window.Yoga = require('./vendor/yoga-layout/entry-browser');
+import Yoga from './vendor/yoga-layout/entry-browser';
+(window as any).Yoga = Yoga;
+export = Yoga;
