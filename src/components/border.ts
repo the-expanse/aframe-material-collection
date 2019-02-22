@@ -1,14 +1,13 @@
-import AFRAME from "aframe";
-import THREE from "three";
-import UI from '../ui';
-
 /**
  * Rounded borders Component for aframe-material-collection. Expects an a-plane entity.
  * @namespace aframe-material-collection
  * @component ui-border
  * @author Shane Harris
  */
-export = AFRAME.registerComponent('ui-border', {
+import {Mesh, MeshBasicMaterial, Path, Shape, ShapeGeometry} from "three";
+import {registerComponent} from "aframe";
+
+export = registerComponent('ui-border', {
     schema: {
         borderRadius: {type: 'number', default: 0.01},
         curveSegments:{type: 'int', default: 5},
@@ -17,9 +16,9 @@ export = AFRAME.registerComponent('ui-border', {
         numberOfPoints:{type:'int',default:180}
     },
     init() {
-        let mesh = this.el.getObject3D('mesh') as THREE.Mesh;
+        let mesh = this.el.getObject3D('mesh') as Mesh;
         let metadata = (mesh.geometry as any).metadata;
-        let roundedRectShape = new THREE.Shape();
+        let roundedRectShape = new Shape();
         this.roundedRect(roundedRectShape,
             metadata.parameters.width,
             metadata.parameters.height,
@@ -29,16 +28,16 @@ export = AFRAME.registerComponent('ui-border', {
             metadata.parameters.height-this.data.borderWidth*2,
             this.data.borderRadius,true);
 
-        this.el.setObject3D('mesh',new THREE.Mesh( new THREE.ShapeGeometry(roundedRectShape,this.data.curveSegments), new THREE.MeshBasicMaterial( { color: this.data.color } ) ));
+        this.el.setObject3D('mesh',new Mesh( new ShapeGeometry(roundedRectShape,this.data.curveSegments), new MeshBasicMaterial( { color: this.data.color } ) ));
     
     },
     roundedRect( ctx, width, height, radius, isHole) {
         let x = -width/2, y = -height/2;
-        // Draw the Rounded rectangle shape centered in the object - from three.js shapes example.
+        // Draw the Rounded rectangle shape centered in the object - from js shapes example.
         let shapeCtx;
         if(isHole){
             shapeCtx = ctx;
-            ctx = new THREE.Path()
+            ctx = new Path()
         }
         ctx.moveTo( x, y + radius );
         ctx.lineTo( x, y + height - radius );

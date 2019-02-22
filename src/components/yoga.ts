@@ -1,7 +1,5 @@
 /* global Yoga */
 
-import AFRAME from "aframe";
-import THREE from "three";
 import UI from '../ui';
 import Yoga from "yoga-layout";
 

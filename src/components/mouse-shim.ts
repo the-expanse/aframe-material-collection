@@ -1,6 +1,4 @@
-import AFRAME from "aframe";
-import THREE, {Raycaster} from "three";
-import UI from '../ui';
+import {registerComponent} from "aframe";
 
 /**
  * A component shim the mouse move event for the AFRAME cursor raycaster.
@@ -8,8 +6,7 @@ import UI from '../ui';
  * @component ui-mouse-shim
  * @author Shane Harris
  */
-
-export = AFRAME.registerComponent('ui-mouse-shim', {
+export = registerComponent('ui-mouse-shim', {
     onmousewheele: (e: any) => {},
     lastMouseMoveTime: 0,
     schema:{

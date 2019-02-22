@@ -1,6 +1,5 @@
-import AFRAME from "aframe";
-import THREE from "three";
 import UI from '../ui';
+import {Entity, registerComponent} from "aframe";
 
 /**
  * Modal Component for aframe-material-collection.
@@ -8,8 +7,8 @@ import UI from '../ui';
  * @component ui-modal
  * @author Shane Harris
  */
-export = AFRAME.registerComponent('ui-modal', {
-    modalPanel: {} as AFRAME.Entity,
+export = registerComponent('ui-modal', {
+    modalPanel: undefined as any as  Entity,
     mainComponents: {},
     modalComponents: {},
     openModal: () => {},

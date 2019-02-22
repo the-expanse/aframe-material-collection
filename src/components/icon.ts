@@ -1,6 +1,4 @@
-import AFRAME, {Entity} from "aframe";
-import THREE from "three";
-import UI from '../ui';
+import {Entity, registerComponent} from "aframe";
 
 /**
  * A component to load an icon and set some defaults for positioning and transparency.
@@ -8,8 +6,8 @@ import UI from '../ui';
  * @component ui-icon
  * @author Shane Harris
  */
-export = AFRAME.registerComponent('ui-icon', {
-    icon: {} as Entity,
+export = registerComponent('ui-icon', {
+    icon: undefined as any as Entity,
     schema: {
         src: {default: 'icons/send_white_64dp.png'},
         spriteCoords:{type:'vec4'},

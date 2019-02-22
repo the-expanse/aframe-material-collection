@@ -5,14 +5,14 @@
  * @component ui-radio
  * @author Shane Harris
  */
-import AFRAME from "aframe";
-import THREE from "three";
-import UI from '../ui';
+import {Entity, registerComponent} from "aframe";
+import {Color} from "three";
+import {Utils} from "../utils";
 
-export = AFRAME.registerComponent('ui-radio', {
+export = registerComponent('ui-radio', {
     width: 0,
     height: 0,
-    filled_circle: undefined as any as AFRAME.Entity | null,
+    filled_circle: undefined as any as Entity | null,
     isRippling: false,
     isSelecting: false,
     schema: {
@@ -37,8 +37,8 @@ export = AFRAME.registerComponent('ui-radio', {
             <a-circle radius="`+this.data.selectedRadius+`" color="`+(this.data.disabled?this.data.disabledColor:this.data.selectedColor)+`" 
             position="0 0 0" scale="0 0 0" shader="flat" class="no-yoga-layout" segments="6"></a-circle>`;
             this.el.insertAdjacentHTML('beforeend',handle);
-            this.filled_circle = this.el.lastChild as AFRAME.Entity | null;
-            (this.el.components.material as any).material.color = new THREE.Color(this.data.disabled?this.data.disabledColor:this.data.unselectedColor);
+            this.filled_circle = this.el.lastChild as Entity | null;
+            (this.el.components.material as any).material.color = new Color(this.data.disabled?this.data.disabledColor:this.data.unselectedColor);
 
             // Create backing for getting click events.
             let backing = `
@@ -62,7 +62,7 @@ export = AFRAME.registerComponent('ui-radio', {
         this.el.setAttribute('selected',false);
         let _this = this;
         // Start changes
-        UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
+        Utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
         new TWEEN.Tween({x:1})
             .to({ x: 0.000001}, 200)
             .onUpdate(function(){
@@ -70,14 +70,14 @@ export = AFRAME.registerComponent('ui-radio', {
             })
             .onComplete(()=>{
                 // Stop changes
-                UI.utils.stoppedChanging(_this.el.object3D.uuid);
+                Utils.stoppedChanging(_this.el.object3D.uuid);
                 this.isRippling = false;
             })
             .easing(TWEEN.Easing.Exponential.Out).start();
     },
     click(){
         // Get all other radio siblings and reset their state if they are selected.
-        [].slice.call(this.el.parentNode!!.querySelectorAll('a-ring,a-ui-radio')).filter(el=>el!==this.el).forEach((ring: AFRAME.Entity)=>{
+        [].slice.call(this.el.parentNode!!.querySelectorAll('a-ring,a-ui-radio')).filter(el=>el!==this.el).forEach((ring: Entity)=>{
             if(ring.components['ui-radio']&&ring.getAttribute('selected')==="true"){
                 (ring.components['ui-radio'] as any).deselect();
             }
@@ -91,7 +91,7 @@ export = AFRAME.registerComponent('ui-radio', {
         this.isSelecting = true;
         let _this = this;
         // Start changes
-        UI.utils.isChanging(this.el.sceneEl,this.filled_circle!!.object3D.uuid);
+        Utils.isChanging(this.el.sceneEl,this.filled_circle!!.object3D.uuid);
         new TWEEN.Tween({x:0.000001})
             .to({ x: 1}, 250)
             .onUpdate(function(){
@@ -99,7 +99,7 @@ export = AFRAME.registerComponent('ui-radio', {
             })
             .onComplete(()=>{
                 // Stop changes
-                UI.utils.stoppedChanging(this.filled_circle!!.object3D.uuid);
+                Utils.stoppedChanging(this.filled_circle!!.object3D.uuid);
                 this.isSelecting = false;
             })
             .easing(TWEEN.Easing.Exponential.Out).start();

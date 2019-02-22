@@ -1,8 +1,8 @@
 /* global TWEEN */
 
-import AFRAME from "aframe";
-import THREE from "three";
-import UI from '../ui';
+import {CircleGeometry, Mesh, MeshBasicMaterial, Plane, Vector3} from "three";
+import {registerComponent} from "aframe";
+import {Utils} from "../utils";
 
 /**
  * Ripple Component for aframe-material-collection. Add a ripple to an entity with options for controlling
@@ -12,10 +12,10 @@ import UI from '../ui';
  * @author Shane Harris
  */
 
-export = AFRAME.registerComponent('ui-ripple',{
-    rippleGeometry: undefined as any as THREE.CircleGeometry,
-    ripple: undefined as any as THREE.Mesh,
-    content_clips: new Array<THREE.Plane>(),
+export = registerComponent('ui-ripple',{
+    rippleGeometry: undefined as any as CircleGeometry,
+    ripple: undefined as any as Mesh,
+    content_clips: new Array<Plane>(),
     isRippling: false,
     schema:{
         color: {default: '#fff'},
@@ -29,8 +29,8 @@ export = AFRAME.registerComponent('ui-ripple',{
     },
     init(){
         // Setup circle geometry for ripple effect
-        this.rippleGeometry = new THREE.CircleGeometry(Math.max(this.data.size.x,this.data.size.y),this.data.segments);
-        this.ripple = new THREE.Mesh(this.rippleGeometry.clone(),new THREE.MeshBasicMaterial({color:this.data.color,transparent:true, opacity:0.4,alphaTest:0.1}));
+        this.rippleGeometry = new CircleGeometry(Math.max(this.data.size.x,this.data.size.y),this.data.segments);
+        this.ripple = new Mesh(this.rippleGeometry.clone(),new MeshBasicMaterial({color:this.data.color,transparent:true, opacity:0.4,alphaTest:0.1}));
         this.ripple.scale.set(0.00001,0.00001,0.00001);
         this.el.object3D.add(this.ripple);
         this.el.addEventListener('mousedown',this.click.bind(this));
@@ -39,10 +39,10 @@ export = AFRAME.registerComponent('ui-ripple',{
         if(this.data.clampToSquare){
 
             this.content_clips = [
-                new THREE.Plane( new THREE.Vector3( 0, 1, 0 ), (this.data.size.y/2) ),
-                new THREE.Plane( new THREE.Vector3( 0, -1, 0 ), (this.data.size.y/2) ),
-                new THREE.Plane( new THREE.Vector3( -1, 0, 0 ), (this.data.size.x/2) ),
-                new THREE.Plane( new THREE.Vector3( 1, 0, 0 ), (this.data.size.x/2) )
+                new Plane( new Vector3( 0, 1, 0 ), (this.data.size.y/2) ),
+                new Plane( new Vector3( 0, -1, 0 ), (this.data.size.y/2) ),
+                new Plane( new Vector3( -1, 0, 0 ), (this.data.size.x/2) ),
+                new Plane( new Vector3( 1, 0, 0 ), (this.data.size.x/2) )
             ];
         }
     },
@@ -63,10 +63,10 @@ export = AFRAME.registerComponent('ui-ripple',{
     },
     setRippleClips(){
         // update content clips world positions from this current element.
-        this.content_clips[0].set(new THREE.Vector3( 0, 1, 0 ), (this.data.size.y/2));
-        this.content_clips[1].set(new THREE.Vector3( 0, -1, 0 ), (this.data.size.y/2));
-        this.content_clips[2].set(new THREE.Vector3( -1, 0, 0 ), (this.data.size.x/2));
-        this.content_clips[3].set(new THREE.Vector3( 1, 0, 0 ), (this.data.size.x/2));
+        this.content_clips[0].set(new Vector3( 0, 1, 0 ), (this.data.size.y/2));
+        this.content_clips[1].set(new Vector3( 0, -1, 0 ), (this.data.size.y/2));
+        this.content_clips[2].set(new Vector3( -1, 0, 0 ), (this.data.size.x/2));
+        this.content_clips[3].set(new Vector3( 1, 0, 0 ), (this.data.size.x/2));
         //this.el.sceneEl.object3D.updateMatrixWorld();
         this.content_clips[0].applyMatrix4(this.el.object3D.matrixWorld);
         this.content_clips[1].applyMatrix4(this.el.object3D.matrixWorld);
@@ -79,7 +79,7 @@ export = AFRAME.registerComponent('ui-ripple',{
     tweenSize(geometry){
         let _this = this;
         // Start changes
-        UI.utils.isChanging(this.el.sceneEl,_this.ripple.uuid);
+        Utils.isChanging(this.el.sceneEl,_this.ripple.uuid);
         new TWEEN.Tween({x:0.00001})
             .to({ x: 1}, this.data.duration)
             .onUpdate(function(){
@@ -90,7 +90,7 @@ export = AFRAME.registerComponent('ui-ripple',{
                 // Reset throttle flag.
                 this.isRippling = false;
                 // Stop changes
-                UI.utils.stoppedChanging(_this.ripple.uuid);
+                Utils.stoppedChanging(_this.ripple.uuid);
             })
             .easing(TWEEN.Easing.Exponential.Out).start();
     },

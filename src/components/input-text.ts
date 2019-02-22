@@ -1,8 +1,8 @@
 /* global TWEEN */
 
-import AFRAME, {Entity} from "aframe";
-import THREE, {Mesh, MeshLambertMaterial} from "three";
-import UI from '../ui';
+import {Entity, registerComponent} from "aframe";
+import {Mesh, MeshLambertMaterial, Plane, Vector3} from "three";
+import {Utils} from "../utils";
 
 /**
  * Text input component Component for aframe-material-collection. Includes support for number/int only input.
@@ -11,12 +11,12 @@ import UI from '../ui';
  * @author Shane Harris
  */
 
-export = AFRAME.registerComponent('ui-input-text', {
-    container: {} as Entity,
-    backing: {} as Entity,
-    underline: {} as Entity,
-    selectionHighlight: {} as Entity,
-    carret: {} as Entity,
+export = registerComponent('ui-input-text', {
+    container: undefined as any as Entity,
+    backing: undefined as any as Entity,
+    underline: undefined as any as Entity,
+    selectionHighlight: undefined as any as Entity,
+    carret: undefined as any as Entity,
     text: {} as any,
     alphabet: {},
     startSelection: 0,
@@ -38,8 +38,8 @@ export = AFRAME.registerComponent('ui-input-text', {
     positions: new Array<number>(),
     depends:['text'],
     content_clips: [
-        new THREE.Plane( new THREE.Vector3( -1, 0, 0 ), 0 ),
-        new THREE.Plane( new THREE.Vector3( 1, 0, 0 ), 0 )
+        new Plane( new Vector3( -1, 0, 0 ), 0 ),
+        new Plane( new Vector3( 1, 0, 0 ), 0 )
     ],
     schema: {
         value: {default: ''},
@@ -96,11 +96,11 @@ export = AFRAME.registerComponent('ui-input-text', {
             });
             this.el.setAttribute('visible',false);
             this.setValue();
-           // UI.utils.isChanging(this.el.sceneEl,this.text.object3D.uuid);
+           // Utils.isChanging(this.el.sceneEl,this.text.object3D.uuid);
             setTimeout(()=> {
                 this.setScrollClips();
                 this.el.setAttribute('visible',true);
-                //UI.utils.stoppedChanging(this.text.object3D.uuid);
+                //Utils.stoppedChanging(this.text.object3D.uuid);
             },200);
         });
         (this.el as any).getValue = this.getValue.bind(this);
@@ -109,8 +109,8 @@ export = AFRAME.registerComponent('ui-input-text', {
     },
     setupScrollClips(){
         this.content_clips = [
-            new THREE.Plane( new THREE.Vector3( -1, 0, 0 ), 0 ),
-            new THREE.Plane( new THREE.Vector3( 1, 0, 0 ), 0 )
+            new Plane( new Vector3( -1, 0, 0 ), 0 ),
+            new Plane( new Vector3( 1, 0, 0 ), 0 )
         ];
         //this.setScrollClips();
     },
@@ -135,8 +135,8 @@ export = AFRAME.registerComponent('ui-input-text', {
     setScrollClips(){
         //this.text.object3D.updateMatrixWorld();
         //this.backing.object3D.parent.updateMatrixWorld();
-        this.content_clips[0].set(new THREE.Vector3( -1, 0, 0 ), (this.data.width/2)+0.005);
-        this.content_clips[1].set(new THREE.Vector3( 1, 0, 0 ), (this.data.width/2)+0.005);
+        this.content_clips[0].set(new Vector3( -1, 0, 0 ), (this.data.width/2)+0.005);
+        this.content_clips[1].set(new Vector3( 1, 0, 0 ), (this.data.width/2)+0.005);
         this.content_clips[0].applyMatrix4(this.backing.object3D.matrixWorld);
         this.content_clips[1].applyMatrix4(this.backing.object3D.matrixWorld);
         setTimeout(()=>{
@@ -216,7 +216,7 @@ export = AFRAME.registerComponent('ui-input-text', {
         this.el.sceneEl!!.removeEventListener('key-cut',this.keyCut);
         this.el.sceneEl!!.removeEventListener('key-copy',this.keyCopy);
         this.el.sceneEl!!.removeEventListener('key-paste',this.keyPaste);
-        UI.utils.stoppedChanging(this.text.object3D.uuid);
+        Utils.stoppedChanging(this.text.object3D.uuid);
         this.underline.setAttribute('height',0.005);
         this.underline.setAttribute('color','#bfbfbf');
     },
@@ -458,7 +458,7 @@ export = AFRAME.registerComponent('ui-input-text', {
         let material = ((this.carret.getObject3D('mesh') as Mesh).material as MeshLambertMaterial);
         this.carretInterval = setInterval(()=>{
             material.opacity = material.opacity?0:1;
-            UI.utils.isChanging(this.el.sceneEl,this.text.object3D.uuid);
+            Utils.isChanging(this.el.sceneEl,this.text.object3D.uuid);
         },350);
     },
     value(text){

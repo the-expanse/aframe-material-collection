@@ -1,13 +1,13 @@
 const path = require('path');
 const webpack = require("webpack");
-const WorkerLoader = require('worker-loader');
+//const WorkerLoader = require('worker-loader');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 module.exports = {
     entry: {
         "aframe-material-collection": "./src/index.ts",
         "aframe-material-collection.min": "./src/index.ts",
-        /*"aframe-yoga-layout": "./src/yoga.js",
-        "aframe-yoga-layout.min": "./src/yoga.js"*/
+        /*"aframe-yoga-layout": "./src/yoga.ts"*/
+        /*"aframe-yoga-layout.min": "./src/yoga.js"*/
         /*"aframe-material-collection_curved-plane.min": "./src/public-components/curved-plane.js",
         "aframe-material-collection_switch.min": "./src/public-components/switch.js",
         "aframe-material-collection_slider.min": "./src/public-components/slider.js",
@@ -37,10 +37,6 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /worker\.ts$/,
-                exclude: [/(node_modules)/,/(node)/,/(lib)/],
-                use: { loader: 'worker-loader'}
-            }, {
                 test: /\.ts?$/,
                 exclude: [/(node_modules)/,/(node)/,/(lib)/],
                 loader: "ts-loader"
@@ -50,12 +46,19 @@ module.exports = {
     externals: {
         three: 'THREE',
         aframe: 'AFRAME',
-        'yoga-layout': 'Yoga'
+        /*'yoga-layout': 'Yoga'*/
     },
-    optimization: {
+    /*optimization: {
         minimize: true,
         minimizer: [new UglifyJsPlugin({
             include: /\.min\.js$/
         })]
-    }
+    },*/
+    plugins: [
+        /*new webpack.IgnorePlugin(/yoga-layout/),*/
+        new webpack.NormalModuleReplacementPlugin(
+            /yoga-layout/,
+            './yoga.ts'
+        )
+    ]
 };

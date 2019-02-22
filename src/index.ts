@@ -5,6 +5,7 @@
  */
 
 import * as Package from '../package.json';
+import Yoga from "yoga-layout";
 
 let version = Package.version;
 console.log('aframe-material-collection version '+version);

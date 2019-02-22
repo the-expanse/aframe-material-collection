@@ -1,6 +1,4 @@
-import AFRAME from "aframe";
-import THREE from "three";
-import UI from '../ui';
+import {registerComponent} from "aframe";
 
 /**
  * Checkbox A simple component to listen for two click events in quick succession.
@@ -8,7 +6,7 @@ import UI from '../ui';
  * @component ui-double-click
  * @author Shane Harris
  */
-export = AFRAME.registerComponent('ui-double-click', {
+export = registerComponent('ui-double-click', {
     schema:{
         timeout:{type:'int',default:200}
     },

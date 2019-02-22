@@ -1,6 +1,7 @@
-import AFRAME from "aframe";
-import THREE from "three";
 import UI from '../ui';
+import {registerComponent} from "aframe";
+import {Math as ThreeMath, Color, ShaderMaterial} from "three";
+import {Utils} from "../utils";
 
 /**
  * A component to pick a color - based on https://github.com/mokargas/aframe-colorwheel-component
@@ -9,7 +10,7 @@ import UI from '../ui';
  * @author Shane Harris
  */
 
-export = AFRAME.registerComponent('ui-color-picker', {
+export = registerComponent('ui-color-picker', {
     schema: {
         backingColor:{default:"#dfdfdf"},
         backingColorBottom:{default:"#4db6ac"},
@@ -39,7 +40,7 @@ export = AFRAME.registerComponent('ui-color-picker', {
             .then(()=>this.el.setAttribute('visible',false));
     },
     tweenPickerScale(from,to){
-        UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
+        Utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
         return new Promise(r=>{
             let _this = this;
             new TWEEN.Tween({x:from})
@@ -48,7 +49,7 @@ export = AFRAME.registerComponent('ui-color-picker', {
                     _this.el.setAttribute('scale',this.x+' '+this.x+' '+this.x);
                 })
                 .onComplete(()=>{
-                    UI.utils.stoppedChanging(this.el.object3D.uuid);
+                    Utils.stoppedChanging(this.el.object3D.uuid);
                     r();
                 })
                 .easing(TWEEN.Easing.Exponential.Out).start();
@@ -120,7 +121,7 @@ export = AFRAME.registerComponent('ui-color-picker', {
             let hex = this.getHex();
             this.el.emit('color-selected',hex);
             this.el.close();
-            UI.utils.preventDefault(e);
+            Utils.preventDefault(e);
             if(this.data.targetEl){
                 this.data.targetEl.setAttribute('color',hex);
             }
@@ -145,7 +146,7 @@ export = AFRAME.registerComponent('ui-color-picker', {
         buttonCancel.addEventListener('mousedown',e=> {
             this.el.emit('color-cancelled');
             this.el.close();
-            UI.utils.preventDefault(e);
+            Utils.preventDefault(e);
         });
         this.hexValue = document.createElement('a-text');
         this.hexValue.setAttribute('value','#ffffff');
@@ -194,7 +195,7 @@ export = AFRAME.registerComponent('ui-color-picker', {
 
             let fragmentShader = '\n      #define M_PI2 6.28318530718\n      uniform float brightness;\n      varying vec2 vUv;\n      vec3 hsb2rgb(in vec3 c){\n          vec3 rgb = clamp(abs(mod(c.x * 6.0 + vec3(0.0, 4.0, 2.0), 6.0) - 3.0) - 1.0, 0.0, 1.0 );\n          rgb = rgb * rgb * (3.0 - 2.0 * rgb);\n          return c.z * mix( vec3(1.0), rgb, c.y);\n      }\n\n      void main() {\n        vec2 toCenter = vec2(0.5) - vUv;\n        float angle = atan(toCenter.y, toCenter.x);\n        float radius = length(toCenter) * 2.0;\n        vec3 color = hsb2rgb(vec3((angle / M_PI2) + 0.5, radius, brightness));\n        gl_FragColor = vec4(color, 1.0);\n      }\n      ';
 
-            colorWheel.material = new THREE.ShaderMaterial({
+            colorWheel.material = new ShaderMaterial({
                 uniforms: {
                     brightness: {
                         type: 'f',
@@ -221,15 +222,15 @@ export = AFRAME.registerComponent('ui-color-picker', {
             let fragmentShader = '\n      uniform vec3 color1;\n      uniform vec3 color2;\n      varying vec2 vUv;\n\n      void main(){\n        vec4 c1 = vec4(color1, 1.0);\n  \t    vec4 c2 = vec4(color2, 1.0);\n\n        vec4 color = mix(c2, c1, smoothstep(0.0, 1.0, vUv.x));\n        gl_FragColor = color;\n      }\n    ';
 
 
-            this.brightnessSlider.getObject3D('mesh').material = new THREE.ShaderMaterial({
+            this.brightnessSlider.getObject3D('mesh').material = new ShaderMaterial({
                 uniforms: {
                     color1: {
                         type: 'c',
-                        value: new THREE.Color(0xFFFFFF)
+                        value: new Color(0xFFFFFF)
                     },
                     color2: {
                         type: 'c',
-                        value: new THREE.Color(0x000000)
+                        value: new Color(0x000000)
                     }
                 },
                 vertexShader: vertexShader,
@@ -264,29 +265,29 @@ export = AFRAME.registerComponent('ui-color-picker', {
 
         brightnessResetLeft.addEventListener('mousedown',()=>{
 
-            UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
+            Utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
             this.colorWheel.getObject3D('mesh').material.uniforms['brightness'].value = 0;
             this.hsv.v = 0;
             this.hsv.h = 0;
             this.hsv.s = 0;
             this.updateColor();
-            UI.utils.stoppedChanging(this.el.object3D.uuid);
+            Utils.stoppedChanging(this.el.object3D.uuid);
         });
         brightnessResetRight.addEventListener('mousedown',()=>{
 
-            UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
+            Utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
             this.colorWheel.getObject3D('mesh').material.uniforms['brightness'].value = 1;
             this.hsv.v = 1;
             this.hsv.h = 0;
             this.hsv.s = 0;
             this.updateColor();
-            UI.utils.stoppedChanging(this.el.object3D.uuid);
+            Utils.stoppedChanging(this.el.object3D.uuid);
         });
     },
     getHex(){
         let rgb = this.hsvToRgb(this.hsv),
             color = 'rgb(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ')';
-        return '#' + new THREE.Color(color).getHexString()
+        return '#' + new Color(color).getHexString()
     },
     updateColor(){
         let hex = this.getHex();
@@ -296,18 +297,18 @@ export = AFRAME.registerComponent('ui-color-picker', {
     setupEvents(){
         this.colorWheel.addEventListener('mousedown',e=>{
             this.isMouseDown = true;
-            UI.utils.preventDefault(e);
+            Utils.preventDefault(e);
         });
         this.colorWheel.addEventListener('mouseup',e=>{
             console.log('mouseup on color picker')
             this.isMouseDown = false;
-            UI.utils.preventDefault(e);
+            Utils.preventDefault(e);
         });
         this.colorWheel.addEventListener('ui-mousemove',e=>{
             if(!this.isMouseDown)return;
-            UI.utils.preventDefault(e);
+            Utils.preventDefault(e);
 
-            UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
+            Utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
             let colorWheel = this.colorWheel.getObject3D('mesh'),
                 radius = 0.5,
                 position = e.detail.intersection.point;
@@ -325,20 +326,20 @@ export = AFRAME.registerComponent('ui-color-picker', {
             this.hsv.h = angle / 360;
             this.hsv.s = polarPosition.r / radius;
             this.updateColor();
-            UI.utils.stoppedChanging(this.el.object3D.uuid);
+            Utils.stoppedChanging(this.el.object3D.uuid);
         });
         this.brightnessSlider.addEventListener('mousedown',e=>{
             this.isMouseDown = true;
-            UI.utils.preventDefault(e);
+            Utils.preventDefault(e);
         });
         this.brightnessSlider.addEventListener('mouseup',e=>{
             this.isMouseDown = false;
-            UI.utils.preventDefault(e);
+            Utils.preventDefault(e);
         });
         this.brightnessSlider.addEventListener('ui-mousemove',e=>{
 
-            UI.utils.preventDefault(e);
-            UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
+            Utils.preventDefault(e);
+            Utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
             if(!this.isMouseDown)return;
             let brightnessSlider = this.brightnessSlider.getObject3D('mesh'),
                 colorWheel = this.colorWheel.getObject3D('mesh'),
@@ -355,13 +356,13 @@ export = AFRAME.registerComponent('ui-color-picker', {
             colorWheel.material.uniforms['brightness'].value = brightness;
             this.hsv.v = brightness;
             this.updateColor();
-            UI.utils.stoppedChanging(this.el.object3D.uuid);
+            Utils.stoppedChanging(this.el.object3D.uuid);
         });
     },
     hsvToRgb(hsv) {
         let r, g, b, i, f, p, q, t;
-        let h = THREE.Math.clamp(hsv.h, 0, 1);
-        let s = THREE.Math.clamp(hsv.s, 0, 1);
+        let h = ThreeMath.clamp(hsv.h, 0, 1);
+        let s = ThreeMath.clamp(hsv.s, 0, 1);
         let v = hsv.v;
 
         i = Math.floor(h * 6);

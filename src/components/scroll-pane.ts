@@ -1,6 +1,4 @@
-import AFRAME from "aframe";
-import THREE from "three";
-import UI from '../ui';
+import {Math, Plane, Vector3} from 'three';
 import Yoga from "yoga-layout";
 
 /**
@@ -10,6 +8,8 @@ import Yoga from "yoga-layout";
  * @author Shane Harris
  */
 import YogaWorker from 'worker-loader!../yoga-worker.ts';
+import {registerComponent} from "aframe";
+import {Utils} from "../utils";
 let workerResolves = {};
 let yogaWorker = new YogaWorker();
 yogaWorker.onmessage = event=>{
@@ -19,12 +19,12 @@ yogaWorker.onmessage = event=>{
 };
 let sendMessage = (type,properties,parentUuid,width)=>{
     return new Promise(resolve=>{
-        let uuid = THREE.Math.generateUUID();
+        let uuid = Math.generateUUID();
         workerResolves[uuid] = resolve;
         yogaWorker.postMessage({ type, properties, uuid, parentUuid, width});
     });
 };
-export = AFRAME.registerComponent('ui-scroll-pane', {
+export = registerComponent('ui-scroll-pane', {
     schema: {
         height:{type:'number',default:1.2},
         width:{type:'number',default:2.9},
@@ -51,10 +51,10 @@ export = AFRAME.registerComponent('ui-scroll-pane', {
         this.el.sceneEl.renderer.localClippingEnabled = true;
         // Setup content clips.
         this.content_clips = [
-            new THREE.Plane( new THREE.Vector3( 0, 1, 0 ), (this.data.height/2) ),
-            new THREE.Plane( new THREE.Vector3( 0, -1, 0 ), (this.data.height/2) ),
-            new THREE.Plane( new THREE.Vector3( -1, 0, 0 ), (this.data.width/2) ),
-            new THREE.Plane( new THREE.Vector3( 1, 0, 0 ), (this.data.width/2) )
+            new Plane( new Vector3( 0, 1, 0 ), (this.data.height/2) ),
+            new Plane( new Vector3( 0, -1, 0 ), (this.data.height/2) ),
+            new Plane( new Vector3( -1, 0, 0 ), (this.data.width/2) ),
+            new Plane( new Vector3( 1, 0, 0 ), (this.data.width/2) )
         ];
         // Pause/play camera look controls
         const playPauseCamera = method=>{
@@ -76,9 +76,9 @@ export = AFRAME.registerComponent('ui-scroll-pane', {
             this.handlePos = this.handle.object3D.worldToLocal(e.detail.intersection.point).y;
             this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
             // Start changes
-            UI.utils.isChanging(this.el.sceneEl,this.handle.object3D.uuid);
+            Utils.isChanging(this.el.sceneEl,this.handle.object3D.uuid);
             // Prevent default behaviour of event
-            UI.utils.preventDefault(e);
+            Utils.preventDefault(e);
         });
         // End scroll
         const endScroll = e=>{
@@ -88,9 +88,9 @@ export = AFRAME.registerComponent('ui-scroll-pane', {
                 playPauseCamera('play');
                 this.isDragging = false;
                 // Stop changes
-                UI.utils.stoppedChanging(this.handle.object3D.uuid);
+                Utils.stoppedChanging(this.handle.object3D.uuid);
                 // Prevent default behaviour of event
-                UI.utils.preventDefault(e);
+                Utils.preventDefault(e);
             }
         };
         this.backgroundPanel.addEventListener('mouseup',endScroll);
@@ -98,7 +98,7 @@ export = AFRAME.registerComponent('ui-scroll-pane', {
         // // Handle clicks on rail to scroll
         this.rail.addEventListener('mousedown',e=>{
 
-            UI.utils.isChanging(this.el.sceneEl,this.handle.object3D.uuid);
+            Utils.isChanging(this.el.sceneEl,this.handle.object3D.uuid);
             // Pause look controls
             this.isDragging = true;
             // Reset handle pos to center of handle
@@ -107,7 +107,7 @@ export = AFRAME.registerComponent('ui-scroll-pane', {
             this.scroll(this.rail.object3D.worldToLocal(e.detail.intersection.point).y);
             this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
             // Prevent default behaviour of event
-            UI.utils.preventDefault(e);
+            Utils.preventDefault(e);
         });
 
         // Setup content clips after the scene is loaded to be able to access all entity materials
@@ -126,10 +126,10 @@ export = AFRAME.registerComponent('ui-scroll-pane', {
     updateContentClips(){
         this.el.sceneEl.object3D.updateMatrixWorld();
         // update content clips world positions from this current element.
-        this.content_clips[0].set(new THREE.Vector3( 0, 1, 0 ), (this.data.height/2));
-        this.content_clips[1].set(new THREE.Vector3( 0, -1, 0 ), (this.data.height/2));
-        this.content_clips[2].set(new THREE.Vector3( -1, 0, 0 ), (this.data.width/2));
-        this.content_clips[3].set(new THREE.Vector3( 1, 0, 0 ), (this.data.width/2));
+        this.content_clips[0].set(new Vector3( 0, 1, 0 ), (this.data.height/2));
+        this.content_clips[1].set(new Vector3( 0, -1, 0 ), (this.data.height/2));
+        this.content_clips[2].set(new Vector3( -1, 0, 0 ), (this.data.width/2));
+        this.content_clips[3].set(new Vector3( 1, 0, 0 ), (this.data.width/2));
         //this.el.sceneEl.object3D.updateMatrixWorld();
         this.content_clips[0].applyMatrix4(this.el.object3D.matrixWorld);
         this.content_clips[1].applyMatrix4(this.el.object3D.matrixWorld);
@@ -143,7 +143,7 @@ export = AFRAME.registerComponent('ui-scroll-pane', {
             while (this.container.firstChild) {
                 let child = this.container.firstChild;
                 if(child.object3D){
-                    UI.utils.clearObject(child.object3D);
+                    Utils.clearObject(child.object3D);
                 }
                 this.container.removeChild(child);
                 this.container.firstChild = null;
@@ -170,8 +170,8 @@ export = AFRAME.registerComponent('ui-scroll-pane', {
     },
     async updateContent(should_not_scroll){
         this.updateContentClips();
-        this.currentUuid = THREE.Math.generateUUID();
-        UI.utils.isChanging(this.el.sceneEl,this.currentUuid);
+        this.currentUuid = Math.generateUUID();
+        Utils.isChanging(this.el.sceneEl,this.currentUuid);
         this.setChildClips();
         await this.initialiseYoga(this.container);
         await sendMessage('get-layout',null,this.container.yoga_uuid, undefined)
@@ -180,7 +180,7 @@ export = AFRAME.registerComponent('ui-scroll-pane', {
                 //console.log(layout.data.content_height/100);
                 this.updateYoga(this.container,(layout as any).data);
 
-                this.handleSize = THREE.Math.clamp((this.data.height/this.content_height),0.1,1);
+                this.handleSize = Math.clamp((this.data.height/this.content_height),0.1,1);
 
                 this.handle.setAttribute('visible',this.handleSize!==1);
                 this.rail.setAttribute('visible',this.handleSize!==1);
@@ -190,7 +190,7 @@ export = AFRAME.registerComponent('ui-scroll-pane', {
                     this.container.object3D.position.y = this.data.height/2;
                     this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+(this.data.height-(this.data.height*this.handleSize))/2+' '+(this.data.scrollZOffset+0.0005));
                 }
-                setTimeout(()=>UI.utils.stoppedChanging(this.currentUuid),3000);
+                setTimeout(()=>Utils.stoppedChanging(this.currentUuid),3000);
             });
     },
     mouseMove(e){
@@ -203,7 +203,7 @@ export = AFRAME.registerComponent('ui-scroll-pane', {
         let min = (-this.data.height/2)+(this.data.height*this.handleSize)/2;
         let max = (this.data.height/2)-(this.data.height*this.handleSize)/2;
         // Set scroll position with start point offset.
-        let scroll_pos = THREE.Math.clamp(positionY,min,max);
+        let scroll_pos = Math.clamp(positionY,min,max);
         let scroll_perc = this.handleSize===1?0:1-((scroll_pos-min)/(max-min));
         this.container.object3D.position.y = ((this.content_height-this.data.height)*scroll_perc)+(this.data.height/2);
         this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+scroll_pos+' '+(this.data.scrollZOffset+0.0005));
@@ -212,11 +212,11 @@ export = AFRAME.registerComponent('ui-scroll-pane', {
         this.backgroundPanel.addEventListener('ui-mousewheel',e=>{
             if(this.handleSize!==1){
                 // Start changes
-                UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
+                Utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
                 this.scroll(this.handle.getAttribute('position').y+(e.detail.evt.deltaY<0?0.1:-0.1));
                 // Stop changes
-                UI.utils.stoppedChanging(this.el.object3D.uuid);
-                UI.utils.preventDefault(e);
+                Utils.stoppedChanging(this.el.object3D.uuid);
+                Utils.preventDefault(e);
             }
         });
     },
@@ -470,7 +470,7 @@ export = AFRAME.registerComponent('ui-scroll-pane', {
                         // Wait for the font to load first.
                         child.addEventListener('textfontset',()=>{
                             clearTimeout(this.fontRenderTimeout);
-                            this.fontRenderTimeout = setTimeout(()=>UI.utils.stoppedChanging(this.currentUuid),500);
+                            this.fontRenderTimeout = setTimeout(()=>Utils.stoppedChanging(this.currentUuid),500);
                             traverse();
                         })
                     }else{

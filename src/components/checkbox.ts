@@ -1,8 +1,7 @@
 /* global TWEEN */
 
-import AFRAME from "aframe";
-import THREE from "three";
-import UI from '../ui';
+import {Entity, registerComponent} from "aframe";
+import {Utils} from "../utils";
 
 /**
  * Checkbox Component for aframe-material-collection. Includes animation and disabled state.
@@ -11,14 +10,14 @@ import UI from '../ui';
  * @author Shane Harris
  */
 
-export = AFRAME.registerComponent('ui-checkbox', {
+export = registerComponent('ui-checkbox', {
     width: 0,
     height: 0,
-    container: {} as AFRAME.Entity,
-    topLine: {} as AFRAME.Entity,
-    bottomLine: {} as AFRAME.Entity,
-    leftLine: {} as AFRAME.Entity,
-    rightLine: {} as AFRAME.Entity,
+    container: undefined as any as Entity,
+    topLine: undefined as any as Entity,
+    bottomLine: undefined as any as Entity,
+    leftLine: undefined as any as Entity,
+    rightLine: undefined as any as Entity,
     clickHandler: () => {},
     schema: {
         value: {type:'boolean',default: false},
@@ -93,7 +92,7 @@ export = AFRAME.registerComponent('ui-checkbox', {
     animateSelected(){
         let _this = this;
         // Start changes
-        UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
+        Utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
         new TWEEN.Tween({x:0})
             .to({ x: 1}, 200)
             .onUpdate(function () {
@@ -101,7 +100,7 @@ export = AFRAME.registerComponent('ui-checkbox', {
             })
             .onComplete(function(){
                 // Stop changes
-                UI.utils.stoppedChanging(_this.el.object3D.uuid);
+                Utils.stoppedChanging(_this.el.object3D.uuid);
             })
             .easing(TWEEN.Easing.Exponential.Out).start();
     },

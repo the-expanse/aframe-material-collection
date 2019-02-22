@@ -1,8 +1,6 @@
 /* global TWEEN */
 
-import AFRAME from "aframe";
-import THREE from "three";
-import UI from '../ui';
+import {Utils} from "../utils";
 
 /**
  * Toast Component for aframe-material-collection.
@@ -19,9 +17,9 @@ export = AFRAME.registerComponent('ui-toast', {
         this.originalPosition = this.data.toastEl.getAttribute('position').clone();
         this.el.addEventListener('mousedown',()=>{
             if(this.closeTween)this.closeTween.stop();
-            UI.utils.isChanging(this.el.sceneEl,this.data.toastEl.object3D.uuid);
+            Utils.isChanging(this.el.sceneEl,this.data.toastEl.object3D.uuid);
             this.data.toastEl.setAttribute('visible',true);
-            this.data.toastEl.setAttribute('text-value',UI.utils.shorten(this.data.message,85));
+            this.data.toastEl.setAttribute('text-value',Utils.shorten(this.data.message,85));
             let _this = this;
             new TWEEN.Tween({x:this.originalPosition.x,y:this.originalPosition.y-0.1,z:this.originalPosition.z})
                 .to(this.originalPosition, 350)
@@ -38,7 +36,7 @@ export = AFRAME.registerComponent('ui-toast', {
                         })
                         .onComplete(()=>{
                             this.data.toastEl.setAttribute('visible',false);
-                            UI.utils.stoppedChanging(this.data.toastEl.object3D.uuid);
+                            Utils.stoppedChanging(this.data.toastEl.object3D.uuid);
                         })
                         .easing(TWEEN.Easing.Exponential.Out).start();
                 })

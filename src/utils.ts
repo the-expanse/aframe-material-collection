@@ -2,9 +2,9 @@ import {Scene} from "aframe";
 import {Mesh, Object3D} from "three";
 
 export class Utils{
-    changesDetected: any = {};
-    is_changeing: boolean = false;
-    scene: Scene | undefined;
+    static changesDetected: any = {};
+    static is_changeing: boolean = false;
+    static scene: Scene | undefined;
 
 
     constructor(){
@@ -18,7 +18,7 @@ export class Utils{
         //     }
         // },2000);
     }
-    isFirstOrLastChange(){
+    static isFirstOrLastChange(){
         let empty = true;
 
         for(let key in this.changesDetected) {
@@ -44,12 +44,12 @@ export class Utils{
         return pointA.clone().add(dir);
 
     }*/
-    preventDefault(e: any){
+    static preventDefault(e: any){
         if(e.detail && e.detail.preventDefault && typeof e.detail.preventDefault === "function"){
             e.detail.preventDefault();
         }
     }
-    shorten(string: string, length: number){
+    static shorten(string: string, length: number){
         return string.length>length?string.substr(0,length)+"...":string;
     }
     /*uniqueNumberedName(newName: string,names: Array<string>, key: string){
@@ -80,7 +80,7 @@ export class Utils{
     zeroPad(number,length){
         return ("0000000"+number).slice(-length);
     }*/
-    isChanging(scene: Scene | undefined, ref: string){
+    static isChanging(scene: Scene | undefined, ref: string){
         let index = this.changesDetected[ref];
         if(!index){
             this.scene = this.scene||scene;
@@ -91,7 +91,7 @@ export class Utils{
             this.changesDetected[ref].t = new Date().getTime();
         }
     }
-    stoppedChanging(ref: string){
+    static stoppedChanging(ref: string){
         delete this.changesDetected[ref];
         this.isFirstOrLastChange();
     }
@@ -101,7 +101,7 @@ export class Utils{
             console.error('copy to clipboard failed:', err);
         });
     }*/
-    clearObject(object: any){
+    static clearObject(object: any){
         object.traverse((child: any) =>{
             if(child.material) {
                 if(child.material.length){

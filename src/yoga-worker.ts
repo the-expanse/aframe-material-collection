@@ -4,7 +4,7 @@ let nodes = {};
 
 const ctx: Worker = self as any;
 
-self.addEventListener('message', event => {
+ctx.addEventListener('message', event => {
     switch(event.data.type){
 
         case "add-node":
@@ -68,7 +68,7 @@ self.addEventListener('message', event => {
                 nodes[event.data.parentUuid].children.push(nodes[event.data.uuid]);
                 nodes[event.data.parentUuid].node.insertChild(node,nodes[event.data.parentUuid].node.getChildCount());
             }
-            self.postMessage({uuid:event.data.uuid}, '', undefined);
+            ctx.postMessage({uuid:event.data.uuid});
             break;
         case "get-layout":
             let results = {content_height:0};
@@ -91,7 +91,7 @@ self.addEventListener('message', event => {
                 nodes[event.data.parentUuid].node.calculateLayout(nodes[event.data.parentUuid].width, 'auto', Yoga.DIRECTION_LTR);
                 traverse(nodes[event.data.parentUuid]);
             }
-            self.postMessage({uuid:event.data.uuid,data:results}, '', undefined);
+            ctx.postMessage({uuid:event.data.uuid,data:results});
             break;
         case "reset-layout":
             if(event.data.parentUuid&&nodes.hasOwnProperty(event.data.parentUuid)){
@@ -110,7 +110,7 @@ self.addEventListener('message', event => {
                 traverse(nodes[event.data.parentUuid]);
                 nodes[event.data.parentUuid].children.length = 0;
             }
-            self.postMessage({uuid:event.data.uuid}, '', undefined);
+            ctx.postMessage({uuid:event.data.uuid});
             break;
     }
 });

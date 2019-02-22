@@ -1,5 +1,3 @@
-import AFRAME from "aframe";
-import THREE from "three";
 import UI from '../ui';
 
 /**

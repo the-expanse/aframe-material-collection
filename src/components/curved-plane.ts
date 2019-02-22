@@ -1,6 +1,5 @@
-import AFRAME from "aframe";
-import THREE from "three";
-import UI from '../ui';
+import {registerComponent} from "aframe";
+import {CubicBezierCurve3, Mesh, PlaneGeometry, Vector3} from "three";
 
 /**
  * A curved-plane component to curve a plane primitive.
@@ -9,19 +8,19 @@ import UI from '../ui';
  * @author Shane Harris
  */
 
-export = AFRAME.registerComponent('ui-curved-plane', {
+export = registerComponent('ui-curved-plane', {
     schema: {
         depth:{type:'number',default:0.03}
     },
     init(){
-        let mesh = this.el.getObject3D('mesh') as THREE.Mesh;
+        let mesh = this.el.getObject3D('mesh') as Mesh;
         let width = this.el.getAttribute('width');
         let height = this.el.getAttribute('height');
-        let browser_pane = new THREE.PlaneGeometry(width, height, 5, 1);
-        let curve = new THREE.CubicBezierCurve3(
+        let browser_pane = new PlaneGeometry(width, height, 5, 1);
+        let curve = new CubicBezierCurve3(
             browser_pane.vertices[0],
-            new THREE.Vector3(0.375*width, 0, -this.data.depth*width ),
-            new THREE.Vector3(0.625*width, 0, -this.data.depth*width ),
+            new Vector3(0.375*width, 0, -this.data.depth*width ),
+            new Vector3(0.625*width, 0, -this.data.depth*width ),
             browser_pane.vertices[(browser_pane.vertices.length/2) - 1]
         );
         let planePoints = curve.getPoints(Math.abs(browser_pane.vertices.length/2)-1);

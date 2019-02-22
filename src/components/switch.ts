@@ -1,8 +1,7 @@
 /* global TWEEN */
 
-import AFRAME from "aframe";
-import THREE from "three";
-import UI from '../ui';
+import {Mesh, MeshBasicMaterial, Vector3} from "three";
+import {Utils} from "../utils";
 
 /**
  * Switch Component for aframe-material-collection. Includes a disabled state.
@@ -95,7 +94,7 @@ export = AFRAME.registerComponent('ui-switch', {
         // Get the rounded shape geomtery.
         object.traverse(child=>{
             if(child.geometry&&child.geometry.type==="ShapeBufferGeometry"){
-                this.progress = new THREE.Mesh(child.geometry.clone(),new THREE.MeshBasicMaterial({color:this.data.progressColor}));
+                this.progress = new Mesh(child.geometry.clone(),new MeshBasicMaterial({color:this.data.progressColor}));
                 this.progress.position.set(-0.075,0,0.001);
                 this.progress.scale.set(0.00001,1,1);
                 this.el.object3D.add(this.progress);
@@ -105,22 +104,22 @@ export = AFRAME.registerComponent('ui-switch', {
     tweenProgress(){
         if(this.progress){
             new TWEEN.Tween(this.progress.position)
-                .to(new THREE.Vector3(this.data.value?0:-0.075,0,0.001), this.data.switchDuration)
+                .to(new Vector3(this.data.value?0:-0.075,0,0.001), this.data.switchDuration)
                 .easing(TWEEN.Easing.Exponential.Out).start();
             new TWEEN.Tween(this.progress.scale)
-                .to(new THREE.Vector3(this.data.value?1:0.00001,1,1), this.data.switchDuration)
+                .to(new Vector3(this.data.value?1:0.00001,1,1), this.data.switchDuration)
                 .easing(TWEEN.Easing.Exponential.Out).start();
         }
     },
     tweenHandle(){
         if(this.handleEl){
             // Start changes
-            UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
+            Utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
             new TWEEN.Tween(this.handleEl.object3D.position)
-                .to(new THREE.Vector3(this.data.value?0.05:-0.05,0,this.data.handleZIndex), this.data.switchDuration)
+                .to(new Vector3(this.data.value?0.05:-0.05,0,this.data.handleZIndex), this.data.switchDuration)
                 .onComplete(()=>{
                     // Stop changes
-                    UI.utils.stoppedChanging(this.el.object3D.uuid);
+                    Utils.stoppedChanging(this.el.object3D.uuid);
                 })
                 .easing(TWEEN.Easing.Exponential.Out).start();
         }

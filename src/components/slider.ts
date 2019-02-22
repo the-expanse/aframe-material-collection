@@ -1,8 +1,8 @@
 /* global TWEEN */
 
-import AFRAME from "aframe";
-import THREE from "three";
-import UI from '../ui';
+import {registerComponent} from "aframe";
+import {Math, Mesh, MeshBasicMaterial} from "three";
+import {Utils} from "../utils";
 
 /**
  * Slider Component for aframe-material-collection. Includes a disabled state.
@@ -10,7 +10,7 @@ import UI from '../ui';
  * @component ui-slider
  * @author Shane Harris
  */
-export = AFRAME.registerComponent('ui-slider', {
+export = registerComponent('ui-slider', {
     schema: {
         value: {type:'number',default: 0},
         disabled:{type:'boolean',default: false},
@@ -90,9 +90,9 @@ export = AFRAME.registerComponent('ui-slider', {
             this.handlePos = this.handleEl.object3D.worldToLocal(e.detail.intersection?e.detail.intersection.point:e.relatedTarget.object3D.position).x;
             this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
             // Start changes
-            UI.utils.isChanging(this.el.sceneEl,this.handleEl.object3D.uuid);
+            Utils.isChanging(this.el.sceneEl,this.handleEl.object3D.uuid);
             // Prevent default behaviour of event
-            UI.utils.preventDefault(e);
+            Utils.preventDefault(e);
         });
         // End scroll
         const endScroll = e=>{
@@ -103,9 +103,9 @@ export = AFRAME.registerComponent('ui-slider', {
                 this.isDragging = false;
                 // Stop changes
                 this.el.emit('slide-end',this.scroll_perc);
-                UI.utils.stoppedChanging(this.handleEl.object3D.uuid);
+                Utils.stoppedChanging(this.handleEl.object3D.uuid);
                 // Prevent default behaviour of event
-                UI.utils.preventDefault(e);
+                Utils.preventDefault(e);
             }
         };
         this.backgroundPanel.addEventListener('mouseup',endScroll);
@@ -113,7 +113,7 @@ export = AFRAME.registerComponent('ui-slider', {
         // // Handle clicks on rail to scroll
         this.railEl.addEventListener('mousedown',e=>{
 
-            UI.utils.isChanging(this.el.sceneEl,this.handleEl.object3D.uuid);
+            Utils.isChanging(this.el.sceneEl,this.handleEl.object3D.uuid);
             // Pause look controls
             this.isDragging = true;
             // Reset handle pos to center of handle
@@ -123,7 +123,7 @@ export = AFRAME.registerComponent('ui-slider', {
             this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
             this.el.emit('slide-end',this.scroll_perc);
             // Prevent default behaviour of event
-            UI.utils.preventDefault(e);
+            Utils.preventDefault(e);
         });
         this.el.slide = this.slide.bind(this);
         this.el.getValue = this.getValue.bind(this);
@@ -133,7 +133,7 @@ export = AFRAME.registerComponent('ui-slider', {
         let min = (-(this.data.width)/2)+this.data.handleRadius;
         let max = ((this.data.width)/2)-this.data.handleRadius;
         // Set scroll position with start point offset.
-        let scroll_pos = isPerc?(min+((max-min)*positionX)):THREE.Math.clamp(positionX,min,max);
+        let scroll_pos = isPerc?(min+((max-min)*positionX)):Math.clamp(positionX,min,max);
         this.scroll_perc = isPerc?positionX:((scroll_pos-min)/(max-min));
         this.el.emit('slide',this.scroll_perc);
         this.progress.scale.set(this.scroll_perc||0.0001,1,1);
@@ -150,7 +150,7 @@ export = AFRAME.registerComponent('ui-slider', {
         // Get the rounded shape geomtery.
         object.traverse(child=>{
             if(child.geometry&&child.geometry.type==="ShapeBufferGeometry"){
-                this.progress = new THREE.Mesh(child.geometry.clone(),new THREE.MeshBasicMaterial({color:this.data.progressColor}));
+                this.progress = new Mesh(child.geometry.clone(),new MeshBasicMaterial({color:this.data.progressColor}));
                 this.progress.position.set(-this.data.width/2,0,0.0001);
                 this.progress.scale.set(0.00001,1,1);
                 this.el.object3D.add(this.progress);

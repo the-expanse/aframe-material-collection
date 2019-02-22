@@ -1,8 +1,7 @@
 /* global TWEEN */
 
-import AFRAME from "aframe";
-import THREE from "three";
-import UI from '../ui';
+import {registerComponent} from "aframe";
+import {Utils} from "../utils";
 
 /**
  * Button base Component for aframe-material-collection. This is used as the base component for all the button primitives.
@@ -11,7 +10,7 @@ import UI from '../ui';
  * @author Shane Harris
  */
 
-export = AFRAME.registerComponent('ui-btn', {
+export = registerComponent('ui-btn', {
     defaultZ: 0,
     is_clicked: false,
     schema: {
@@ -43,7 +42,7 @@ export = AFRAME.registerComponent('ui-btn', {
         }, function () {
             _this.el.object3D.position.z = _this.defaultZ + _this.data.hoverHeight;
         });
-        //UI.utils.preventDefault(e)
+        //Utils.preventDefault(e)
     },
     mouseLeave(e: MouseEvent) {
         // Ignore mouse leave event if the button was clicked - mouse up already resets to default state.
@@ -52,13 +51,13 @@ export = AFRAME.registerComponent('ui-btn', {
         }
         // Reset button state from hover
         this.resetAnimation(this.defaultZ + this.data.hoverHeight);
-        //UI.utils.preventDefault(e)
+        //Utils.preventDefault(e)
     },
     mouseUp(e: MouseEvent) {
         this.is_clicked = true;
         // Reset button state from pressed
         this.resetAnimation(this.defaultZ + this.data.activeHeight);
-        UI.utils.preventDefault(e)
+        Utils.preventDefault(e)
     },
     mouseDown(e: MouseEvent) {
         const _this = this;
@@ -68,7 +67,7 @@ export = AFRAME.registerComponent('ui-btn', {
         }, function () {
             _this.el.object3D.position.z = _this.defaultZ + _this.data.activeHeight;
         });
-        UI.utils.preventDefault(e)
+        Utils.preventDefault(e)
     },
     resetAnimation(start_z: number) {
         let _this = this;
@@ -81,13 +80,13 @@ export = AFRAME.registerComponent('ui-btn', {
     tween(from: number, to: number, callback: any, complete: any) {
         let _this = this;
         // Start changes
-        if (!this.data.preventUpdates) UI.utils.isChanging(this.el.sceneEl, this.el.object3D.uuid);
+        if (!this.data.preventUpdates) Utils.isChanging(this.el.sceneEl, this.el.object3D.uuid);
         return new TWEEN.Tween({x: from})
             .to({x: to}, this.data.duration)
             .onUpdate(callback)
             .onComplete( () => {
                 // Stop changes
-                if (!_this.data.preventUpdates) UI.utils.stoppedChanging(_this.el.object3D.uuid);
+                if (!_this.data.preventUpdates) Utils.stoppedChanging(_this.el.object3D.uuid);
                 return complete.call(this);
             })
             .easing(TWEEN.Easing.Exponential.Out).start();

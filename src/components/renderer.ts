@@ -1,6 +1,7 @@
-import AFRAME from "aframe";
-import THREE from "three";
 import UI from '../ui';
+import {Mesh, MeshBasicMaterial, PerspectiveCamera, Raycaster, SphereGeometry, WebGLRenderTarget} from "three";
+import {registerComponent} from "aframe";
+import {Utils} from "../utils";
 
 /**
  * A component to render the UI to a flat plane, removing the objects from the scene and rendering them separately to a
@@ -9,7 +10,7 @@ import UI from '../ui';
  * @component ui-renderer
  * @author Shane Harris
  */
-export = AFRAME.registerComponent('ui-renderer', {
+export = registerComponent('ui-renderer', {
     schema: {
         uiPanel: {type: 'selector'},
         lookControlsEl: {type: 'selector'},
@@ -33,9 +34,9 @@ export = AFRAME.registerComponent('ui-renderer', {
         // Remove this object from the scene to be rendered separately.
         this.el.object3D.parent.remove(this.el.object3D);
         // Setup fixed camera nd render target.
-        this.camera = new THREE.PerspectiveCamera( 100, 2, 0.1, 1000 );
+        this.camera = new PerspectiveCamera( 100, 2, 0.1, 1000 );
         // Setup render target
-        this.renderTarget = new THREE.WebGLRenderTarget(this.data.renderResolution.x,this.data.renderResolution.y);
+        this.renderTarget = new WebGLRenderTarget(this.data.renderResolution.x,this.data.renderResolution.y);
         // Set the texture to the ui panel mesh.
         this.meshEl.getObject3D('mesh').material.map = this.renderTarget.texture;
         // emit ready event for anythng wanting to use this texture.
@@ -54,8 +55,8 @@ export = AFRAME.registerComponent('ui-renderer', {
             this.isRendering = false;
         });
         // Setup raycaster for relaying mouse/keyboard events
-        this.raycaster = new THREE.Raycaster();
-        this.helper = new THREE.Mesh(new THREE.SphereGeometry(0.01),new THREE.MeshBasicMaterial({color:'#ff0000'}));
+        this.raycaster = new Raycaster();
+        this.helper = new Mesh(new SphereGeometry(0.01),new MeshBasicMaterial({color:'#ff0000'}));
         // Add cursor helper to object
         if(this.data.debugRaycaster)this.el.object3D.add(this.helper);
         // Set last render time
@@ -68,9 +69,9 @@ export = AFRAME.registerComponent('ui-renderer', {
         this.isReady = false;
         setTimeout(()=>{
             this.isReady = true;
-            UI.utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
+            Utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
                 setTimeout(()=>{
-                    UI.utils.stoppedChanging(this.el.object3D.uuid);
+                    Utils.stoppedChanging(this.el.object3D.uuid);
                 },250);
         },this.data.initDelay);
     },
@@ -90,7 +91,7 @@ export = AFRAME.registerComponent('ui-renderer', {
                 _this.isFrozen = isPaused;
                 _this.play();
             }
-            UI.utils.isChanging(_this.el.sceneEl,_this.backdrop.uuid);
+            Utils.isChanging(_this.el.sceneEl,_this.backdrop.uuid);
             if(_this.renderTween)_this.renderTween.stop();
             _this.renderTween = new TWEEN.Tween({x:fromScale})
                 .to({x:toScale}, duration)
@@ -106,7 +107,7 @@ export = AFRAME.registerComponent('ui-renderer', {
                         this.backdrop.setAttribute('scale','0.000001 0.000001 0.000001');
                     }
                     // Stop changes
-                    UI.utils.stoppedChanging(this.backdrop.uuid);
+                    Utils.stoppedChanging(this.backdrop.uuid);
                     resolve();
                 })
                 .easing(TWEEN.Easing.Exponential.Out).start();
