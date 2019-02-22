@@ -9,7 +9,7 @@ import Yoga from "yoga-layout";
  * @component ui-scroll-pane
  * @author Shane Harris
  */
-import YogaWorker from 'worker-loader!../yoga-worker.js';
+import YogaWorker from 'worker-loader!../yoga-worker.ts';
 let workerResolves = {};
 let yogaWorker = new YogaWorker();
 yogaWorker.onmessage = event=>{

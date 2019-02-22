@@ -6,8 +6,8 @@ module.exports = {
     entry: {
         "aframe-material-collection": "./src/index.ts",
         "aframe-material-collection.min": "./src/index.ts",
-        "aframe-yoga-layout": "./src/yoga.js",
-        "aframe-yoga-layout.min": "./src/yoga.js"
+        /*"aframe-yoga-layout": "./src/yoga.js",
+        "aframe-yoga-layout.min": "./src/yoga.js"*/
         /*"aframe-material-collection_curved-plane.min": "./src/public-components/curved-plane.js",
         "aframe-material-collection_switch.min": "./src/public-components/switch.js",
         "aframe-material-collection_slider.min": "./src/public-components/slider.js",
@@ -20,13 +20,13 @@ module.exports = {
         "aframe-material-collection_renderer.min": "./src/public-components/renderer.js",
         "aframe-material-collection_scroll-pane.min": "./src/public-components/scroll-pane.js"*/
      },
-    mode:"development",
+    mode: "development",
     devtool: "source-map",
     resolve: {
-        extensions: [ '.ts', ".js"]
+        extensions: [ '.ts', ".js", ".json"]
     },
     output: {
-        path: __dirname+"/dist",
+        path: __dirname + "/dist",
         filename: "[name].js"
     },
     devServer: {
@@ -37,8 +37,9 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.worker\.ts$/,
-                use: { loader: 'worker-loader', options: { inline: true, fallback: false, publicPath: '/' } }
+                test: /worker\.ts$/,
+                exclude: [/(node_modules)/,/(node)/,/(lib)/],
+                use: { loader: 'worker-loader'}
             }, {
                 test: /\.ts?$/,
                 exclude: [/(node_modules)/,/(node)/,/(lib)/],
@@ -48,7 +49,8 @@ module.exports = {
     },
     externals: {
         three: 'THREE',
-        aframe: 'AFRAME'
+        aframe: 'AFRAME',
+        'yoga-layout': 'Yoga'
     },
     optimization: {
         minimize: true,

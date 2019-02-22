@@ -1,7 +1,8 @@
-import * as Yoga from './vendor/yoga-layout/entry-browser';
+import Yoga from "yoga-layout";
+
 let nodes = {};
 
-const ctx: Worker = self as any
+const ctx: Worker = self as any;
 
 self.addEventListener('message', event => {
     switch(event.data.type){
