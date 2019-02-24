@@ -6,7 +6,7 @@ module.exports = {
     entry: {
         "aframe-material-collection": "./src/index.ts",
         "aframe-material-collection.min": "./src/index.ts",
-        /*"aframe-yoga-layout": "./src/yoga.ts"*/
+        /*yoga-layout": "./src/yoga.ts",*/
         /*"aframe-yoga-layout.min": "./src/yoga.js"*/
         /*"aframe-material-collection_curved-plane.min": "./src/public-components/curved-plane.js",
         "aframe-material-collection_switch.min": "./src/public-components/switch.js",
@@ -56,9 +56,9 @@ module.exports = {
     },*/
     plugins: [
         /*new webpack.IgnorePlugin(/yoga-layout/),*/
-        new webpack.NormalModuleReplacementPlugin(
+        /*new webpack.NormalModuleReplacementPlugin(
             /yoga-layout/,
-            './yoga.ts'
-        )
+            'aframe-material-collection'
+        )*/
     ]
 };

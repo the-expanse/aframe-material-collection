@@ -45,7 +45,7 @@
   "dependencies": {
     "@types/aframe": "^0.8.2",
     "@types/three": "^0.93.18",
-    "@types/yoga-layout": "^1.9.0",
+    "typeflex": "0.0.1",
     "worker-loader": "^2.0.0"
   }
 }

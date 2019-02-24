@@ -1,5 +1,4 @@
 import {Math, Mesh, MeshLambertMaterial, Object3D, Plane, Shader, ShaderMaterial, Vector3} from 'three';
-import Yoga from "yoga-layout";
 
 /**
  * Scroll Pane for aframe-material-collection. Expects
@@ -10,6 +9,7 @@ import Yoga from "yoga-layout";
 import YogaWorker from 'worker-loader!../yoga-worker.ts';
 import {Entity, registerComponent} from "aframe";
 import {Utils} from "../utils";
+import {ALIGN_AUTO, FLEX_DIRECTION_ROW, JUSTIFY_FLEX_START, WRAP_WRAP} from "typeflex";
 let workerResolves = {} as any;
 let yogaWorker = new YogaWorker();
 yogaWorker.onmessage = event=>{
@@ -255,37 +255,37 @@ export = registerComponent('ui-scroll-pane', {
         //     if(properties.hasOwnProperty(method)&&method.indexOf('Edge')===-1){
         //         if(["setMarginLeft","setMarginPercentLeft","setPaddingLeft","setBorderLeft","setPositionLeft","setPositionPercentLeft"]
         //             .indexOf(method)>-1){
-        //             node[method.replace('Left','')](Yoga.EDGE_LEFT,properties[method]);
+        //             node[method.replace('Left','')](EDGE_LEFT,properties[method]);
         //         }else if(["setMarginRight","setMarginPercentRight","setPaddingRight","setBorderRight","setPositionRight","setPositionPercentRight"]
         //             .indexOf(method)>-1){
-        //             node[method.replace('Right','')](Yoga.EDGE_RIGHT,properties[method]);
+        //             node[method.replace('Right','')](EDGE_RIGHT,properties[method]);
         //         }else if(["setMarginTop","setMarginPercentTop","setPaddingTop","setBorderTop","setPositionTop","setPositionPercentTop"]
         //             .indexOf(method)>-1){
-        //             node[method.replace('Top','')](Yoga.EDGE_TOP,properties[method]);
+        //             node[method.replace('Top','')](EDGE_TOP,properties[method]);
         //         }else if(["setMarginBottom","setMarginPercentBottom","setPaddingBottom","setBorderBottom","setPositionBottom","setPositionPercentBottom"]
         //             .indexOf(method)>-1){
-        //             node[method.replace('Bottom','')](Yoga.EDGE_BOTTOM,properties[method]);
+        //             node[method.replace('Bottom','')](EDGE_BOTTOM,properties[method]);
         //         }else if(["setMargin","setMarginPercent","setPadding","setBorder","setPosition","setPositionPercent"]
         //             .indexOf(method)>-1){
-        //             node[method](Yoga.EDGE_ALL,properties[method]);
+        //             node[method](EDGE_ALL,properties[method]);
         //         }else if(method.indexOf('setMarginAuto')>-1){
         //             let side = method.replace('setMarginAuto','');
         //             let _method = method.replace(side,'');
         //             switch(side){
         //                 case "":
-        //                     node[_method](Yoga.EDGE_ALL);
+        //                     node[_method](EDGE_ALL);
         //                     break;
         //                 case "Left":
-        //                     node[_method](Yoga.EDGE_LEFT);
+        //                     node[_method](EDGE_LEFT);
         //                     break;
         //                 case "Right":
-        //                     node[_method](Yoga.EDGE_RIGHT);
+        //                     node[_method](EDGE_RIGHT);
         //                     break;
         //                 case "Top":
-        //                     node[_method](Yoga.EDGE_TOP);
+        //                     node[_method](EDGE_TOP);
         //                     break;
         //                 case "Bottom":
-        //                     node[_method](Yoga.EDGE_BOTTOM);
+        //                     node[_method](EDGE_BOTTOM);
         //                     break;
         //             }
         //         }else if(["setWidthAuto","setHeightAuto"]
@@ -344,16 +344,16 @@ export = registerComponent('ui-scroll-pane', {
         }
         // width = Math.round(width);
         // height = Math.round(height);
-        //parent.yoga_node = Yoga.Node.create();
+        //parent.yoga_node = Node.create();
         let ui_yoga = parent.getAttribute("ui-yoga");
         let properties = {} as any;
         if(ui_yoga&&(parent as any).getYogaProperties){
             properties = (parent as any).getYogaProperties();
         }else{
-            properties.setJustifyContent = Yoga.JUSTIFY_FLEX_START;
-            properties.setFlexDirection = Yoga.FLEX_DIRECTION_ROW;
-            properties.setAlignContent = Yoga.ALIGN_AUTO;
-            properties.setFlexWrap = Yoga.WRAP_WRAP;
+            properties.setJustifyContent = JUSTIFY_FLEX_START;
+            properties.setFlexDirection = FLEX_DIRECTION_ROW;
+            properties.setAlignContent = ALIGN_AUTO;
+            properties.setFlexWrap = WRAP_WRAP;
             if(parent.parentElement&&(parent.parentElement as any).yoga_uuid){
                 // Default margin if none set;
                 properties.setMarginRight = 5;
