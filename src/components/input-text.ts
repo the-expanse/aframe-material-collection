@@ -97,11 +97,13 @@ export = registerComponent('ui-input-text', {
             this.el.setAttribute('visible',false);
             this.setValue();
            // Utils.isChanging(this.el.sceneEl,this.text.object3D.uuid);
+
+            //TODO For some reason initial value is not shown if delay is not there.
             setTimeout(()=> {
                 this.setScrollClips();
                 this.el.setAttribute('visible',true);
                 //Utils.stoppedChanging(this.text.object3D.uuid);
-            },200);
+            },500);
         });
         (this.el as any).getValue = this.getValue.bind(this);
         (this.el as any).value = this.value.bind(this);
