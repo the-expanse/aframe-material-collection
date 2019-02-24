@@ -31,12 +31,12 @@ export = registerComponent('ui-border', {
         this.el.setObject3D('mesh',new Mesh( new ShapeGeometry(roundedRectShape,this.data.curveSegments), new MeshBasicMaterial( { color: this.data.color } ) ));
     
     },
-    roundedRect( ctx, width, height, radius, isHole) {
+    roundedRect( ctx: Path, width: number, height: number, radius: number, isHole: boolean) {
         let x = -width/2, y = -height/2;
         // Draw the Rounded rectangle shape centered in the object - from js shapes example.
-        let shapeCtx;
+        let shapeCtx: Shape;
         if(isHole){
-            shapeCtx = ctx;
+            shapeCtx = ctx as Shape;
             ctx = new Path()
         }
         ctx.moveTo( x, y + radius );
@@ -49,7 +49,7 @@ export = registerComponent('ui-border', {
         ctx.lineTo( x + radius, y );
         ctx.quadraticCurveTo( x, y, x, y + radius );
         if(isHole){
-            shapeCtx.holes.push(ctx);
+            shapeCtx!!.holes.push(ctx);
         }
     }
 });

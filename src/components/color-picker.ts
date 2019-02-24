@@ -39,7 +39,7 @@ export = registerComponent('ui-color-picker', {
         this.tweenPickerScale(0.5,0.00001)
             .then(()=>this.el.setAttribute('visible',false));
     },
-    tweenPickerScale(from,to){
+    tweenPickerScale(from: number, to: number){
         Utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
         return new Promise(r=>{
             let _this = this;
@@ -295,23 +295,23 @@ export = registerComponent('ui-color-picker', {
         this.hexValue.setAttribute('value',hex);
     },
     setupEvents(){
-        this.colorWheel.addEventListener('mousedown',e=>{
+        this.colorWheel.addEventListener('mousedown', (e: MouseEvent)=>{
             this.isMouseDown = true;
             Utils.preventDefault(e);
         });
-        this.colorWheel.addEventListener('mouseup',e=>{
-            console.log('mouseup on color picker')
+        this.colorWheel.addEventListener('mouseup',(e: MouseEvent)=>{
+            console.log('mouseup on color picker');
             this.isMouseDown = false;
             Utils.preventDefault(e);
         });
-        this.colorWheel.addEventListener('ui-mousemove',e=>{
+        this.colorWheel.addEventListener('ui-mousemove',(e: MouseEvent)=>{
             if(!this.isMouseDown)return;
             Utils.preventDefault(e);
 
             Utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
             let colorWheel = this.colorWheel.getObject3D('mesh'),
                 radius = 0.5,
-                position = e.detail.intersection.point;
+                position = (e.detail as any).intersection.point;
 
             colorWheel.updateMatrixWorld();
             colorWheel.worldToLocal(position);
@@ -328,22 +328,22 @@ export = registerComponent('ui-color-picker', {
             this.updateColor();
             Utils.stoppedChanging(this.el.object3D.uuid);
         });
-        this.brightnessSlider.addEventListener('mousedown',e=>{
+        this.brightnessSlider.addEventListener('mousedown',(e: MouseEvent)=>{
             this.isMouseDown = true;
             Utils.preventDefault(e);
         });
-        this.brightnessSlider.addEventListener('mouseup',e=>{
+        this.brightnessSlider.addEventListener('mouseup',(e: MouseEvent)=>{
             this.isMouseDown = false;
             Utils.preventDefault(e);
         });
-        this.brightnessSlider.addEventListener('ui-mousemove',e=>{
+        this.brightnessSlider.addEventListener('ui-mousemove',(e: MouseEvent)=>{
 
             Utils.preventDefault(e);
             Utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
             if(!this.isMouseDown)return;
             let brightnessSlider = this.brightnessSlider.getObject3D('mesh'),
                 colorWheel = this.colorWheel.getObject3D('mesh'),
-                position = e.detail.intersection.point;
+                position = (e.detail as any).intersection.point;
 
             brightnessSlider.updateMatrixWorld();
             brightnessSlider.worldToLocal(position);
@@ -359,7 +359,7 @@ export = registerComponent('ui-color-picker', {
             Utils.stoppedChanging(this.el.object3D.uuid);
         });
     },
-    hsvToRgb(hsv) {
+    hsvToRgb(hsv: any) {
         let r, g, b, i, f, p, q, t;
         let h = ThreeMath.clamp(hsv.h, 0, 1);
         let s = ThreeMath.clamp(hsv.s, 0, 1);

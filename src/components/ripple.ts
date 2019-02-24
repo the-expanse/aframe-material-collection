@@ -1,6 +1,6 @@
 /* global TWEEN */
 
-import {CircleGeometry, Mesh, MeshBasicMaterial, Plane, Vector3} from "three";
+import {CircleGeometry, Geometry, Material, Mesh, MeshBasicMaterial, Plane, Vector3} from "three";
 import {registerComponent} from "aframe";
 import {Utils} from "../utils";
 
@@ -46,7 +46,7 @@ export = registerComponent('ui-ripple',{
             ];
         }
     },
-    click(e){
+    click(e: MouseEvent){
         if(this.isRippling){
             // Throttle clicks.
             return e.preventDefault();
@@ -76,7 +76,7 @@ export = registerComponent('ui-ripple',{
         (this.ripple.material as any).clipShadows = true;
         (this.ripple.material as any).needsUpdate = true;
     },
-    tweenSize(geometry){
+    tweenSize(geometry: Geometry){
         let _this = this;
         // Start changes
         Utils.isChanging(this.el.sceneEl,_this.ripple.uuid);
@@ -94,7 +94,7 @@ export = registerComponent('ui-ripple',{
             })
             .easing(TWEEN.Easing.Exponential.Out).start();
     },
-    tweenOpacity(material){
+    tweenOpacity(material: Material){
         new TWEEN.Tween({x:0.4})
             .to({ x: 0}, this.data.fadeDuration)
             .delay(this.data.fadeDelay)

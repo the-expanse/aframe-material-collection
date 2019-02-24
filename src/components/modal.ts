@@ -66,7 +66,7 @@ export = registerComponent('ui-modal', {
                 this.el.sceneEl!!.emit('modal-closed');
             });
     },
-    tweenModalScale(from,to){
+    tweenModalScale(from: number, to: number){
         return new Promise(r=>{
             let _this = this;
             if(this.modalTween)this.modalTween.stop();

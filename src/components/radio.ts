@@ -53,7 +53,7 @@ export = registerComponent('ui-radio', {
             }
             // TODO: need to add play/pause methods for registering/unregistering events.
             if(!this.data.disabled){
-                this.el.addEventListener('mousedown',e => (this.click as any)(e));
+                this.el.addEventListener('mousedown', (e: MouseEvent) => (this.click as any)(e));
             }
         });
     },

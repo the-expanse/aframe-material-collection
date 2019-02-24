@@ -170,7 +170,7 @@ export = registerComponent('ui-checkbox', {
             this.bottomLine.setAttribute('color',this.data.value?this.data.selectedColor:this.data.unselectedColor);
         }
     },
-    line(is_vertical){
+    line(is_vertical: boolean){
         // Create horizontal/vertical line.
         let line = document.createElement('a-plane');
         line.setAttribute('width',is_vertical?0.01:0.105);

@@ -102,13 +102,13 @@ export = AFRAME.registerComponent('ui-yoga', {
     },
     getProperties(){
         // Get the current yoga properties array as an object
-        let propertiesObj = {};
+        let propertiesObj = {} as any;
         for(let i = 0;i < this.properties.length;i++){
             propertiesObj[this.properties[i].method] = this.properties[i];
         }
         return propertiesObj;
     },
-    mapPropertyToEnum(name){
+    mapPropertyToEnum(name: string){
         // Get the yoga enum for the friendly name.
         switch(true){
             case name.indexOf('align') > -1:

@@ -1,6 +1,6 @@
 import Yoga from "yoga-layout";
 
-let nodes = {};
+let nodes = {} as any;
 
 const ctx: Worker = self as any;
 
@@ -9,7 +9,7 @@ ctx.addEventListener('message', event => {
 
         case "add-node":
             let properties = event.data.properties;
-            let node = Yoga.Node.create();
+            let node = Yoga.Node.create() as any;
             nodes[event.data.uuid] = {
                 uuid:event.data.uuid,
                 node:node,
@@ -71,8 +71,8 @@ ctx.addEventListener('message', event => {
             ctx.postMessage({uuid:event.data.uuid});
             break;
         case "get-layout":
-            let results = {content_height:0};
-            let traverse = (node)=>{
+            let results = {content_height:0} as any;
+            let traverse = (node: any)=>{
                 results[node.uuid] = {
                     left:nodes[node.uuid].node.getComputedLeft(),
                     top:nodes[node.uuid].node.getComputedTop(),
@@ -95,15 +95,15 @@ ctx.addEventListener('message', event => {
             break;
         case "reset-layout":
             if(event.data.parentUuid&&nodes.hasOwnProperty(event.data.parentUuid)){
-                let traverse = (node)=>{
-                    node.children.forEach(_node=>{
+                let traverse = (node: any)=>{
+                    node.children.forEach((_node : any)=>{
                         if(nodes.hasOwnProperty(_node.uuid)){
                             delete nodes[_node.uuid];
                         }
                         traverse(_node);
                     });
                 };
-                nodes[event.data.parentUuid].children.forEach(node=>{
+                nodes[event.data.parentUuid].children.forEach((node: any)=>{
                     nodes[event.data.parentUuid].node.removeChild(node.node);
                     node.node.freeRecursive();
                 });

@@ -1,6 +1,14 @@
 import UI from '../ui';
-import {Mesh, MeshBasicMaterial, PerspectiveCamera, Raycaster, SphereGeometry, WebGLRenderTarget} from "three";
-import {registerComponent} from "aframe";
+import {
+    Mesh,
+    MeshBasicMaterial,
+    Object3D,
+    PerspectiveCamera,
+    Raycaster,
+    SphereGeometry,
+    WebGLRenderTarget
+} from "three";
+import {Entity, registerComponent} from "aframe";
 import {Utils} from "../utils";
 
 /**
@@ -75,10 +83,10 @@ export = registerComponent('ui-renderer', {
                 },250);
         },this.data.initDelay);
     },
-    pauseRender(time){
+    pauseRender(time: number){
         return this.playRender(time,true)
     },
-    playRender(time,isPaused){
+    playRender(time: number,isPaused: boolean){
         let _this = this;
         return new Promise(resolve=>{
             if(_this.isFrozen===isPaused||_this.isAnimatingBackground)return resolve();
@@ -130,11 +138,11 @@ export = registerComponent('ui-renderer', {
         // Register event listeners
         // Mousedown and mouseup do not have the correct intersection point. Use last mouse move event if available instead.
         // TODO: raise issue with aframe / submit PR;
-        this.click = e=>this.mouseEvent('click',this.lastMoveEvent||e);
-        this.mousedown = e=>this.mouseEvent('mousedown',this.lastMoveEvent||e);
-        this.mouseup = e=>this.mouseEvent('mouseup',this.lastMoveEvent||e);
-        this.mousewheel = e=>this.mouseEvent('ui-mousewheel',e.detail.evt);
-        this.mousemove = e=>{
+        this.click = (e: MouseEvent)=>this.mouseEvent('click',this.lastMoveEvent||e);
+        this.mousedown = (e: MouseEvent)=>this.mouseEvent('mousedown',this.lastMoveEvent||e);
+        this.mouseup = (e: MouseEvent)=>this.mouseEvent('mouseup',this.lastMoveEvent||e);
+        this.mousewheel = (e: MouseEvent)=>this.mouseEvent('ui-mousewheel',(e.detail as any).evt);
+        this.mousemove = (e: MouseEvent)=>{
             // Save mousemove event for mousedown/mouseup events.
             this.lastMoveEvent = e;
             this.mouseEvent('ui-mousemove',e);
@@ -161,7 +169,7 @@ export = registerComponent('ui-renderer', {
         return uiPanel;
     },
 
-    mouseEvent(type,e){
+    mouseEvent(type: string, e: any){
         let mouse = {x:0,y:0};
         if(e.detail&&e.detail.intersection){
             let localPoint = this.meshEl.object3D.worldToLocal(e.detail.intersection.point.clone());
@@ -186,7 +194,7 @@ export = registerComponent('ui-renderer', {
         // }
         this.raycastIntersections(e,mouse,type);
     },
-    raycastIntersections(e,mouse,type){
+    raycastIntersections(e: MouseEvent,mouse: any,type: string){
         if(!this.camera||this.isFrozen||this.isAnimatingBackground)return;
         //console.log(mouse);
         this.raycaster.setFromCamera( mouse, this.camera );
@@ -235,7 +243,7 @@ export = registerComponent('ui-renderer', {
     tick(delta){
         if(this.isFrozen||this.stoppedRendering||!this.isReady)return;
         if(delta-this.lastRenderTime<(1000/this.data.fps)&&this.isRendering)return;
-        this.el.object3D.traverse(child=>{
+        this.el.object3D.traverse((child: any)=>{
             child.updateMatrixWorld();
         });
         let renderer = this.el.sceneEl.renderer;

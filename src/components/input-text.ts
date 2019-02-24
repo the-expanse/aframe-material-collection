@@ -81,7 +81,7 @@ export = registerComponent('ui-input-text', {
             this.isMoving = false;
             this.mousemove = this.onMousemove.bind(this);
 
-            this.keydown = e=>this.handleKeyboardEvent(e);
+            this.keydown = (e: KeyboardEvent)=>this.handleKeyboardEvent(e);
             this.keySelectAll = ()=>this.selectAll();
             this.keyCut = ()=>this.cutText();
             this.keyCopy = ()=>this.copyText();
@@ -154,7 +154,7 @@ export = registerComponent('ui-input-text', {
             (carret.material as any).clippingPlanes = this.text._content_clips?this.text._content_clips.concat(this.content_clips):this.content_clips;
         }
     },
-    numberOnly(e,is_float){
+    numberOnly(e: KeyboardEvent, is_float: boolean){
         // Stolen from stack overflow.
         if ([46, 8, 9, 27, 13, 110].indexOf(e.keyCode) !== -1 ||
             // Allow: Ctrl/cmd+A
@@ -176,7 +176,7 @@ export = registerComponent('ui-input-text', {
         }
 
     },
-    floatOnly(e){
+    floatOnly(e: KeyboardEvent){
         return this.numberOnly(e,true);
     },
     focus(){
@@ -222,7 +222,7 @@ export = registerComponent('ui-input-text', {
     },
     pasteText(){
         (navigator as any).clipboard.readText()
-            .then(text => {
+            .then((text: string) => {
                 let chars = [this.text.selectionStart, this.text.selectionLength].concat(text.split('').map(char=>({char:char})));
                 Array.prototype.splice.apply(this.chars, chars as any);
                 this.text.selectionStart = this.text.selectionStart+chars.length-2;
@@ -236,10 +236,10 @@ export = registerComponent('ui-input-text', {
         this.setValue();
     },
     copyText(){
-        let value = this.chars.slice(this.text.selectionStart,this.text.selectionStart+this.text.selectionLength).map(c=>c.char).join("");
+        let value = this.chars.slice(this.text.selectionStart,this.text.selectionStart+this.text.selectionLength).map((c: any)=>c.char).join("");
         (navigator as any).clipboard.writeText(value);
     },
-    handleKeyboardEvent(e){
+    handleKeyboardEvent(e: KeyboardEvent){
         if(e.keyCode===13){
             this.el.emit('submit');
         }else if(e.keyCode===9){
@@ -373,7 +373,7 @@ export = registerComponent('ui-input-text', {
             this.text.setAttribute('color','#2f2f2f');
         }
     },
-    onMousemove(e){
+    onMousemove(e: MouseEvent){
         let currentSelection = this.getSelectionPosition(e);
         if(!this.isMoving){
             this.isMoving = true;
@@ -461,14 +461,14 @@ export = registerComponent('ui-input-text', {
             Utils.isChanging(this.el.sceneEl,this.text.object3D.uuid);
         },350);
     },
-    value(text){
+    value(text: string){
         if(text||text===""){
             this.chars = text.split('').map(char=>({char:char}));
             this.text.selectionStart = this.chars.length;
             this.setValue();
             // set value
         }else{
-            return this.chars.map(c=>c.char).join('');
+            return this.chars.map((c: any)=>c.char).join('');
         }
     },
     getValue(){
@@ -478,11 +478,11 @@ export = registerComponent('ui-input-text', {
         }
         return output;
     },
-    getSelectionPosition(e){
+    getSelectionPosition(e: MouseEvent){
         this.el.object3D.updateMatrixWorld(false);
-        return this.text.object3D.worldToLocal(e.detail.intersection.point.clone()).x
+        return this.text.object3D.worldToLocal((e.detail as any).intersection.point.clone()).x
     },
-    playPauseCamera(method){
+    playPauseCamera(method: string){
         let el = this.data.cameraEl;
         if (el&&el.components[this.data.lookControlsComponent]) {
             el.components[this.data.lookControlsComponent][method]();
@@ -521,7 +521,7 @@ export = registerComponent('ui-input-text', {
             lastPosition = current;
         }
     },
-    getNearestGlyph(startPosition,endPosition){
+    getNearestGlyph(startPosition: number,endPosition: number){
         let width = Number(this.text.getAttribute('width'));
         let parentWidth = this.data.width;
         if(endPosition<startPosition){
@@ -556,7 +556,7 @@ export = registerComponent('ui-input-text', {
         }
         return output;
     },
-    setSelection(start,length){
+    setSelection(start: number,length: number){
         this.text.selectionStart = start;
         this.text.selectionLength = length;
         let right = 0,left = 0;

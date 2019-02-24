@@ -13,7 +13,7 @@ export = registerComponent('ui-double-click', {
     init() {
         let last_click = 0;
         // Add click event for listening for two clicks within the specified timespan.
-        this.el.addEventListener('mousedown',e=>{
+        this.el.addEventListener('mousedown',(e: MouseEvent)=>{
             let now = new Date().getTime();
             if(now-last_click<this.data.timeout){
                 this.el.emit('dblclick',e);

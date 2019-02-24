@@ -1,4 +1,4 @@
-import {Math, Plane, Vector3} from 'three';
+import {Math, Mesh, MeshLambertMaterial, Object3D, Plane, Shader, ShaderMaterial, Vector3} from 'three';
 import Yoga from "yoga-layout";
 
 /**
@@ -8,16 +8,16 @@ import Yoga from "yoga-layout";
  * @author Shane Harris
  */
 import YogaWorker from 'worker-loader!../yoga-worker.ts';
-import {registerComponent} from "aframe";
+import {Entity, registerComponent} from "aframe";
 import {Utils} from "../utils";
-let workerResolves = {};
+let workerResolves = {} as any;
 let yogaWorker = new YogaWorker();
 yogaWorker.onmessage = event=>{
     if(workerResolves.hasOwnProperty(event.data.uuid)){
         workerResolves[event.data.uuid](event.data);
     }
 };
-let sendMessage = (type,properties,parentUuid,width)=>{
+let sendMessage = (type: string,properties: any, parentUuid: string | null, width?:number)=>{
     return new Promise(resolve=>{
         let uuid = Math.generateUUID();
         workerResolves[uuid] = resolve;
@@ -57,7 +57,7 @@ export = registerComponent('ui-scroll-pane', {
             new Plane( new Vector3( 1, 0, 0 ), (this.data.width/2) )
         ];
         // Pause/play camera look controls
-        const playPauseCamera = method=>{
+        const playPauseCamera = (method: string)=>{
             if(this.data.cameraEl) {
                 let lookControls = this.data.cameraEl.components[this.data.lookControlsComponent];
                 if(lookControls){
@@ -66,14 +66,14 @@ export = registerComponent('ui-scroll-pane', {
             }
         };
         // Setup mouse move handler for scrolling and updating scroll handle.
-        const mousemove = e=>this.mouseMove(e);
+        const mousemove = (e: MouseEvent)=>this.mouseMove(e);
         // Start scroll
-        this.handle.addEventListener('mousedown',e=>{
+        this.handle.addEventListener('mousedown',(e: MouseEvent)=>{
             // Pause look controls to allow scrolling
             playPauseCamera('pause');
             this.isDragging = true;
             // Store the start point offset
-            this.handlePos = this.handle.object3D.worldToLocal(e.detail.intersection.point).y;
+            this.handlePos = this.handle.object3D.worldToLocal((e.detail as any).intersection.point).y;
             this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
             // Start changes
             Utils.isChanging(this.el.sceneEl,this.handle.object3D.uuid);
@@ -81,7 +81,7 @@ export = registerComponent('ui-scroll-pane', {
             Utils.preventDefault(e);
         });
         // End scroll
-        const endScroll = e=>{
+        const endScroll = (e: MouseEvent)=>{
             if(this.isDragging){
                 this.backgroundPanel.removeEventListener('ui-mousemove',mousemove);
                 // Play look controls once scrolling is finished
@@ -96,7 +96,7 @@ export = registerComponent('ui-scroll-pane', {
         this.backgroundPanel.addEventListener('mouseup',endScroll);
         this.backgroundPanel.addEventListener('mouseleave',endScroll);
         // // Handle clicks on rail to scroll
-        this.rail.addEventListener('mousedown',e=>{
+        this.rail.addEventListener('mousedown',(e: MouseEvent)=>{
 
             Utils.isChanging(this.el.sceneEl,this.handle.object3D.uuid);
             // Pause look controls
@@ -104,7 +104,7 @@ export = registerComponent('ui-scroll-pane', {
             // Reset handle pos to center of handle
             this.handlePos = 0;
             // Scroll immediately and register mouse move events.
-            this.scroll(this.rail.object3D.worldToLocal(e.detail.intersection.point).y);
+            this.scroll(this.rail.object3D.worldToLocal((e.detail as any).intersection.point).y);
             this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
             // Prevent default behaviour of event
             Utils.preventDefault(e);
@@ -137,7 +137,7 @@ export = registerComponent('ui-scroll-pane', {
         this.content_clips[3].applyMatrix4(this.el.object3D.matrixWorld);
 
     },
-    async setContent(body,noAutoReload){
+    async setContent(body: string,noAutoReload: boolean){
         if(this.container) {
             // Remove all children in the container and all yoga nodes
             while (this.container.firstChild) {
@@ -168,7 +168,7 @@ export = registerComponent('ui-scroll-pane', {
             })
         }
     },
-    async updateContent(should_not_scroll){
+    async updateContent(should_not_scroll: boolean){
         this.updateContentClips();
         this.currentUuid = Math.generateUUID();
         Utils.isChanging(this.el.sceneEl,this.currentUuid);
@@ -193,13 +193,13 @@ export = registerComponent('ui-scroll-pane', {
                 setTimeout(()=>Utils.stoppedChanging(this.currentUuid),3000);
             });
     },
-    mouseMove(e){
+    mouseMove(e: MouseEvent){
         if(this.isDragging){
-            let pos = this.rail.object3D.worldToLocal(e.detail.intersection.point);
+            let pos = this.rail.object3D.worldToLocal((e.detail as any).intersection.point);
             this.scroll(pos.y-this.handlePos);
         }
     },
-    scroll(positionY){
+    scroll(positionY: number){
         let min = (-this.data.height/2)+(this.data.height*this.handleSize)/2;
         let max = (this.data.height/2)-(this.data.height*this.handleSize)/2;
         // Set scroll position with start point offset.
@@ -209,11 +209,11 @@ export = registerComponent('ui-scroll-pane', {
         this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+scroll_pos+' '+(this.data.scrollZOffset+0.0005));
     },
     setupMouseWheelScroll(){
-        this.backgroundPanel.addEventListener('ui-mousewheel',e=>{
+        this.backgroundPanel.addEventListener('ui-mousewheel',(e: MouseEvent)=>{
             if(this.handleSize!==1){
                 // Start changes
                 Utils.isChanging(this.el.sceneEl,this.el.object3D.uuid);
-                this.scroll(this.handle.getAttribute('position').y+(e.detail.evt.deltaY<0?0.1:-0.1));
+                this.scroll(this.handle.getAttribute('position').y+((e.detail as any).evt.deltaY<0?0.1:-0.1));
                 // Stop changes
                 Utils.stoppedChanging(this.el.object3D.uuid);
                 Utils.preventDefault(e);
@@ -249,7 +249,7 @@ export = registerComponent('ui-scroll-pane', {
         this.handle.setAttribute('shader','flat');
         this.el.appendChild(this.handle);
     },
-    setupYogaNode(node,width,height,properties){
+    /*setupYogaNode(node,width,height,properties){
         // Parse yoga properties and call the yoga methods to setup this layout node.
         // for(let method in properties){
         //     if(properties.hasOwnProperty(method)&&method.indexOf('Edge')===-1){
@@ -296,9 +296,9 @@ export = registerComponent('ui-scroll-pane', {
         //         }
         //     }
         // }
-    },
+    },*/
 
-    async initialiseYoga(parent){
+    async initialiseYoga(parent: Entity){
         // Traverse the tree and setup Yoga layout nodes with default settings
         // or settings specified in the elements yoga properties component.
         parent = parent||this.container;
@@ -347,14 +347,14 @@ export = registerComponent('ui-scroll-pane', {
         //parent.yoga_node = Yoga.Node.create();
         let ui_yoga = parent.getAttribute("ui-yoga");
         let properties = {} as any;
-        if(ui_yoga&&parent.getYogaProperties){
-            properties = parent.getYogaProperties();
+        if(ui_yoga&&(parent as any).getYogaProperties){
+            properties = (parent as any).getYogaProperties();
         }else{
             properties.setJustifyContent = Yoga.JUSTIFY_FLEX_START;
             properties.setFlexDirection = Yoga.FLEX_DIRECTION_ROW;
             properties.setAlignContent = Yoga.ALIGN_AUTO;
             properties.setFlexWrap = Yoga.WRAP_WRAP;
-            if(parent.parentElement&&parent.parentElement.yoga_uuid){
+            if(parent.parentElement&&(parent.parentElement as any).yoga_uuid){
                 // Default margin if none set;
                 properties.setMarginRight = 5;
                 properties.setMarginBottom = 5;
@@ -374,18 +374,18 @@ export = registerComponent('ui-scroll-pane', {
         //     parent.parentElement.yoga_node.insertChild(parent.yoga_node,parent.parentElement.yoga_node.getChildCount());
         // }
         let promise;
-        if(parent.parentElement&&parent.parentElement.yoga_uuid){
-            promise = sendMessage('add-node',properties,parent.parentElement.yoga_uuid, undefined);
+        if(parent.parentElement&&(parent.parentElement as any).yoga_uuid){
+            promise = sendMessage('add-node',properties,(parent.parentElement as any).yoga_uuid, undefined);
         }else{
             promise = sendMessage('add-node',properties,null,this.data.width*100);
         }
         await promise.then(resp=>{
-            parent.yoga_uuid = resp.uuid;
+            (parent as any).yoga_uuid = (resp as any).uuid;
             let promises = new Array<any>();
             for(let i = 0; i < parent.childNodes.length; i++) {
                 let child = parent.childNodes[i];
                 if (child.nodeType === 1) {
-                    if(!child.classList.contains('no-yoga-layout')){
+                    if(!(child as any).classList.contains('no-yoga-layout')){
                         promises.push(this.initialiseYoga(child));
                     }
                 }
@@ -394,28 +394,28 @@ export = registerComponent('ui-scroll-pane', {
         });
     },
 
-    updateYoga(parent,layout){
+    updateYoga(parent: Entity,layout: any){
         // Update the entity positions from the Yoga layout.
         for(let i = 0; i < parent.childNodes.length; i++){
-            let child = parent.childNodes[i];
+            let child = parent.childNodes[i] as Entity;
             if(child.nodeType === 1){
                 if(child.classList.contains('no-yoga-layout')){
                     return;
                 }
                 let position;
 
-                if(!layout[child.yoga_uuid]){
+                if(!layout[(child as any).yoga_uuid]){
                     console.log(child,layout);
                 }
                 if(child.tagName==="A-ENTITY"){
                     position = {
-                        x:(layout[child.yoga_uuid].left/100),
-                        y:(layout[child.yoga_uuid].top/100),
+                        x:(layout[(child as any).yoga_uuid].left/100),
+                        y:(layout[(child as any).yoga_uuid].top/100),
                     };
                 }else{
                     position = {
-                        x:(layout[child.yoga_uuid].left/100)+(layout[child.yoga_uuid].width/200),
-                        y:(layout[child.yoga_uuid].top/100)+(layout[child.yoga_uuid].height/200),
+                        x:(layout[(child as any).yoga_uuid].left/100)+(layout[(child as any).yoga_uuid].width/200),
+                        y:(layout[(child as any).yoga_uuid].top/100)+(layout[(child as any).yoga_uuid].height/200),
                     };
                 }
                 child.setAttribute('position',position.x+' '+(-position.y)+' 0.0001');
@@ -424,20 +424,20 @@ export = registerComponent('ui-scroll-pane', {
         }
     },
 
-    setChildClips(parent){
+    setChildClips(parent: Entity){
         // Traverse the entity tree inside the content container and add content clips to each material found.
         parent = parent||this.container;
         for(let i = 0; i < parent.childNodes.length; i++) {
-            let child = parent.childNodes[i];
+            let child = parent.childNodes[i] as Entity;
             //if (child.nodeType === 1) {
-            child._content_clips = this.content_clips;
+            (child as any)._content_clips = this.content_clips;
             let traverse = ()=>{
                 if(child.object3D){
-                    child.object3D.traverse(object=>{
-                        if(object.material){
+                    child.object3D.traverse((object: Object3D) =>{
+                        if((object as Mesh).material){
                             // Add shader chunks to be able to clip shader materials - needed for <a-text> entities.
-                            if(object.material.isRawShaderMaterial){
-                                object.material.onBeforeCompile = function ( shader ) {
+                            if(((object as Mesh).material as any).isRawShaderMaterial){
+                                ((object as Mesh).material as any).onBeforeCompile = function ( shader: Shader ) {
                                     let vertexParts = shader.vertexShader.split('\n');
                                     let vertexMainIndex = vertexParts.indexOf('void main(void) {');
                                     vertexParts.splice(vertexMainIndex,0,'#include <clipping_planes_pars_vertex>');
@@ -451,12 +451,12 @@ export = registerComponent('ui-scroll-pane', {
                                     fragmentParts.splice(fragmentMainIndex+2,0,'#include <clipping_planes_fragment>');
                                     shader.fragmentShader = fragmentParts.join('\n');
                                 };
-                                object.material.clipping = true;
+                                ((object as Mesh).material as any).clipping = true;
                             }
                             // Set the content clipping planes.
-                            object.material.clippingPlanes = this.content_clips;
-                            object.material.clipShadows = true;
-                            object.material.needsUpdate = true;
+                            ((object as Mesh).material as any).clippingPlanes = this.content_clips;
+                            ((object as Mesh).material as any).clipShadows = true;
+                            ((object as Mesh).material as any).needsUpdate = true;
                         }
                     });
                 }

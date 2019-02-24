@@ -1,4 +1,5 @@
-import {registerComponent} from "aframe";
+import {Entity, registerComponent} from "aframe";
+import {Intersection} from "three";
 
 /**
  * A component shim the mouse move event for the AFRAME cursor raycaster.
@@ -26,7 +27,7 @@ export = registerComponent('ui-mouse-shim', {
     play(){
         this.el.sceneEl!!.renderer.domElement.addEventListener( 'wheel',this.onmousewheele , false);
     },
-    onMouseWheel(e){
+    onMouseWheel(e: MouseEvent){
         this.emitMouseEvent('ui-mousewheel',e);
     },
     tick() {
@@ -34,7 +35,7 @@ export = registerComponent('ui-mouse-shim', {
         this.emitMouseEvent('ui-mousemove', undefined);
         this.lastMouseMoveTime = new Date().getTime();
     },
-    emitMouseEvent(eventType,event){
+    emitMouseEvent(eventType: string, event: MouseEvent){
         if((this.el.sceneEl as any).cursorPoint&&(this.el.components.raycaster as any).intersections.length&&this.el.sceneEl!!.renderer.vr.enabled){
             (this.el.sceneEl as any).cursorPoint.position.copy((this.el.components.raycaster as any).intersections[0].point);
             (this.el.sceneEl as any).cursorPoint.scale.set(1,1,1);
@@ -44,10 +45,10 @@ export = registerComponent('ui-mouse-shim', {
             }
         }
         // Get current intersections from raycaster component.
-        (this.el.components.raycaster as any).intersections.forEach(intersection=>{
-            if(intersection.object.el){
+        (this.el.components.raycaster as any).intersections.forEach((intersection: Intersection) =>{
+            if((intersection.object as any).el){
                 // Emit custom mouse move event ont he intersected element.
-                intersection.object.el.emit(eventType,{cursorEl:this.el,intersection:intersection,evt:event})
+                (intersection.object as any).el.emit(eventType,{cursorEl:this.el,intersection:intersection,evt:event})
             }
         });
     }

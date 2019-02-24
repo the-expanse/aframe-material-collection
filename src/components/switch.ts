@@ -1,6 +1,6 @@
 /* global TWEEN */
 
-import {Mesh, MeshBasicMaterial, Vector3} from "three";
+import {Mesh, MeshBasicMaterial, Object3D, Vector3} from "three";
 import {Utils} from "../utils";
 
 /**
@@ -61,12 +61,12 @@ export = AFRAME.registerComponent('ui-switch', {
             this.click();
         });
         this.el.getValue = this.getValue.bind(this);
-        this.clickHandler = e=>{
+        this.clickHandler = (e: MouseEvent)=>{
             this.data.value = !this.data.value;
             this.click();
             // Prevent default behaviour of event
-            if(e.detail.preventDefault){
-                e.detail.preventDefault();
+            if((e.detail as any).preventDefault){
+                (e.detail as any).preventDefault();
             }
         };
     },
@@ -90,11 +90,11 @@ export = AFRAME.registerComponent('ui-switch', {
         this.tweenHandle();
         this.tweenProgress();
     },
-    getRailObject(object){
+    getRailObject(object: Object3D){
         // Get the rounded shape geomtery.
         object.traverse(child=>{
-            if(child.geometry&&child.geometry.type==="ShapeBufferGeometry"){
-                this.progress = new Mesh(child.geometry.clone(),new MeshBasicMaterial({color:this.data.progressColor}));
+            if((child as Mesh).geometry&&(child as Mesh).geometry.type==="ShapeBufferGeometry"){
+                this.progress = new Mesh((child as Mesh).geometry.clone(),new MeshBasicMaterial({color:this.data.progressColor}));
                 this.progress.position.set(-0.075,0,0.001);
                 this.progress.scale.set(0.00001,1,1);
                 this.el.object3D.add(this.progress);

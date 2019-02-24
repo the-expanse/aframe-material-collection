@@ -28,10 +28,10 @@ export = registerComponent('ui-btn', {
         this.defaultZ = this.el.object3D.position.z;
         // register input events for interaction
         if (!this.data.disabled) {
-            this.el.addEventListener('mouseenter', e => this.mouseEnter(e as MouseEvent));
-            this.el.addEventListener('mousedown', e => this.mouseDown(e as MouseEvent));
-            this.el.addEventListener('mouseup', e => this.mouseUp(e as MouseEvent));
-            this.el.addEventListener('mouseleave', e => this.mouseLeave(e as MouseEvent));
+            this.el.addEventListener('mouseenter', (e: MouseEvent) => this.mouseEnter(e as MouseEvent));
+            this.el.addEventListener('mousedown', (e: MouseEvent) => this.mouseDown(e as MouseEvent));
+            this.el.addEventListener('mouseup', (e: MouseEvent) => this.mouseUp(e as MouseEvent));
+            this.el.addEventListener('mouseleave', (e: MouseEvent) => this.mouseLeave(e as MouseEvent));
         }
     },
     mouseEnter(e: MouseEvent) {

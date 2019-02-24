@@ -1,7 +1,7 @@
 /* global TWEEN */
 
-import {registerComponent} from "aframe";
-import {Math, Mesh, MeshBasicMaterial} from "three";
+import {Entity, registerComponent} from "aframe";
+import {Math, Mesh, MeshBasicMaterial, Object3D} from "three";
 import {Utils} from "../utils";
 
 /**
@@ -70,7 +70,7 @@ export = registerComponent('ui-slider', {
             this.slide(this.scroll_perc,true);
         });
         // Pause/play camera look controls
-        const playPauseCamera = method=>{
+        const playPauseCamera = (method: string) =>{
             if(this.data.cameraEl) {
                 let lookControls = this.data.cameraEl.components[this.data.lookControlsComponent];
                 if(lookControls){
@@ -79,15 +79,15 @@ export = registerComponent('ui-slider', {
             }
         };
         // Setup mouse move handler for scrolling and updating scroll handle.
-        const mousemove = e=>this.mouseMove(e);
+        const mousemove = (e: MouseEvent)=>this.mouseMove(e);
         // Start scroll
-        this.handleEl.addEventListener('mousedown',e=>{
+        this.handleEl.addEventListener('mousedown',(e:MouseEvent)=>{
             // Pause look controls to allow scrolling
             playPauseCamera('pause');
             this.isDragging = true;
             // Store the start point offset
             this.el.emit('slide-start',this.scroll_perc);
-            this.handlePos = this.handleEl.object3D.worldToLocal(e.detail.intersection?e.detail.intersection.point:e.relatedTarget.object3D.position).x;
+            this.handlePos = this.handleEl.object3D.worldToLocal((e.detail as any).intersection?(e.detail as any).intersection.point:(e.relatedTarget as Entity).object3D.position).x;
             this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
             // Start changes
             Utils.isChanging(this.el.sceneEl,this.handleEl.object3D.uuid);
@@ -95,7 +95,7 @@ export = registerComponent('ui-slider', {
             Utils.preventDefault(e);
         });
         // End scroll
-        const endScroll = e=>{
+        const endScroll = (e:MouseEvent)=>{
             if(this.isDragging){
                 this.backgroundPanel.removeEventListener('ui-mousemove',mousemove);
                 // Play look controls once scrolling is finished
@@ -111,7 +111,7 @@ export = registerComponent('ui-slider', {
         this.backgroundPanel.addEventListener('mouseup',endScroll);
         this.backgroundPanel.addEventListener('mouseleave',endScroll);
         // // Handle clicks on rail to scroll
-        this.railEl.addEventListener('mousedown',e=>{
+        this.railEl.addEventListener('mousedown',(e:MouseEvent)=>{
 
             Utils.isChanging(this.el.sceneEl,this.handleEl.object3D.uuid);
             // Pause look controls
@@ -119,7 +119,7 @@ export = registerComponent('ui-slider', {
             // Reset handle pos to center of handle
             this.handlePos = 0;
             // Scroll immediately and register mouse move events.
-            this.slide(this.railEl.object3D.worldToLocal(e.detail.intersection?e.detail.intersection.point:e.relatedTarget.object3D.position).x);
+            this.slide(this.railEl.object3D.worldToLocal((e.detail as any).intersection?(e.detail as any).intersection.point:(e.relatedTarget as Entity).object3D.position).x);
             this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
             this.el.emit('slide-end',this.scroll_perc);
             // Prevent default behaviour of event
@@ -129,7 +129,7 @@ export = registerComponent('ui-slider', {
         this.el.getValue = this.getValue.bind(this);
         this.el.railEl = this.railEl;
     },
-    slide(positionX,isPerc){
+    slide(positionX: number,isPerc: boolean){
         let min = (-(this.data.width)/2)+this.data.handleRadius;
         let max = ((this.data.width)/2)-this.data.handleRadius;
         // Set scroll position with start point offset.
@@ -140,17 +140,17 @@ export = registerComponent('ui-slider', {
         this.progress.position.set((-(this.data.width-this.data.handleRadius)/2)+(this.scroll_perc*((this.data.width-this.data.handleRadius)/2)),0,0.0001);
         this.handleEl.setAttribute('position',/*((this.data.width/2)+this.data.scrollPadding)+' '+*/scroll_pos+' 0 '+(this.data.scrollZOffset+0.0005));
     },
-    mouseMove(e){
+    mouseMove(e: MouseEvent){
         if(this.isDragging){
-            let pos = this.railEl.object3D.worldToLocal(e.detail.intersection.point);
+            let pos = this.railEl.object3D.worldToLocal((e.detail as any).intersection.point);
             this.slide(pos.x-this.handlePos+this.data.handleRadius);
         }
     },
-    getRailObject(object){
+    getRailObject(object: Object3D){
         // Get the rounded shape geomtery.
         object.traverse(child=>{
-            if(child.geometry&&child.geometry.type==="ShapeBufferGeometry"){
-                this.progress = new Mesh(child.geometry.clone(),new MeshBasicMaterial({color:this.data.progressColor}));
+            if((child as Mesh).geometry&&(child as Mesh).geometry.type==="ShapeBufferGeometry"){
+                this.progress = new Mesh((child as Mesh).geometry.clone(),new MeshBasicMaterial({color:this.data.progressColor}));
                 this.progress.position.set(-this.data.width/2,0,0.0001);
                 this.progress.scale.set(0.00001,1,1);
                 this.el.object3D.add(this.progress);
