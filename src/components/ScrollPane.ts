@@ -2,7 +2,7 @@ import {Component, Entity} from "aframe";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {Math, Mesh, Object3D, Plane, Shader, Vector3} from "three";
 import {ALIGN_AUTO, FLEX_DIRECTION_ROW, JUSTIFY_FLEX_START, WRAP_WRAP} from "typeflex";
-import YogaWorker from 'worker-loader!../yoga-worker.ts';
+import YogaWorker from 'worker-loader!../workers/yoga-worker.ts';
 import {UiComponent} from "./UiComponent";
 
 let workerResolves = {} as any;

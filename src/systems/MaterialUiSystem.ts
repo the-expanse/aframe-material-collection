@@ -2,22 +2,6 @@ import {Scene, System} from "aframe";
 import {AbstractSystemController} from "aframe-typescript-boilerplate/built/system/AbstractSystemController";
 import {registerComponentController, SystemControllerDefinition} from "aframe-typescript-boilerplate/built";
 
-import './primitives/button';
-import './primitives/fab_button';
-import './primitives/switch';
-import './primitives/slider';
-import './primitives/number';
-import './primitives/toast';
-import './primitives/checkbox';
-import './primitives/radio';
-import './primitives/input-text';
-import './primitives/text-input';
-import './primitives/number-input';
-import './primitives/int-input';
-import './primitives/password-input';
-import './primitives/scroll-pane';
-import './primitives/renderer';
-
 export class MaterialUiSystem extends AbstractSystemController {
 
     public static DEFINITION = new SystemControllerDefinition(
@@ -26,6 +10,9 @@ export class MaterialUiSystem extends AbstractSystemController {
         (system: System, scene: Scene, data: any) =>
             new MaterialUiSystem(system, scene, data)
     );
+
+    changes: any = {};
+    changing: boolean = false;
 
     constructor(system: System, scene: Scene, data: any) {
         super(system, scene, data);
@@ -44,28 +31,21 @@ export class MaterialUiSystem extends AbstractSystemController {
     tick(time: number, timeDelta: number): void {
     }
 
-
-
-    changesDetected: any = {};
-    is_changeing: boolean = false;
-    scene: Scene = undefined as any as Scene;
-
-
     isFirstOrLastChange(){
         let empty = true;
 
-        for(let key in this.changesDetected) {
+        for(let key in this.changes) {
             empty = false;
             break;
         }
 
-        if(!this.is_changeing&&!empty){
+        if(!this.changing&&!empty){
             this.scene!!.emit('ui-changing');
-            this.is_changeing = true;
-        }else if(this.is_changeing&&empty){
-            if(this.is_changeing){
+            this.changing = true;
+        }else if(this.changing&&empty){
+            if(this.changing){
                 this.scene!!.emit('ui-changing-stopped');
-                this.is_changeing = false;
+                this.changing = false;
             }
         }
     }
@@ -81,19 +61,18 @@ export class MaterialUiSystem extends AbstractSystemController {
     }
 
     isChanging(scene: Scene | undefined, ref: string){
-        let index = this.changesDetected[ref];
+        let index = this.changes[ref];
         if(!index){
-            this.scene = this.scene||scene;
             let now = new Date().getTime();
-            this.changesDetected[ref] = {t:now,e:new Error().stack};
+            this.changes[ref] = {t:now,e:new Error().stack};
             this.isFirstOrLastChange();
         }else{
-            this.changesDetected[ref].t = new Date().getTime();
+            this.changes[ref].t = new Date().getTime();
         }
     }
 
     stoppedChanging(ref: string){
-        delete this.changesDetected[ref];
+        delete this.changes[ref];
         this.isFirstOrLastChange();
     }
 

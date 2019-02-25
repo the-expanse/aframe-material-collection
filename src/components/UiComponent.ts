@@ -1,7 +1,7 @@
 import {Component, Entity} from "aframe";
 import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
-import {MaterialUiSystem} from "../MaterialUiSystem";
+import {MaterialUiSystem} from "../systems/MaterialUiSystem";
 
 export class UiComponent extends AbstractComponentController {
 
