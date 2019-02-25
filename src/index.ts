@@ -10,6 +10,7 @@ import {ExampleUiComponent} from "./component/ExampleUiComponent";
 import {MaterialUiSystem} from "./MaterialUiSystem";
 import {Border} from "./component/Border";
 import {Button} from "./component/Button";
+import {Checkbox} from "./component/Checkbox";
 
 let version = Package.version;
 console.log('aframe-material-collection version '+version);
@@ -27,3 +28,4 @@ registerSystemController(MaterialUiSystem.DEFINITION);
 registerComponentController(ExampleUiComponent.DEFINITION);
 registerComponentController(Border.DEFINITION);
 registerComponentController(Button.DEFINITION);
+registerComponentController(Checkbox.DEFINITION);
