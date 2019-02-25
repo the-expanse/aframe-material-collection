@@ -19,6 +19,7 @@ import {InputText} from "./component/InputText";
 import {Modal} from "./component/Modal";
 import {MouseShim} from "./component/MouseShim";
 import {NumberComponent} from "./component/NumberComponent";
+import {Radio} from "./component/Radio";
 
 let version = Package.version;
 console.log('aframe-material-collection version '+version);
@@ -45,3 +46,4 @@ registerComponentController(InputText.DEFINITION);
 registerComponentController(Modal.DEFINITION);
 registerComponentController(MouseShim.DEFINITION);
 registerComponentController(NumberComponent.DEFINITION);
+registerComponentController(Radio.DEFINITION);

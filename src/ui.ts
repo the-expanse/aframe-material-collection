@@ -33,7 +33,7 @@ import './components/scroll-pane';
 //import './components/mouse-shim';
 //import './components/double-click';
 //import './components/checkbox';
-import './components/radio';
+//import './components/radio';
 //import './components/border';
 //import './components/curved-plane';
 //import './components/color-picker';
