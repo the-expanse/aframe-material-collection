@@ -22,7 +22,7 @@ import './primitives/renderer';
 import './components/text';
 import './components/input-text';
 //simport './components/btn';
-import './components/icon';
+//import './components/icon';
 import './components/rounded';
 import './components/ripple';
 import './components/slider';
