@@ -69,7 +69,7 @@ export class Modal extends AbstractComponentController {
     
     open(){
         if(this.mainComponents&&this.mainComponents['ui-renderer']){
-            this.mainComponents['ui-renderer'].pauseRender();
+            this.mainComponents['ui-renderer'].el.pauseRender();
             this.tweenModalScale(0.0000001,1);
             this.modalComponents['ui-renderer'].play();
         }
@@ -78,7 +78,7 @@ export class Modal extends AbstractComponentController {
         // Pause the modal rendering and play the main rendering again.
         this.modalComponents['ui-renderer'].pause();
         this.mainComponents['ui-renderer'].play();
-        this.mainComponents['ui-renderer'].playRender();
+        this.mainComponents['ui-renderer'].el.playRender();
         this.tweenModalScale(1,0.0000001)
             .then(()=>{
                 this.component.el.sceneEl!!.emit('modal-closed');

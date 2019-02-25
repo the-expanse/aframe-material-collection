@@ -38,7 +38,7 @@ import './components/scroll-pane';
 //import './components/curved-plane';
 //import './components/color-picker';
 //import './components/modal';
-import './components/renderer';
+//import './components/renderer';
 //import './components/yoga';
 
 export = {

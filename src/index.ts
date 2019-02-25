@@ -26,6 +26,7 @@ import {Slider} from "./component/Slider";
 import {Switch} from "./component/Switch";
 import {Toast} from "./component/Toast";
 import {Yoga} from "./component/Yoga";
+import {Renderer} from "./component/Renderer";
 
 let version = Package.version;
 console.log('aframe-material-collection version '+version);
@@ -39,6 +40,7 @@ let UI = import('./ui');
 (window as any).UI = UI;
 
 registerSystemController(MaterialUiSystem.DEFINITION);
+
 
 registerComponentController(ExampleUiComponent.DEFINITION);
 registerComponentController(Border.DEFINITION);
@@ -58,6 +60,6 @@ registerComponentController(Rounded.DEFINITION);
 registerComponentController(Slider.DEFINITION);
 registerComponentController(Switch.DEFINITION);
 registerComponentController(Toast.DEFINITION);
-registerComponentController(Toast.DEFINITION);
 registerComponentController(Yoga.DEFINITION);
+registerComponentController(Renderer.DEFINITION);
 
