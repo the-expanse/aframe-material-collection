@@ -3,8 +3,9 @@ import {AbstractComponentController} from "aframe-typescript-boilerplate/built/c
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {BufferGeometry, CircleGeometry, Geometry, Material, Mesh, MeshBasicMaterial, Plane, Vector3} from "three";
 import {Utils} from "../utils";
+import {UiComponent} from "./UiComponent";
 
-export class Ripple extends AbstractComponentController {
+export class Ripple extends UiComponent {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-ripple",
@@ -51,16 +52,6 @@ export class Ripple extends AbstractComponentController {
             ];
         }
     }
-
-    update(data: any, oldData: any): void {}
-
-    remove(): void {}
-
-    pause(): void {}
-
-    play(): void {}
-
-    tick(time: number, timeDelta: number): void {}
     
     click(e: Event){
         if(this.isRippling){

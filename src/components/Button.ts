@@ -2,8 +2,9 @@ import {Component, Entity} from "aframe";
 import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {Utils} from "../utils";
+import {UiComponent} from "./UiComponent";
 
-export class Button extends AbstractComponentController {
+export class Button extends UiComponent {
 
     defaultZ = 0;
     is_clicked = false;
@@ -37,16 +38,6 @@ export class Button extends AbstractComponentController {
             this.component.el.addEventListener('mouseleave', e => this.mouseLeave(e as MouseEvent));
         }
     }
-
-    update(data: any, oldData: any): void {}
-
-    remove(): void {}
-
-    pause(): void {}
-
-    play(): void {}
-
-    tick(time: number, timeDelta: number): void {}
     
     mouseEnter(e: MouseEvent) {
         const _this = this;

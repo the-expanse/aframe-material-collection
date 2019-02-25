@@ -3,8 +3,9 @@ import {AbstractComponentController} from "aframe-typescript-boilerplate/built/c
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {Utils} from "../utils";
 import {Math, Mesh, MeshBasicMaterial, Object3D} from "three";
+import {UiComponent} from "./UiComponent";
 
-export class Slider extends AbstractComponentController {
+export class Slider extends UiComponent {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-slider",
@@ -145,16 +146,6 @@ export class Slider extends AbstractComponentController {
         (this.component.el as any).getValue = this.getValue.bind(this);
         (this.component.el as any).railEl = this.railEl;
     }
-
-    update(data: any, oldData: any): void {}
-
-    remove(): void {}
-
-    pause(): void {}
-
-    play(): void {}
-
-    tick(time: number, timeDelta: number): void {}
 
     getValue(){
         return this.scroll_perc;

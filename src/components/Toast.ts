@@ -4,8 +4,9 @@ import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built
 import {Utils} from "../utils";
 import {Vector3} from "three";
 import Tween = TWEEN.Tween;
+import {UiComponent} from "./UiComponent";
 
-export class Toast extends AbstractComponentController {
+export class Toast extends UiComponent {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-toast",
@@ -61,15 +62,5 @@ export class Toast extends AbstractComponentController {
                 .easing(TWEEN.Easing.Exponential.Out).start();
         });
     }
-
-    update(data: any, oldData: any): void {}
-
-    remove(): void {}
-
-    pause(): void {}
-
-    play(): void {}
-
-    tick(time: number, timeDelta: number): void {}
 
 }

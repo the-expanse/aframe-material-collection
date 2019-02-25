@@ -5,6 +5,7 @@ import {Math, Mesh, Object3D, Plane, Shader, Vector3} from "three";
 import {Utils} from "../utils";
 import {ALIGN_AUTO, FLEX_DIRECTION_ROW, JUSTIFY_FLEX_START, WRAP_WRAP} from "typeflex";
 import YogaWorker from 'worker-loader!../yoga-worker.ts';
+import {UiComponent} from "./UiComponent";
 
 let workerResolves = {} as any;
 let yogaWorker = new YogaWorker();
@@ -21,7 +22,7 @@ let sendMessage = (type: string,properties: any, parentUuid: string | null, widt
     });
 };
 
-export class ScrollPane extends AbstractComponentController {
+export class ScrollPane extends UiComponent {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-scroll-pane",
@@ -148,16 +149,6 @@ export class ScrollPane extends AbstractComponentController {
         (this.component.el as any).updateContent = this.updateContent.bind(this);
         (this.component.el as any).scroll = this.scroll.bind(this);
     }
-
-    update(data: any, oldData: any): void {}
-
-    remove(): void {}
-
-    pause(): void {}
-
-    play(): void {}
-
-    tick(time: number, timeDelta: number): void {}
 
     updateContentClips(){
         this.component.el.sceneEl!!.object3D.updateMatrixWorld(false);

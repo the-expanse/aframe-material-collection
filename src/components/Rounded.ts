@@ -2,8 +2,9 @@ import {Component, Entity} from "aframe";
 import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {Mesh, Shape, ShapeBufferGeometry} from "three";
+import {UiComponent} from "./UiComponent";
 
-export class Rounded extends AbstractComponentController {
+export class Rounded extends UiComponent {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-rounded",
@@ -42,15 +43,5 @@ export class Rounded extends AbstractComponentController {
         // Emit rounded-loaded event once the geometry has been updated.
         this.component.el.emit('rounded-loaded', null, false);
     }
-
-    update(data: any, oldData: any): void {}
-
-    remove(): void {}
-
-    pause(): void {}
-
-    play(): void {}
-
-    tick(time: number, timeDelta: number): void {}
 
 }

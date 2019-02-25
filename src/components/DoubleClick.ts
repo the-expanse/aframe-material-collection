@@ -1,8 +1,9 @@
 import {Component, Entity} from "aframe";
 import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
+import {UiComponent} from "./UiComponent";
 
-export class DoubleClick extends AbstractComponentController {
+export class DoubleClick extends UiComponent {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-double-click",
@@ -32,15 +33,5 @@ export class DoubleClick extends AbstractComponentController {
             last_click = now;
         });
     }
-
-    update(data: any, oldData: any): void {}
-
-    remove(): void {}
-
-    pause(): void {}
-
-    play(): void {}
-
-    tick(time: number, timeDelta: number): void {}
 
 }

@@ -3,8 +3,9 @@ import {AbstractComponentController} from "aframe-typescript-boilerplate/built/c
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {Utils} from "../utils";
 import {Color} from "three";
+import {UiComponent} from "./UiComponent";
 
-export class Radio extends AbstractComponentController {
+export class Radio extends UiComponent {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-radio",
@@ -63,17 +64,8 @@ export class Radio extends AbstractComponentController {
             if(!this.data.disabled){
                 this.component.el.addEventListener('mousedown', (e) => (this.click as any)(e));
             }
-        });    }
-
-    update(data: any, oldData: any): void {}
-
-    remove(): void {}
-
-    pause(): void {}
-
-    play(): void {}
-
-    tick(time: number, timeDelta: number): void {}
+        });
+    }
 
     deselect(){
         // Deselect this radio with a scale animation on the circle.

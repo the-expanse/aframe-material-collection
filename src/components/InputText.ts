@@ -3,8 +3,9 @@ import {AbstractComponentController} from "aframe-typescript-boilerplate/built/c
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {Mesh, MeshLambertMaterial, Plane, Vector3} from "three";
 import {Utils} from "../utils";
+import {UiComponent} from "./UiComponent";
 
-export class InputText extends AbstractComponentController {
+export class InputText extends UiComponent {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-input-text",
@@ -114,16 +115,6 @@ export class InputText extends AbstractComponentController {
         (this.component.el as any).value = this.value.bind(this);
         this.component.el.focus = this.focus.bind(this);
     }
-
-    update(data: any, oldData: any): void {}
-
-    remove(): void {}
-
-    pause(): void {}
-
-    play(): void {}
-
-    tick(time: number, timeDelta: number): void {}
 
     setupScrollClips(){
         this.content_clips = [

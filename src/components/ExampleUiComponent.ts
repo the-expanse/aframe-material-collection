@@ -1,8 +1,8 @@
 import {Component, Entity} from "aframe";
-import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
+import {UiComponent} from "./UiComponent";
 
-export class ExampleUiComponent extends AbstractComponentController {
+export class ExampleUiComponent extends UiComponent {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "example",
@@ -19,15 +19,5 @@ export class ExampleUiComponent extends AbstractComponentController {
     init(): void {
         console.log("example ui component init.");
     }
-
-    update(data: any, oldData: any): void {}
-
-    remove(): void {}
-
-    pause(): void {}
-
-    play(): void {}
-
-    tick(time: number, timeDelta: number): void {}
 
 }

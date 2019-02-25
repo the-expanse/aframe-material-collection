@@ -1,8 +1,9 @@
 import {Component, Entity} from "aframe";
 import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
+import {UiComponent} from "./UiComponent";
 
-export class NumberComponent extends AbstractComponentController {
+export class NumberComponent extends UiComponent {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-number",
@@ -63,15 +64,5 @@ export class NumberComponent extends AbstractComponentController {
         numberText.appendChild(downButton);
         this.component.el.appendChild(numberText);
     }
-
-    update(data: any, oldData: any): void {}
-
-    remove(): void {}
-
-    pause(): void {}
-
-    play(): void {}
-
-    tick(time: number, timeDelta: number): void {}
 
 }

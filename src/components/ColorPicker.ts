@@ -3,8 +3,9 @@ import {AbstractComponentController} from "aframe-typescript-boilerplate/built/c
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {Utils} from "../utils";
 import {Color, Math as ThreeMath, Mesh, ShaderMaterial} from "three";
+import {UiComponent} from "./UiComponent";
 
-export class ColorPicker extends AbstractComponentController {
+export class ColorPicker extends UiComponent {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-color-picker",
@@ -42,16 +43,6 @@ export class ColorPicker extends AbstractComponentController {
         (this.component.el as any).open = this.open.bind(this);
         (this.component.el as any).close = this.close.bind(this);
     }
-
-    update(data: any, oldData: any): void {}
-
-    remove(): void {}
-
-    pause(): void {}
-
-    play(): void {}
-
-    tick(time: number, timeDelta: number): void {}
 
     open(){
         return new Promise(resolve=>{

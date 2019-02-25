@@ -2,8 +2,9 @@ import {Component, Entity} from "aframe";
 import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {CubicBezierCurve3, Mesh, PlaneGeometry, Vector3} from "three";
+import {UiComponent} from "./UiComponent";
 
-export class CurvedPlane extends AbstractComponentController {
+export class CurvedPlane extends UiComponent {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-curved-plane",
@@ -38,15 +39,5 @@ export class CurvedPlane extends AbstractComponentController {
         }
         mesh.geometry = browser_pane;
     }
-
-    update(data: any, oldData: any): void {}
-
-    remove(): void {}
-
-    pause(): void {}
-
-    play(): void {}
-
-    tick(time: number, timeDelta: number): void {}
 
 }

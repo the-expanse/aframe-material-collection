@@ -2,8 +2,9 @@ import {Component, Entity} from "aframe";
 import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {Utils} from "../utils";
+import {UiComponent} from "./UiComponent";
 
-export class Checkbox extends AbstractComponentController {
+export class Checkbox extends UiComponent {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-checkbox",
@@ -63,16 +64,6 @@ export class Checkbox extends AbstractComponentController {
         this.setTransform(1);
     }
 
-    update(data: any, oldData: any): void {}
-
-    remove(): void {}
-
-    pause(): void {}
-
-    play(): void {}
-
-    tick(time: number, timeDelta: number): void {}
-
     updateSchema(){
         if(this.data){
             this.setDisabled();
@@ -87,6 +78,7 @@ export class Checkbox extends AbstractComponentController {
             }
         }
     };
+
     setTransform(x: number){
         // Adjust position and rotation based on the interpolated value x between 0 and 1.
         // Used to offset the checkbox when in a checked state

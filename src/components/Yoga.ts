@@ -49,8 +49,9 @@ import {
     WRAP_WRAP,
     WRAP_WRAP_REVERSE
 } from "typeflex";
+import {UiComponent} from "./UiComponent";
 
-export class Yoga extends AbstractComponentController {
+export class Yoga extends UiComponent {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-yoga",
@@ -134,16 +135,6 @@ export class Yoga extends AbstractComponentController {
         (this.component.el as any).getYogaProperties = this.getProperties.bind(this);
         this.setProperties();
     }
-
-    update(data: any, oldData: any): void {}
-
-    remove(): void {}
-
-    pause(): void {}
-
-    play(): void {}
-
-    tick(time: number, timeDelta: number): void {}
 
     /*updateSchema(){
         this.setProperties();

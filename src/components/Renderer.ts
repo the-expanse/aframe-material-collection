@@ -3,8 +3,9 @@ import {AbstractComponentController} from "aframe-typescript-boilerplate/built/c
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {Mesh, MeshBasicMaterial, PerspectiveCamera, Raycaster, SphereGeometry, WebGLRenderTarget} from "three";
 import {Utils} from "../utils";
+import {UiComponent} from "./UiComponent";
 
-export class Renderer extends AbstractComponentController {
+export class Renderer extends UiComponent {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-renderer",
@@ -106,10 +107,6 @@ export class Renderer extends AbstractComponentController {
             },250);
         },this.data.initDelay);
     }
-
-    update(data: any, oldData: any): void {}
-
-    remove(): void {}
 
     pause(): void {
         this.meshEl.removeEventListener('mousedown',this.mousedown);

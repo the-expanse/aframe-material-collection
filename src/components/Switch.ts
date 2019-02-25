@@ -3,8 +3,9 @@ import {AbstractComponentController} from "aframe-typescript-boilerplate/built/c
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {Mesh, MeshBasicMaterial, Object3D, Vector3} from "three";
 import {Utils} from "../utils";
+import {UiComponent} from "./UiComponent";
 
-export class Switch extends AbstractComponentController {
+export class Switch extends UiComponent {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-switch",
@@ -74,16 +75,6 @@ export class Switch extends AbstractComponentController {
             }
         };
     }
-
-    update(data: any, oldData: any): void {}
-
-    remove(): void {}
-
-    pause(): void {}
-
-    play(): void {}
-
-    tick(time: number, timeDelta: number): void {}
 
     updateSchema(){
         if(this.data){

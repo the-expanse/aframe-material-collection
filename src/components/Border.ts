@@ -2,8 +2,9 @@ import {Component, Entity} from "aframe";
 import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {Mesh, MeshBasicMaterial, Path, Shape, ShapeGeometry} from "three";
+import {UiComponent} from "./UiComponent";
 
-export class Border extends AbstractComponentController {
+export class Border extends UiComponent {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-border",
@@ -38,14 +39,6 @@ export class Border extends AbstractComponentController {
 
         this.component.el.setObject3D('mesh',new Mesh( new ShapeGeometry(roundedRectShape,this.data.curveSegments), new MeshBasicMaterial( { color: this.data.color } ) ));
     }
-
-    update(data: any, oldData: any): void {}
-
-    remove(): void {}
-
-    pause(): void {}
-
-    play(): void {}
 
     tick(time: number, timeDelta: number): void {}
 

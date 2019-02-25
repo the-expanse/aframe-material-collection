@@ -2,8 +2,9 @@ import {Component, Entity} from "aframe";
 import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {Intersection} from "three";
+import {UiComponent} from "./UiComponent";
 
-export class MouseShim extends AbstractComponentController {
+export class MouseShim extends UiComponent {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-mouse-shim",
@@ -30,10 +31,6 @@ export class MouseShim extends AbstractComponentController {
         this.onmousewheele = this.onMouseWheel.bind(this);
         (this.component.el.sceneEl as any).raycaster = this.component.el.components.raycaster;
     }
-
-    update(data: any, oldData: any): void {}
-
-    remove(): void {}
 
     pause(): void {
         this.component.el.sceneEl!!.renderer.domElement.removeEventListener( 'wheel',this.onmousewheele , false);

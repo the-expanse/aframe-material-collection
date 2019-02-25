@@ -1,8 +1,9 @@
 import {Component, Entity} from "aframe";
 import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
+import {UiComponent} from "./UiComponent";
 
-export class Modal extends AbstractComponentController {
+export class Modal extends UiComponent {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-modal",
@@ -55,17 +56,9 @@ export class Modal extends AbstractComponentController {
         }
     }
 
-    update(data: any, oldData: any): void {}
-
     remove(): void {
         this.component.el.removeEventListener('mousedown',this.openModal);
     }
-
-    pause(): void {}
-
-    play(): void {}
-
-    tick(time: number, timeDelta: number): void {}
     
     open(){
         if(this.mainComponents&&this.mainComponents['ui-renderer']){

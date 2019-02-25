@@ -1,8 +1,9 @@
 import {Component, Entity} from "aframe";
 import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
+import {UiComponent} from "./UiComponent";
 
-export class Icon extends AbstractComponentController {
+export class Icon extends UiComponent {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-icon",
@@ -35,15 +36,5 @@ export class Icon extends AbstractComponentController {
         this.icon.setAttribute('position',"0 0 "+this.data.zIndex);
         this.component.el.appendChild(this.icon);
     }
-
-    update(data: any, oldData: any): void {}
-
-    remove(): void {}
-
-    pause(): void {}
-
-    play(): void {}
-
-    tick(time: number, timeDelta: number): void {}
 
 }
