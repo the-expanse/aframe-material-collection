@@ -1,9 +1,9 @@
 import {Component, Entity} from "aframe";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {BufferGeometry, CircleGeometry, Geometry, Material, Mesh, MeshBasicMaterial, Plane, Vector3} from "three";
-import {UiComponent} from "./UiComponent";
+import {UiElement} from "./UiElement";
 
-export class Ripple extends UiComponent {
+export class Ripple extends UiElement {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-ripple",

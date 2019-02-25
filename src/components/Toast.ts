@@ -1,9 +1,9 @@
 import {Component, Entity} from "aframe";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {Vector3} from "three";
-import {UiComponent} from "./UiComponent";
+import {UiElement} from "./UiElement";
 
-export class Toast extends UiComponent {
+export class Toast extends UiElement {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-toast",

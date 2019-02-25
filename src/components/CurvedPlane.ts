@@ -2,9 +2,9 @@ import {Component, Entity} from "aframe";
 import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {CubicBezierCurve3, Mesh, PlaneGeometry, Vector3} from "three";
-import {UiComponent} from "./UiComponent";
+import {UiElement} from "./UiElement";
 
-export class CurvedPlane extends UiComponent {
+export class CurvedPlane extends UiElement {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-curved-plane",

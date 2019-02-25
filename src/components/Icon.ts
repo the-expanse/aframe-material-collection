@@ -1,9 +1,9 @@
 import {Component, Entity} from "aframe";
 import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
-import {UiComponent} from "./UiComponent";
+import {UiElement} from "./UiElement";
 
-export class Icon extends UiComponent {
+export class Icon extends UiElement {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-icon",

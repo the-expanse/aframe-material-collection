@@ -1,8 +1,8 @@
 import {Component, Entity} from "aframe";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
-import {UiComponent} from "./UiComponent";
+import {UiElement} from "./UiElement";
 
-export class Checkbox extends UiComponent {
+export class Checkbox extends UiElement {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-checkbox",

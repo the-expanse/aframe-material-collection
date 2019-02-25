@@ -1,9 +1,9 @@
 import {Component, Entity} from "aframe";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {Color, Math as ThreeMath, Mesh, ShaderMaterial} from "three";
-import {UiComponent} from "./UiComponent";
+import {UiElement} from "./UiElement";
 
-export class ColorPicker extends UiComponent {
+export class ColorPicker extends UiElement {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-color-picker",

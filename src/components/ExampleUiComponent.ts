@@ -1,8 +1,8 @@
 import {Component, Entity} from "aframe";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
-import {UiComponent} from "./UiComponent";
+import {UiElement} from "./UiElement";
 
-export class ExampleUiComponent extends UiComponent {
+export class ExampleUiComponent extends UiElement {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "example",

@@ -3,7 +3,7 @@ import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built
 import {Math, Mesh, Object3D, Plane, Shader, Vector3} from "three";
 import {ALIGN_AUTO, FLEX_DIRECTION_ROW, JUSTIFY_FLEX_START, WRAP_WRAP} from "typeflex";
 import YogaWorker from 'worker-loader!../workers/yoga-worker.ts';
-import {UiComponent} from "./UiComponent";
+import {UiElement} from "./UiElement";
 
 let workerResolves = {} as any;
 let yogaWorker = new YogaWorker();
@@ -20,7 +20,7 @@ let sendMessage = (type: string,properties: any, parentUuid: string | null, widt
     });
 };
 
-export class ScrollPane extends UiComponent {
+export class ScrollPane extends UiElement {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-scroll-pane",

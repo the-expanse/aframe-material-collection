@@ -16,6 +16,7 @@ export = AFRAME.registerPrimitive('a-ui-renderer', AFRAME.utils.extendDeep({}, A
         "look-controls-component":"ui-renderer.lookControlsComponent",
         "panel-position":"ui-renderer.panelPosition",
         "panel-size":"ui-renderer.panelSize",
+        "panel-depth":"ui-renderer.panelDepth",
         "render-resolution":"ui-renderer.renderResolution",
         "debug-raycaster":"ui-renderer.debugRaycaster",
         "fps":"ui-renderer.fps",

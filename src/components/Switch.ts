@@ -2,9 +2,9 @@ import {Component, Entity} from "aframe";
 import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {Mesh, MeshBasicMaterial, Object3D, Vector3} from "three";
-import {UiComponent} from "./UiComponent";
+import {UiElement} from "./UiElement";
 
-export class Switch extends UiComponent {
+export class Switch extends UiElement {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-switch",

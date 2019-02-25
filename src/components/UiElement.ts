@@ -3,7 +3,7 @@ import {AbstractComponentController} from "aframe-typescript-boilerplate/built/c
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {MaterialUiSystem} from "../systems/MaterialUiSystem";
 
-export class UiComponent extends AbstractComponentController {
+export class UiElement extends AbstractComponentController {
 
     ui: MaterialUiSystem = undefined as any as MaterialUiSystem;
 

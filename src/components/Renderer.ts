@@ -1,9 +1,9 @@
 import {Component, Entity} from "aframe";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {Mesh, MeshBasicMaterial, PerspectiveCamera, Raycaster, SphereGeometry, WebGLRenderTarget} from "three";
-import {UiComponent} from "./UiComponent";
+import {UiElement} from "./UiElement";
 
-export class Renderer extends UiComponent {
+export class Renderer extends UiElement {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-renderer",
@@ -13,6 +13,7 @@ export class Renderer extends UiComponent {
             lookControlsComponent:{default:'look-controls'},
             panelPosition:{type:'vec3',default:{x:0,y:1.6,z:-1}},
             panelSize:{type:'vec2',default:{x:6,y:3}},
+            panelDepth:{type:'number',default:0.03},
             renderResolution:{type:'vec2',default:{x:1024,y:512}},
             debugRaycaster:{type:'boolean',default: false},
             fps:{type:'number',default:45},
@@ -67,10 +68,7 @@ export class Renderer extends UiComponent {
         this.camera = new PerspectiveCamera( 100, 2, 0.1, 1000 );
         // Setup render target
         this.renderTarget = new WebGLRenderTarget(this.data.renderResolution.x,this.data.renderResolution.y);
-        // Set the texture to the ui panel mesh.
-        ((this.meshEl.getObject3D('mesh') as Mesh).material as any).map = this.renderTarget.texture;
-        // emit ready event for anythng wanting to use this texture.
-        this.meshEl.emit('texture-ready',this.renderTarget.texture);
+
         // Listen for change events to enable rendering.
         this.stoppedRendering = false;
         this.isRendering = true;
@@ -106,6 +104,32 @@ export class Renderer extends UiComponent {
         },this.data.initDelay);
     }
 
+    planeTextureSet = false;
+    
+    tick(time: number, timeDelta: number): void {
+        if (!this.planeTextureSet) {
+            // Set the texture to the ui panel mesh.
+            ((this.meshEl.getObject3D('mesh') as Mesh).material as any).map = this.renderTarget.texture;
+            // emit ready event for anythng wanting to use this texture.
+            this.meshEl.emit('texture-ready',this.renderTarget.texture);
+            this.planeTextureSet = true;
+        }
+        if(this.isFrozen||this.stoppedRendering||!this.isReady)return;
+        if(time-this.lastRenderTime<(1000/this.data.fps)&&this.isRendering)return;
+        this.component.el.object3D.traverse((child: any)=>{
+            child.updateMatrixWorld();
+        });
+        let renderer = this.component.el.sceneEl!!.renderer;
+        let vrModeEnabled = renderer.vr.enabled;
+        renderer.vr.enabled = false;
+        (renderer as any).render(this.component.el.object3D,this.camera,this.renderTarget);
+        renderer.vr.enabled = vrModeEnabled;
+        this.lastRenderTime = time;
+        if(!this.isRendering){
+            this.stoppedRendering = true;
+        }
+    }
+
     pause(): void {
         this.meshEl.removeEventListener('mousedown',this.mousedown);
         this.meshEl.removeEventListener('mouseup',this.mouseup);
@@ -135,23 +159,6 @@ export class Renderer extends UiComponent {
         this.meshEl.addEventListener('ui-mousewheel',this.mousewheel);
     }
 
-    tick(time: number, timeDelta: number): void {
-        if(this.isFrozen||this.stoppedRendering||!this.isReady)return;
-        if(time-this.lastRenderTime<(1000/this.data.fps)&&this.isRendering)return;
-        this.component.el.object3D.traverse((child: any)=>{
-            child.updateMatrixWorld();
-        });
-        let renderer = this.component.el.sceneEl!!.renderer;
-        let vrModeEnabled = renderer.vr.enabled;
-        renderer.vr.enabled = false;
-        (renderer as any).render(this.component.el.object3D,this.camera,this.renderTarget);
-        renderer.vr.enabled = vrModeEnabled;
-        this.lastRenderTime = time;
-        if(!this.isRendering){
-            this.stoppedRendering = true;
-        }
-    }
-    
     pauseRender(time: number){
         return this.playRender(time,true)
     }
@@ -207,9 +214,15 @@ export class Renderer extends UiComponent {
 
     setupUIPanel(){
         let uiPanel = document.createElement('a-plane');
+        uiPanel.setAttribute('side', 'double');
+        uiPanel.setAttribute('shader', 'flat');
+        uiPanel.setAttribute('class', 'intersect');
         uiPanel.setAttribute('position',this.data.panelPosition);
         uiPanel.setAttribute('width',this.data.panelSize.x);
         uiPanel.setAttribute('height',this.data.panelSize.y);
+        if (this.data.panelDepth) {
+            uiPanel.setAttribute('ui-curved-plane','depth: ' + this.data.panelDepth + ';');
+        }
         this.component.el.sceneEl!!.appendChild(uiPanel);
         return uiPanel;
     }
@@ -239,7 +252,8 @@ export class Renderer extends UiComponent {
         // }
         this.raycastIntersections(e,mouse,type);
     }
-    raycastIntersections(e: MouseEvent,mouse: any,type: string){
+
+    raycastIntersections(e: MouseEvent,mouse: any,type: string) {
         if(!this.camera||this.isFrozen||this.isAnimatingBackground)return;
         //console.log(mouse);
         this.raycaster.setFromCamera( mouse, this.camera );
@@ -259,10 +273,10 @@ export class Renderer extends UiComponent {
         for(let i = 0;i < intersections.length; i++){
             let intersection = intersections[i];
             // Only emit events on objecst with an element attached
-            if((intersection.object as any).el &&(intersection.object as any).el.classList.contains(this.data.intersectableClass)){
+            if((intersection.object as any).el &&(intersection.object as any).el.classList.contains(this.data.intersectableClass)) {
                 let currentEvent = {intersection:intersection,evt:e,preventDefault:()=>{defaultPrevented=true}};
                 // If this is the first time weve seen this element then emit the mouseenter event.
-                if(this.prevIntersectionEls.indexOf((intersection.object as any).el)===-1&&!defaultPrevented){
+                if(this.prevIntersectionEls.indexOf((intersection.object as any).el)===-1&&!defaultPrevented) {
                     (intersection.object as any).el.emit('mouseenter',currentEvent);
                 }
                 // Emit the mouse event received
@@ -276,9 +290,9 @@ export class Renderer extends UiComponent {
             }
         }
         // Find any intersections that have disappeared to emit the mouse leave event.
-        for(let i = 0;i < this.prevIntersectionEls.length; i++){
+        for(let i = 0;i < this.prevIntersectionEls.length; i++) {
             let intersectionEl = this.prevIntersectionEls[i];
-            if(intersectionEls.indexOf(intersectionEl)===-1){
+            if(intersectionEls.indexOf(intersectionEl)===-1) {
                 intersectionEl.emit('mouseleave',{intersection: (intersectionEl as any).intersection});
             }
         }

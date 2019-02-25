@@ -49,9 +49,9 @@ import {
     WRAP_WRAP,
     WRAP_WRAP_REVERSE
 } from "typeflex";
-import {UiComponent} from "./UiComponent";
+import {UiElement} from "./UiElement";
 
-export class Yoga extends UiComponent {
+export class Yoga extends UiElement {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-yoga",

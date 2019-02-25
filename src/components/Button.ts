@@ -1,9 +1,9 @@
 import {Component, Entity} from "aframe";
 import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
-import {UiComponent} from "./UiComponent";
+import {UiElement} from "./UiElement";
 
-export class Button extends UiComponent {
+export class Button extends UiElement {
 
     defaultZ = 0;
     is_clicked = false;
