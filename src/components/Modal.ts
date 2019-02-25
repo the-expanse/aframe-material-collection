@@ -34,8 +34,8 @@ export class Modal extends UiElement {
             this.mainComponents = this.data.main.components;
             this.modalComponents = this.data.modal.components;
             // Pause rendering of modal until opened.
-            if(this.modalComponents&&this.modalComponents['ui-renderer']){
-                this.modalComponents['ui-renderer'].pause();
+            if(this.modalComponents&&this.modalComponents['ui']){
+                this.modalComponents['ui'].pause();
             }
             // Setup close listeners for anything with the class close-modal.
             let close_buttons = this.data.modal.querySelectorAll('.close-modal');
@@ -61,17 +61,17 @@ export class Modal extends UiElement {
     }
     
     open(){
-        if(this.mainComponents&&this.mainComponents['ui-renderer']){
-            this.mainComponents['ui-renderer'].el.pauseRender();
+        if(this.mainComponents&&this.mainComponents['ui']){
+            this.mainComponents['ui'].el.pauseRender();
             this.tweenModalScale(0.0000001,1);
-            this.modalComponents['ui-renderer'].play();
+            this.modalComponents['ui'].play();
         }
     }
     close(){
         // Pause the modal rendering and play the main rendering again.
-        this.modalComponents['ui-renderer'].pause();
-        this.mainComponents['ui-renderer'].play();
-        this.mainComponents['ui-renderer'].el.playRender();
+        this.modalComponents['ui'].pause();
+        this.mainComponents['ui'].play();
+        this.mainComponents['ui'].el.playRender();
         this.tweenModalScale(1,0.0000001)
             .then(()=>{
                 this.component.el.sceneEl!!.emit('modal-closed');

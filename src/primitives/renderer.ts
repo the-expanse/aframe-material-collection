@@ -3,7 +3,7 @@ import AFRAME from "aframe";
 /**
  * UI Primitive for aframe-material-collection.
  * @namespace aframe-material-collection
- * @primitive a-ui-renderer
+ * @primitive a-ui
  * @author Shane Harris
  */
 export = AFRAME.registerPrimitive('a-ui', AFRAME.utils.extendDeep({}, AFRAME.primitives.getMeshMixin(), {
