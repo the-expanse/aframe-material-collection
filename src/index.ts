@@ -13,6 +13,7 @@ import {Button} from "./component/Button";
 import {Checkbox} from "./component/Checkbox";
 import {ColorPicker} from "./component/ColorPicker";
 import {CurvedPlane} from "./component/CurvedPlane";
+import {DoubleClick} from "./component/DoubleClick";
 
 let version = Package.version;
 console.log('aframe-material-collection version '+version);
@@ -33,3 +34,4 @@ registerComponentController(Button.DEFINITION);
 registerComponentController(Checkbox.DEFINITION);
 registerComponentController(ColorPicker.DEFINITION);
 registerComponentController(CurvedPlane.DEFINITION);
+registerComponentController(DoubleClick.DEFINITION);
