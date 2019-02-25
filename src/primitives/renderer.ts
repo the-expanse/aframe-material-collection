@@ -1,29 +1,29 @@
 import AFRAME from "aframe";
 
 /**
- * Renderer Primitive for aframe-material-collection.
+ * UI Primitive for aframe-material-collection.
  * @namespace aframe-material-collection
  * @primitive a-ui-renderer
  * @author Shane Harris
  */
-export = AFRAME.registerPrimitive('a-ui-renderer', AFRAME.utils.extendDeep({}, AFRAME.primitives.getMeshMixin(), {
+export = AFRAME.registerPrimitive('a-ui', AFRAME.utils.extendDeep({}, AFRAME.primitives.getMeshMixin(), {
     defaultComponents: {
-        "ui-renderer":{}
+        "ui":{}
     },
     mappings: {
-        "ui-panel":"ui-renderer.uiPanel",
-        "look-controls-el":"ui-renderer.lookControlsEl",
-        "look-controls-component":"ui-renderer.lookControlsComponent",
-        "panel-position":"ui-renderer.panelPosition",
-        "panel-size":"ui-renderer.panelSize",
-        "panel-depth":"ui-renderer.panelDepth",
-        "panel-color":"ui-renderer.panelColor",
-        "panel-alpha":"ui-renderer.panelAlpha",
-        "render-resolution":"ui-renderer.renderResolution",
-        "debug-raycaster":"ui-renderer.debugRaycaster",
-        "fps":"ui-renderer.fps",
-        "intersectable-class":"ui-renderer.intersectableClass",
-        "render-debug":"ui-renderer.debug",
-        "init-delay":"ui-renderer.initDelay"
+        "ui-panel":"ui.uiPanel",
+        "look-controls-el":"ui.lookControlsEl",
+        "look-controls-component":"ui.lookControlsComponent",
+        "panel-position":"ui.panelPosition",
+        "panel-size":"ui.panelSize",
+        "panel-depth":"ui.panelDepth",
+        "panel-color":"ui.panelColor",
+        "panel-alpha":"ui.panelAlpha",
+        "render-resolution":"ui.renderResolution",
+        "debug-raycaster":"ui.debugRaycaster",
+        "fps":"ui.fps",
+        "intersectable-class":"ui.intersectableClass",
+        "render-debug":"ui.debug",
+        "init-delay":"ui.initDelay"
     }
 }));

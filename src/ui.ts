@@ -36,7 +36,7 @@ import {Slider} from "./components/Slider";
 import {Switch} from "./components/Switch";
 import {Toast} from "./components/Toast";
 import {Yoga} from "./components/Yoga";
-import {Renderer} from "./components/Renderer";
+import {UI} from "./components/UI";
 import {ScrollPane} from "./components/ScrollPane";
 
 export function registerMaterialUiSystem() {
@@ -62,7 +62,7 @@ export function registerMaterialUiSystem() {
     registerComponentController(Switch.DEFINITION);
     registerComponentController(Toast.DEFINITION);
     registerComponentController(Yoga.DEFINITION);
-    registerComponentController(Renderer.DEFINITION);
+    registerComponentController(UI.DEFINITION);
     registerComponentController(ScrollPane.DEFINITION);
 
 }

@@ -3,10 +3,10 @@ import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built
 import {Mesh, MeshBasicMaterial, PerspectiveCamera, Raycaster, SphereGeometry, WebGLRenderTarget} from "three";
 import {UiElement} from "./UiElement";
 
-export class Renderer extends UiElement {
+export class UI extends UiElement {
 
     public static DEFINITION = new ComponentControllerDefinition(
-        /* Name */ "ui-renderer",
+        /* Name */ "ui",
         /* Schema */ {
             uiPanel: {type: 'selector'},
             lookControlsEl: {type: 'selector'},
@@ -26,7 +26,7 @@ export class Renderer extends UiElement {
         /* Multiple */ false,
         /* Receive ticks */ true,
         /* Factory function */ (component: Component, entity: Entity, data: any) =>
-            new Renderer(component, entity, data));
+            new UI(component, entity, data));
 
     meshEl: Entity = undefined as any as Entity;
     backdrop: Entity = undefined as any as Entity;
