@@ -27,6 +27,7 @@ import {Switch} from "./component/Switch";
 import {Toast} from "./component/Toast";
 import {Yoga} from "./component/Yoga";
 import {Renderer} from "./component/Renderer";
+import {ScrollPane} from "./component/ScrollPane";
 
 let version = Package.version;
 console.log('aframe-material-collection version '+version);
@@ -62,4 +63,5 @@ registerComponentController(Switch.DEFINITION);
 registerComponentController(Toast.DEFINITION);
 registerComponentController(Yoga.DEFINITION);
 registerComponentController(Renderer.DEFINITION);
+registerComponentController(ScrollPane.DEFINITION);
 

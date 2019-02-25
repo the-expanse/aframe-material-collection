@@ -29,7 +29,7 @@ import './primitives/renderer';
 //import './components/number';
 //import './components/switch';
 //import './components/toast';
-import './components/scroll-pane';
+//import './components/scroll-pane';
 //import './components/mouse-shim';
 //import './components/double-click';
 //import './components/checkbox';
