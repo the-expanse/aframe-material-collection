@@ -21,6 +21,7 @@ import {MouseShim} from "./component/MouseShim";
 import {NumberComponent} from "./component/NumberComponent";
 import {Radio} from "./component/Radio";
 import {Ripple} from "./component/Ripple";
+import {Rounded} from "./component/Rounded";
 
 let version = Package.version;
 console.log('aframe-material-collection version '+version);
@@ -49,3 +50,5 @@ registerComponentController(MouseShim.DEFINITION);
 registerComponentController(NumberComponent.DEFINITION);
 registerComponentController(Radio.DEFINITION);
 registerComponentController(Ripple.DEFINITION);
+registerComponentController(Rounded.DEFINITION);
+
