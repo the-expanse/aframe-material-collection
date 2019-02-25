@@ -39,7 +39,7 @@ import './components/scroll-pane';
 //import './components/color-picker';
 //import './components/modal';
 import './components/renderer';
-import './components/yoga';
+//import './components/yoga';
 
 export = {
     // Utils
