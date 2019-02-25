@@ -14,6 +14,8 @@ export class Renderer extends UiElement {
             panelPosition:{type:'vec3',default:{x:0,y:1.6,z:-1}},
             panelSize:{type:'vec2',default:{x:6,y:3}},
             panelDepth:{type:'number',default:0.03},
+            panelColor:{default:'#ffffff'},
+            panelAlpha:{type:'number',default:1},
             renderResolution:{type:'vec2',default:{x:1024,y:512}},
             debugRaycaster:{type:'boolean',default: false},
             fps:{type:'number',default:45},
@@ -104,15 +106,16 @@ export class Renderer extends UiElement {
         },this.data.initDelay);
     }
 
-    planeTextureSet = false;
+    meshTextureSet = false;
     
     tick(time: number, timeDelta: number): void {
-        if (!this.planeTextureSet) {
+        if (!this.meshTextureSet) {
             // Set the texture to the ui panel mesh.
             ((this.meshEl.getObject3D('mesh') as Mesh).material as any).map = this.renderTarget.texture;
+            ((this.meshEl.getObject3D('mesh') as Mesh).material as any).transparent = true;
             // emit ready event for anythng wanting to use this texture.
             this.meshEl.emit('texture-ready',this.renderTarget.texture);
-            this.planeTextureSet = true;
+            this.meshTextureSet = true;
         }
         if(this.isFrozen||this.stoppedRendering||!this.isReady)return;
         if(time-this.lastRenderTime<(1000/this.data.fps)&&this.isRendering)return;
@@ -122,7 +125,14 @@ export class Renderer extends UiElement {
         let renderer = this.component.el.sceneEl!!.renderer;
         let vrModeEnabled = renderer.vr.enabled;
         renderer.vr.enabled = false;
+        let clearAlpha = renderer.getClearAlpha();
+        let clearColor = renderer.getClearColor();
+
+        renderer.setClearColor( this.data.panelColor, this.data.panelAlpha);
         (renderer as any).render(this.component.el.object3D,this.camera,this.renderTarget);
+
+        renderer.setClearColor(clearColor);
+        renderer.setClearAlpha(clearAlpha);
         renderer.vr.enabled = vrModeEnabled;
         this.lastRenderTime = time;
         if(!this.isRendering){
@@ -215,6 +225,8 @@ export class Renderer extends UiElement {
     setupUIPanel(){
         let uiPanel = document.createElement('a-plane');
         uiPanel.setAttribute('side', 'double');
+        //uiPanel.setAttribute('color', '#2a2a2e');
+        uiPanel.setAttribute('color', this.data.panelColor);
         uiPanel.setAttribute('shader', 'flat');
         uiPanel.setAttribute('class', 'intersect');
         uiPanel.setAttribute('position',this.data.panelPosition);
@@ -223,7 +235,7 @@ export class Renderer extends UiElement {
         if (this.data.panelDepth) {
             uiPanel.setAttribute('ui-curved-plane','depth: ' + this.data.panelDepth + ';');
         }
-        this.component.el.sceneEl!!.appendChild(uiPanel);
+        this.component.el.parentElement!!.appendChild(uiPanel);
         return uiPanel;
     }
 

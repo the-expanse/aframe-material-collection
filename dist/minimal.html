@@ -1,69 +1,19 @@
 <!doctype html>
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
     <script src="aframe-material-collection.js"> </script>
-    <meta name="mobile-web-app-capable" content="yes">
-    <title>Aframe Material Collection - Advanced Example</title>
+    <title>Aframe Material Collection - Minimal Example</title>
 </head>
 <body>
 <a-scene stats>
-    <a-assets>
-        <canvas id="textCanvas"></canvas>
-    </a-assets>
-    <a-entity id="camera" camera="near:0.1;far:10000" look-controls wasd-controls>
-        <a-entity id="cursor" cursor="rayOrigin: mouse" ui-mouse-shim
-                  raycaster="far: 30; objects: .intersect;"></a-entity>
-    </a-entity>
 
     <a-entity light="type: ambient; intensity: 0.5;"></a-entity>
-    <a-sky color="#efefef"></a-sky>
+    <a-sky color="#0000ff"></a-sky>
 
-    <a-plane id="modalPanel" ui-curved-plane width="4.4444" height="2" scale="0.0001 0.0001 0.0001" position="0 0 -1.7" side="double" shader="flat" class="intersect"></a-plane>
-    <a-ui-renderer id="modalRenderer" ui-panel="#modalPanel">
-        <a-entity geometry="primitive:plane;width:4.222;height:1.9;" material="side:double;shader:flat;" position="0 0 -0.495">
-
-            <a-plane width="0.15" height="0.15" position="1.105 0.515 0.001" color="#fff" shader="flat"
-                     class="intersectable close-modal">
-                <a-plane src="icons/close_white_18dp.png" width="0.08" height="0.08" shader="flat" transparent="true" color="#4db6ac"></a-plane>
-            </a-plane>
-            <a-ui-scroll-pane id="modalContent" handle-color="#4db6ac" position="0 -0.05 0.01" width="2" height="0.9" look-controls-el="#camera" look-controls-component="">
-                <a-entity class="container">
-
-                    <a-entity example></a-entity>
-                    <!--Introduction-->
-                    <a-entity width="1.8">
-                        <a-text font="roboto" baseLine="center" value="Modal Popup"
-                                color="#212121" anchor="center" wrap-count="28" width="1.9" height="0.15"></a-text>
-
-                        <a-text font="roboto" baseLine="center" value="This modal's content is rendered separately from the rest of the scene - only when its opened."
-                                anchor="center" color="#515151" wrap-count="40" width="1.9" height="0.2"></a-text>
-
-                        <a-text font="roboto" baseLine="center" value="Backdrop"
-                                color="#212121" anchor="center" wrap-count="28" width="1.9" height="0.15"></a-text>
-
-                        <a-text font="roboto" baseLine="center" value="The backdrop is created by pausing the underlying renderer - this means it does not render or respond to input while the modal is opened. It also has a nice fade animation on the backdrop before rendering is paused."
-                                anchor="center" color="#515151" wrap-count="40" width="1.9" height="0.45"></a-text>
-
-
-                        <a-entity width="1.3">
-                            <!--Flat Button-->
-                            <a-ui-button class="intersectable close-modal" text-value="Close" transparent="true"
-                                         font-color="#009688" color="white" ripple-color="#009688"></a-ui-button>
-                        </a-entity>
-
-                        <a-entity width="0.3">
-                            <!--Button-->
-                            <a-ui-button class="intersectable close-modal" text-value="OK" ></a-ui-button>
-                        </a-entity>
-                    </a-entity>
-                </a-entity>
-            </a-ui-scroll-pane>
-        </a-entity>
-    </a-ui-renderer>
+    <a-entity id="camera" camera="near:0.1;far:10000" look-controls wasd-controls>
+        <a-entity id="cursor" cursor="rayOrigin: mouse" ui-mouse-shim raycaster="far: 30; objects: .intersect;"></a-entity>
+    </a-entity>
 
     <a-ui-renderer id="mainRenderer" panel-width="6" panel-height="3" panel-position="0 0 -2">
         <a-entity position="0 0 -0.69">
@@ -75,7 +25,7 @@
             <a-text font="roboto" baseLine="bottom" value="Aframe Material Collection"
                     position="-1.4 0.6 0.005" color="#212121" wrap-count="25" width="1.25" height="0.25"></a-text>
 
-            <a-plane class="intersectable" width="3.4" height="1.7" position="0 0 -0.02" shader="flat" color="#cfcfcf" side="double"></a-plane>
+            <!--<a-plane class="intersectable" width="3.4" height="1.7" position="0 0 -0.02" shader="flat" color="#cfcfcf" side="double"></a-plane>-->
 
             <a-ui-scroll-pane position="0 -0.1 0" scroll-z-offset="0.001" look-controls-el="#camera">
                 <a-entity class="container">
@@ -150,15 +100,6 @@
                             <!--Floating Action Button Disabled-->
                             <a-ui-fab-button-small class="intersectable" disabled="true"
                                                    color="#afafaf" ripple-color="#afafaf"></a-ui-fab-button-small>
-
-
-                            <a-text font="roboto" baseLine="center" value="Modal"
-                                    color="#212121" anchor="center" wrap-count="25" width="1.25" height="0.15"></a-text>
-
-                            <!--Modal Button-->
-                            <a-ui-button class="intersectable" text-value="Open Modal" wrap-count="12"
-                                         ui-modal="modal:#modalRenderer;main:#mainRenderer;"></a-ui-button>
-
 
                             <a-text font="roboto" baseLine="center" value="Color Picker"
                                     color="#212121" anchor="center" wrap-count="25" width="1.25" height="0.15"></a-text>
@@ -281,6 +222,5 @@
 
 
 </a-scene>
-<a href="https://github.com/shaneharris/aframe-material-collection" class="github-corner" aria-label="View source on Github"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
 </body>
 </html>
