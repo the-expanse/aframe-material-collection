@@ -1,5 +1,4 @@
 import {Scene} from "aframe";
-import {Mesh, Object3D} from "three";
 
 export class Utils{
     static changesDetected: any = {};
@@ -8,16 +7,8 @@ export class Utils{
 
 
     constructor(){
-        // setInterval(()=>{
-        //     let now = new Date().getTime();
-        //     for(let key in this.changesDetected){
-        //         let change = this.changesDetected[key];
-        //         if(change.t&&now-change.t>2000){
-        //             this.stoppedChanging(key);
-        //         }
-        //     }
-        // },2000);
     }
+
     static isFirstOrLastChange(){
         let empty = true;
 
@@ -36,50 +27,17 @@ export class Utils{
             }
         }
     }
-    /*getPointInBetweenByPerc(pointA, pointB, percentage) {
 
-        var dir = pointB.clone().sub(pointA);
-        var len = dir.length();
-        dir = dir.normalize().multiplyScalar(len*percentage);
-        return pointA.clone().add(dir);
-
-    }*/
     static preventDefault(e: any){
         if(e.detail && e.detail.preventDefault && typeof e.detail.preventDefault === "function"){
             e.detail.preventDefault();
         }
     }
+
     static shorten(string: string, length: number){
         return string.length>length?string.substr(0,length)+"...":string;
     }
-    /*uniqueNumberedName(newName: string,names: Array<string>, key: string){
-        let currentNumber = 0;
-        let nameLessNumber = newName;
-        for(let i = 0; i < names.length; i++){
-            let name;
-            if(key){
-                name = names[i][key].split('~#');
-            }else{
-                name = names[i].split('~#');
-            }
-            let existingNumber = name.length>1?Number(name.pop()):0;
-            existingNumber = existingNumber || 0;
-            nameLessNumber = name.join('');
-            if(newName===nameLessNumber&&existingNumber>currentNumber){
-                currentNumber = existingNumber;
-            }
-        }
-        if(currentNumber>0){
-            newName+="~# "+(currentNumber+1)
-        }
-        return newName;
-    }*/
-    /*ucFirst(string: string) {
-        return string.charAt(0).toUpperCase() + string.slice(1);
-    }
-    zeroPad(number,length){
-        return ("0000000"+number).slice(-length);
-    }*/
+
     static isChanging(scene: Scene | undefined, ref: string){
         let index = this.changesDetected[ref];
         if(!index){
@@ -91,16 +49,12 @@ export class Utils{
             this.changesDetected[ref].t = new Date().getTime();
         }
     }
+
     static stoppedChanging(ref: string){
         delete this.changesDetected[ref];
         this.isFirstOrLastChange();
     }
-    /*copyToClipboard(text: string){
-        navigator.clipboard.writeText(text).then(()=>{
-        },(err: Error)=> {
-            console.error('copy to clipboard failed:', err);
-        });
-    }*/
+
     static clearObject(object: any){
         object.traverse((child: any) =>{
             if(child.material) {

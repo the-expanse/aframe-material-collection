@@ -5,7 +5,7 @@ import {Math, Mesh, Object3D, Plane, Shader, Vector3} from "three";
 import {Utils} from "../utils";
 import {ALIGN_AUTO, FLEX_DIRECTION_ROW, JUSTIFY_FLEX_START, WRAP_WRAP} from "typeflex";
 import YogaWorker from 'worker-loader!../yoga-worker.ts';
-s
+
 let workerResolves = {} as any;
 let yogaWorker = new YogaWorker();
 yogaWorker.onmessage = event=>{
