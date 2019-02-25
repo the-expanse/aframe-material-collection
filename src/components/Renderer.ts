@@ -16,7 +16,7 @@ export class Renderer extends UiElement {
             panelDepth:{type:'number',default:0.03},
             panelColor:{default:'#ffffff'},
             panelAlpha:{type:'number',default:1},
-            renderResolution:{type:'vec2',default:{x:1024,y:512}},
+            renderResolution:{type:'vec2',default:{x:2048,y:1024}},
             debugRaycaster:{type:'boolean',default: false},
             fps:{type:'number',default:45},
             intersectableClass:{default:'intersectable'},
