@@ -37,7 +37,7 @@ import './components/radio';
 //import './components/border';
 //import './components/curved-plane';
 //import './components/color-picker';
-import './components/modal';
+//import './components/modal';
 import './components/renderer';
 import './components/yoga';
 
