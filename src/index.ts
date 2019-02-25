@@ -6,8 +6,9 @@
 
 import * as Package from '../package.json';
 import {registerComponentController, registerSystemController} from "aframe-typescript-boilerplate/built";
-import {ExampleUiComponent} from "./components/ExampleUiComponent";
+import {ExampleUiComponent} from "./component/ExampleUiComponent";
 import {MaterialUiSystem} from "./MaterialUiSystem";
+import {UiBorder} from "./component/UiBorder";
 
 let version = Package.version;
 console.log('aframe-material-collection version '+version);
@@ -20,5 +21,7 @@ let UI = import('./ui');
 
 (window as any).UI = UI;
 
-registerComponentController(ExampleUiComponent.DEFINITION);
 registerSystemController(MaterialUiSystem.DEFINITION);
+
+registerComponentController(ExampleUiComponent.DEFINITION);
+registerComponentController(UiBorder.DEFINITION);
