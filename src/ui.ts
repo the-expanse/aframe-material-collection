@@ -25,7 +25,7 @@ import './components/text';
 //import './components/icon';
 //import './components/rounded';
 //import './components/ripple';
-import './components/slider';
+//import './components/slider';
 //import './components/number';
 import './components/switch';
 import './components/toast';

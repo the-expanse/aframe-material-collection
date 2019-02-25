@@ -22,6 +22,7 @@ import {NumberComponent} from "./component/NumberComponent";
 import {Radio} from "./component/Radio";
 import {Ripple} from "./component/Ripple";
 import {Rounded} from "./component/Rounded";
+import {Slider} from "./component/Slider";
 
 let version = Package.version;
 console.log('aframe-material-collection version '+version);
@@ -51,4 +52,5 @@ registerComponentController(NumberComponent.DEFINITION);
 registerComponentController(Radio.DEFINITION);
 registerComponentController(Ripple.DEFINITION);
 registerComponentController(Rounded.DEFINITION);
+registerComponentController(Slider.DEFINITION);
 
