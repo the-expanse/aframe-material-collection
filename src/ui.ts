@@ -21,7 +21,7 @@ import './primitives/renderer';
 // Components
 import './components/text';
 import './components/input-text';
-import './components/btn';
+//simport './components/btn';
 import './components/icon';
 import './components/rounded';
 import './components/ripple';

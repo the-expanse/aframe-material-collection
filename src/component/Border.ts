@@ -3,7 +3,7 @@ import {AbstractComponentController} from "aframe-typescript-boilerplate/built/c
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {Mesh, MeshBasicMaterial, Path, Shape, ShapeGeometry} from "three";
 
-export class UiBorder extends AbstractComponentController {
+export class Border extends AbstractComponentController {
 
     public static DEFINITION = new ComponentControllerDefinition(
         /* Name */ "ui-border",
@@ -17,7 +17,7 @@ export class UiBorder extends AbstractComponentController {
         /* Multiple */ false,
         /* Receive ticks */ false,
         /* Factory function */ (component: Component, entity: Entity, data: any) =>
-            new UiBorder(component, entity, data));
+            new Border(component, entity, data));
 
     constructor(component: Component, entity: Entity, data: any) {
         super(component, entity, data);
