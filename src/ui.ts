@@ -36,7 +36,7 @@ import './components/double-click';
 import './components/radio';
 //import './components/border';
 import './components/curved-plane';
-import './components/color-picker';
+//import './components/color-picker';
 import './components/modal';
 import './components/renderer';
 import './components/yoga';
