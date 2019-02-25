@@ -12,6 +12,7 @@ import {Border} from "./component/Border";
 import {Button} from "./component/Button";
 import {Checkbox} from "./component/Checkbox";
 import {ColorPicker} from "./component/ColorPicker";
+import {CurvedPlane} from "./component/CurvedPlane";
 
 let version = Package.version;
 console.log('aframe-material-collection version '+version);
@@ -31,3 +32,4 @@ registerComponentController(Border.DEFINITION);
 registerComponentController(Button.DEFINITION);
 registerComponentController(Checkbox.DEFINITION);
 registerComponentController(ColorPicker.DEFINITION);
+registerComponentController(CurvedPlane.DEFINITION);
