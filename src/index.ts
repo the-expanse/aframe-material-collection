@@ -18,6 +18,7 @@ import {Icon} from "./component/Icon";
 import {InputText} from "./component/InputText";
 import {Modal} from "./component/Modal";
 import {MouseShim} from "./component/MouseShim";
+import {NumberComponent} from "./component/NumberComponent";
 
 let version = Package.version;
 console.log('aframe-material-collection version '+version);
@@ -43,3 +44,4 @@ registerComponentController(Icon.DEFINITION);
 registerComponentController(InputText.DEFINITION);
 registerComponentController(Modal.DEFINITION);
 registerComponentController(MouseShim.DEFINITION);
+registerComponentController(NumberComponent.DEFINITION);
