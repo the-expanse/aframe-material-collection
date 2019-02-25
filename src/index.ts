@@ -15,6 +15,7 @@ import {ColorPicker} from "./component/ColorPicker";
 import {CurvedPlane} from "./component/CurvedPlane";
 import {DoubleClick} from "./component/DoubleClick";
 import {Icon} from "./component/Icon";
+import {InputText} from "./component/InputText";
 
 let version = Package.version;
 console.log('aframe-material-collection version '+version);
@@ -37,3 +38,4 @@ registerComponentController(ColorPicker.DEFINITION);
 registerComponentController(CurvedPlane.DEFINITION);
 registerComponentController(DoubleClick.DEFINITION);
 registerComponentController(Icon.DEFINITION);
+registerComponentController(InputText.DEFINITION);

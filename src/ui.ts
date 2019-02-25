@@ -20,7 +20,7 @@ import './primitives/renderer';
 
 // Components
 import './components/text';
-import './components/input-text';
+//import './components/input-text';
 //simport './components/btn';
 //import './components/icon';
 import './components/rounded';
