@@ -24,6 +24,7 @@ import {Ripple} from "./component/Ripple";
 import {Rounded} from "./component/Rounded";
 import {Slider} from "./component/Slider";
 import {Switch} from "./component/Switch";
+import {Toast} from "./component/Toast";
 
 let version = Package.version;
 console.log('aframe-material-collection version '+version);
@@ -55,4 +56,5 @@ registerComponentController(Ripple.DEFINITION);
 registerComponentController(Rounded.DEFINITION);
 registerComponentController(Slider.DEFINITION);
 registerComponentController(Switch.DEFINITION);
+registerComponentController(Toast.DEFINITION);
 

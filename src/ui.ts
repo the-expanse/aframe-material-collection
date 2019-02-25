@@ -19,7 +19,7 @@ import './primitives/scroll-pane';
 import './primitives/renderer';
 
 // Components
-import './components/text';
+//import './components/text';
 //import './components/input-text';
 //simport './components/btn';
 //import './components/icon';
@@ -28,7 +28,7 @@ import './components/text';
 //import './components/slider';
 //import './components/number';
 //import './components/switch';
-import './components/toast';
+//import './components/toast';
 import './components/scroll-pane';
 //import './components/mouse-shim';
 //import './components/double-click';
