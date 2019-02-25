@@ -1,6 +1,15 @@
 import {Component, Entity} from "aframe";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
-import {Mesh, MeshBasicMaterial, PerspectiveCamera, Raycaster, SphereGeometry, WebGLRenderTarget} from "three";
+import {
+    Camera,
+    Mesh,
+    MeshBasicMaterial,
+    OrthographicCamera,
+    PerspectiveCamera,
+    Raycaster,
+    SphereGeometry,
+    WebGLRenderTarget
+} from "three";
 import {UiElement} from "./UiElement";
 
 export class UI extends UiElement {
@@ -31,7 +40,7 @@ export class UI extends UiElement {
     meshEl: Entity = undefined as any as Entity;
     backdrop: Entity = undefined as any as Entity;
     lookControlsEl: Entity = undefined as any as Entity;
-    camera: PerspectiveCamera = undefined as any as PerspectiveCamera;
+    camera: Camera = undefined as any as Camera;
     renderTarget: WebGLRenderTarget = undefined as any as WebGLRenderTarget;
     stoppedRendering = false;
     isRendering = false;
@@ -67,7 +76,7 @@ export class UI extends UiElement {
         // Remove this object from the scene to be rendered separately.
         this.component.el.object3D.parent!!.remove(this.component.el.object3D);
         // Setup fixed camera nd render target.
-        this.camera = new PerspectiveCamera( 100, 2, 0.1, 1000 );
+        this.camera = new OrthographicCamera( -1.5, 1.5, 0.75, -0.75, -2, 2);
         // Setup render target
         this.renderTarget = new WebGLRenderTarget(this.data.renderResolution.x,this.data.renderResolution.y);
 
