@@ -17,6 +17,7 @@ import {DoubleClick} from "./component/DoubleClick";
 import {Icon} from "./component/Icon";
 import {InputText} from "./component/InputText";
 import {Modal} from "./component/Modal";
+import {MouseShim} from "./component/MouseShim";
 
 let version = Package.version;
 console.log('aframe-material-collection version '+version);
@@ -41,3 +42,4 @@ registerComponentController(DoubleClick.DEFINITION);
 registerComponentController(Icon.DEFINITION);
 registerComponentController(InputText.DEFINITION);
 registerComponentController(Modal.DEFINITION);
+registerComponentController(MouseShim.DEFINITION);
