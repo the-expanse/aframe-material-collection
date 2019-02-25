@@ -1,8 +1,6 @@
 import {Component, Entity} from "aframe";
-import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {BufferGeometry, CircleGeometry, Geometry, Material, Mesh, MeshBasicMaterial, Plane, Vector3} from "three";
-import {Utils} from "../utils";
 import {UiComponent} from "./UiComponent";
 
 export class Ripple extends UiComponent {
@@ -88,7 +86,7 @@ export class Ripple extends UiComponent {
     tweenSize(geometry: Geometry | BufferGeometry){
         let _this = this;
         // Start changes
-        Utils.isChanging(this.component.el.sceneEl,_this.ripple.uuid);
+        this.ui.isChanging(this.component.el.sceneEl,_this.ripple.uuid);
         new TWEEN.Tween({x:0.00001})
             .to({ x: 1}, this.data.duration)
             .onUpdate(function(){
@@ -99,7 +97,7 @@ export class Ripple extends UiComponent {
                 // Reset throttle flag.
                 this.isRippling = false;
                 // Stop changes
-                Utils.stoppedChanging(_this.ripple.uuid);
+                this.ui.stoppedChanging(_this.ripple.uuid);
             })
             .easing(TWEEN.Easing.Exponential.Out).start();
     }

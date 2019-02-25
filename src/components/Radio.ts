@@ -1,7 +1,5 @@
 import {Component, Entity} from "aframe";
-import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
-import {Utils} from "../utils";
 import {Color} from "three";
 import {UiComponent} from "./UiComponent";
 
@@ -72,7 +70,7 @@ export class Radio extends UiComponent {
         this.component.el.setAttribute('selected',false);
         let _this = this;
         // Start changes
-        Utils.isChanging(this.component.el.sceneEl,this.component.el.object3D.uuid);
+        this.ui.isChanging(this.component.el.sceneEl,this.component.el.object3D.uuid);
         new TWEEN.Tween({x:1})
             .to({ x: 0.000001}, 200)
             .onUpdate(function(){
@@ -80,7 +78,7 @@ export class Radio extends UiComponent {
             })
             .onComplete(()=>{
                 // Stop changes
-                Utils.stoppedChanging(_this.component.el.object3D.uuid);
+                this.ui.stoppedChanging(_this.component.el.object3D.uuid);
                 this.isRippling = false;
             })
             .easing(TWEEN.Easing.Exponential.Out).start();
@@ -102,7 +100,7 @@ export class Radio extends UiComponent {
         this.isSelecting = true;
         let _this = this;
         // Start changes
-        Utils.isChanging(this.component.el.sceneEl,this.filled_circle!!.object3D.uuid);
+        this.ui.isChanging(this.component.el.sceneEl,this.filled_circle!!.object3D.uuid);
         new TWEEN.Tween({x:0.000001})
             .to({ x: 1}, 250)
             .onUpdate(function(){
@@ -110,7 +108,7 @@ export class Radio extends UiComponent {
             })
             .onComplete(()=>{
                 // Stop changes
-                Utils.stoppedChanging(this.filled_circle!!.object3D.uuid);
+                this.ui.stoppedChanging(this.filled_circle!!.object3D.uuid);
                 this.isSelecting = false;
             })
             .easing(TWEEN.Easing.Exponential.Out).start();

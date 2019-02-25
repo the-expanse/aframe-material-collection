@@ -1,7 +1,5 @@
 import {Component, Entity} from "aframe";
-import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
-import {Utils} from "../utils";
 import {Math, Mesh, MeshBasicMaterial, Object3D} from "three";
 import {UiComponent} from "./UiComponent";
 
@@ -107,9 +105,9 @@ export class Slider extends UiComponent {
             this.handlePos = this.handleEl.object3D.worldToLocal(((e as any).detail as any).intersection?((e as any).detail as any).intersection.point:((e as any).relatedTarget as Entity).object3D.position).x;
             this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
             // Start changes
-            Utils.isChanging(this.component.el.sceneEl,this.handleEl.object3D.uuid);
+            this.ui.isChanging(this.component.el.sceneEl,this.handleEl.object3D.uuid);
             // Prevent default behaviour of event
-            Utils.preventDefault(e);
+            this.ui.preventDefault(e);
         });
         // End scroll
         const endScroll = (e:Event)=>{
@@ -120,9 +118,9 @@ export class Slider extends UiComponent {
                 this.isDragging = false;
                 // Stop changes
                 this.component.el.emit('slide-end',this.scroll_perc);
-                Utils.stoppedChanging(this.handleEl.object3D.uuid);
+                this.ui.stoppedChanging(this.handleEl.object3D.uuid);
                 // Prevent default behaviour of event
-                Utils.preventDefault(e);
+                this.ui.preventDefault(e);
             }
         };
         this.backgroundPanel.addEventListener('mouseup',endScroll);
@@ -130,7 +128,7 @@ export class Slider extends UiComponent {
         // // Handle clicks on rail to scroll
         this.railEl.addEventListener('mousedown',(e)=>{
 
-            Utils.isChanging(this.component.el.sceneEl,this.handleEl.object3D.uuid);
+            this.ui.isChanging(this.component.el.sceneEl,this.handleEl.object3D.uuid);
             // Pause look controls
             this.isDragging = true;
             // Reset handle pos to center of handle
@@ -140,7 +138,7 @@ export class Slider extends UiComponent {
             this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
             this.component.el.emit('slide-end',this.scroll_perc);
             // Prevent default behaviour of event
-            Utils.preventDefault(e);
+            this.ui.preventDefault(e);
         });
         (this.component.el as any).slide = this.slide.bind(this);
         (this.component.el as any).getValue = this.getValue.bind(this);

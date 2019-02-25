@@ -2,7 +2,6 @@ import {Component, Entity} from "aframe";
 import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {Mesh, MeshBasicMaterial, Object3D, Vector3} from "three";
-import {Utils} from "../utils";
 import {UiComponent} from "./UiComponent";
 
 export class Switch extends UiComponent {
@@ -133,12 +132,12 @@ export class Switch extends UiComponent {
     tweenHandle(){
         if(this.handleEl){
             // Start changes
-            Utils.isChanging(this.component.el.sceneEl,this.component.el.object3D.uuid);
+            this.ui.isChanging(this.component.el.sceneEl,this.component.el.object3D.uuid);
             new TWEEN.Tween(this.handleEl.object3D.position)
                 .to(new Vector3(this.data.value?0.05:-0.05,0,this.data.handleZIndex), this.data.switchDuration)
                 .onComplete(()=>{
                     // Stop changes
-                    Utils.stoppedChanging(this.component.el.object3D.uuid);
+                    this.ui.stoppedChanging(this.component.el.object3D.uuid);
                 })
                 .easing(TWEEN.Easing.Exponential.Out).start();
         }

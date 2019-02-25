@@ -1,8 +1,6 @@
 import {Component, Entity} from "aframe";
-import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {Mesh, MeshBasicMaterial, PerspectiveCamera, Raycaster, SphereGeometry, WebGLRenderTarget} from "three";
-import {Utils} from "../utils";
 import {UiComponent} from "./UiComponent";
 
 export class Renderer extends UiComponent {
@@ -101,9 +99,9 @@ export class Renderer extends UiComponent {
         this.isReady = false;
         setTimeout(()=>{
             this.isReady = true;
-            Utils.isChanging(this.component.el.sceneEl,this.component.el.object3D.uuid);
+            this.ui.isChanging(this.component.el.sceneEl,this.component.el.object3D.uuid);
             setTimeout(()=>{
-                Utils.stoppedChanging(this.component.el.object3D.uuid);
+                this.ui.stoppedChanging(this.component.el.object3D.uuid);
             },250);
         },this.data.initDelay);
     }
@@ -170,7 +168,7 @@ export class Renderer extends UiComponent {
                 _this.isFrozen = isPaused;
                 _this.play();
             }
-            Utils.isChanging(_this.component.el.sceneEl,(_this.backdrop as any).uuid);
+            this.ui.isChanging(_this.component.el.sceneEl,(_this.backdrop as any).uuid);
             if(_this.renderTween)_this.renderTween.stop();
             _this.renderTween = new TWEEN.Tween({x:fromScale})
                 .to({x:toScale}, duration)
@@ -186,7 +184,7 @@ export class Renderer extends UiComponent {
                         this.backdrop.setAttribute('scale','0.000001 0.000001 0.000001');
                     }
                     // Stop changes
-                    Utils.stoppedChanging((this.backdrop as any).uuid);
+                    this.ui.stoppedChanging((this.backdrop as any).uuid);
                     resolve();
                 })
                 .easing(TWEEN.Easing.Exponential.Out).start();

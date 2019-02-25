@@ -1,9 +1,6 @@
 import {Component, Entity} from "aframe";
-import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
-import {Utils} from "../utils";
 import {Vector3} from "three";
-import Tween = TWEEN.Tween;
 import {UiComponent} from "./UiComponent";
 
 export class Toast extends UiComponent {
@@ -30,9 +27,9 @@ export class Toast extends UiComponent {
         this.originalPosition = this.data.toastEl.getAttribute('position').clone();
         this.component.el.addEventListener('mousedown',()=>{
             if(this.closeTween)this.closeTween.stop();
-            Utils.isChanging(this.component.el.sceneEl,this.data.toastEl.object3D.uuid);
+            this.ui.isChanging(this.component.el.sceneEl,this.data.toastEl.object3D.uuid);
             this.data.toastEl.setAttribute('visible',true);
-            this.data.toastEl.setAttribute('text-value',Utils.shorten(this.data.message,85));
+            this.data.toastEl.setAttribute('text-value',this.ui.shorten(this.data.message,85));
             let _this = this;
             new TWEEN.Tween({x:this.originalPosition.x,y:this.originalPosition.y-0.1,z:this.originalPosition.z})
                 .to(this.originalPosition, 350)
@@ -49,7 +46,7 @@ export class Toast extends UiComponent {
                         })
                         .onComplete(()=>{
                             this.data.toastEl.setAttribute('visible',false);
-                            Utils.stoppedChanging(this.data.toastEl.object3D.uuid);
+                            this.ui.stoppedChanging(this.data.toastEl.object3D.uuid);
                         })
                         .easing(TWEEN.Easing.Exponential.Out).start();
                 })

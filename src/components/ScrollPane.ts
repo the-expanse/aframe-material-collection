@@ -1,8 +1,6 @@
 import {Component, Entity} from "aframe";
-import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {Math, Mesh, Object3D, Plane, Shader, Vector3} from "three";
-import {Utils} from "../utils";
 import {ALIGN_AUTO, FLEX_DIRECTION_ROW, JUSTIFY_FLEX_START, WRAP_WRAP} from "typeflex";
 import YogaWorker from 'worker-loader!../yoga-worker.ts';
 import {UiComponent} from "./UiComponent";
@@ -61,7 +59,6 @@ export class ScrollPane extends UiComponent {
     }
 
     init(): void {
-        console.log("example ui component init.");
         // Setup scroll bar and panel backing.
         this.setupElements();
         // Grab content container.
@@ -102,9 +99,9 @@ export class ScrollPane extends UiComponent {
             this.handlePos = this.handle.object3D.worldToLocal(((e as MouseEvent).detail as any).intersection.point).y;
             this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
             // Start changes
-            Utils.isChanging(this.component.el.sceneEl,this.handle.object3D.uuid);
+            this.ui.isChanging(this.component.el.sceneEl,this.handle.object3D.uuid);
             // Prevent default behaviour of event
-            Utils.preventDefault(e);
+            this.ui.preventDefault(e);
         });
         // End scroll
         const endScroll = (e)=>{
@@ -114,9 +111,9 @@ export class ScrollPane extends UiComponent {
                 playPauseCamera('play');
                 this.isDragging = false;
                 // Stop changes
-                Utils.stoppedChanging(this.handle.object3D.uuid);
+                this.ui.stoppedChanging(this.handle.object3D.uuid);
                 // Prevent default behaviour of event
-                Utils.preventDefault(e);
+                this.ui.preventDefault(e);
             }
         };
         this.backgroundPanel.addEventListener('mouseup',endScroll);
@@ -124,7 +121,7 @@ export class ScrollPane extends UiComponent {
         // // Handle clicks on rail to scroll
         this.rail.addEventListener('mousedown',(e)=>{
 
-            Utils.isChanging(this.component.el.sceneEl,this.handle.object3D.uuid);
+            this.ui.isChanging(this.component.el.sceneEl,this.handle.object3D.uuid);
             // Pause look controls
             this.isDragging = true;
             // Reset handle pos to center of handle
@@ -133,7 +130,7 @@ export class ScrollPane extends UiComponent {
             this.scroll(this.rail.object3D.worldToLocal(((e as MouseEvent).detail as any).intersection.point).y);
             this.backgroundPanel.addEventListener('ui-mousemove',mousemove);
             // Prevent default behaviour of event
-            Utils.preventDefault(e);
+            this.ui.preventDefault(e);
         });
 
         // Setup content clips after the scene is loaded to be able to access all entity materials
@@ -170,7 +167,7 @@ export class ScrollPane extends UiComponent {
             while (this.container.firstChild) {
                 let child = this.container.firstChild as Entity;
                 if(child.object3D){
-                    Utils.clearObject(child.object3D);
+                    this.ui.clearObject(child.object3D);
                 }
                 this.container.removeChild(child);
                 (this.container as any).firstChild = null;
@@ -198,7 +195,7 @@ export class ScrollPane extends UiComponent {
     async updateContent(should_not_scroll?: boolean){
         this.updateContentClips();
         this.currentUuid = Math.generateUUID();
-        Utils.isChanging(this.component.el.sceneEl,this.currentUuid);
+        this.ui.isChanging(this.component.el.sceneEl,this.currentUuid);
         this.setChildClips();
         await this.initialiseYoga(this.container);
         await sendMessage('get-layout',null,(this.container as any).yoga_uuid, undefined)
@@ -217,7 +214,7 @@ export class ScrollPane extends UiComponent {
                     this.container.object3D.position.y = this.data.height/2;
                     this.handle.setAttribute('position',((this.data.width/2)+this.data.scrollPadding)+' '+(this.data.height-(this.data.height*this.handleSize))/2+' '+(this.data.scrollZOffset+0.0005));
                 }
-                setTimeout(()=>Utils.stoppedChanging(this.currentUuid),3000);
+                setTimeout(()=>this.ui.stoppedChanging(this.currentUuid),3000);
             });
     }
     mouseMove(e: MouseEvent){
@@ -239,11 +236,11 @@ export class ScrollPane extends UiComponent {
         this.backgroundPanel.addEventListener('ui-mousewheel',(e)=>{
             if(this.handleSize!==1){
                 // Start changes
-                Utils.isChanging(this.component.el.sceneEl,this.component.el.object3D.uuid);
+                this.ui.isChanging(this.component.el.sceneEl,this.component.el.object3D.uuid);
                 this.scroll(this.handle.getAttribute('position').y+(((e as MouseEvent).detail as any).evt.deltaY<0?0.1:-0.1));
                 // Stop changes
-                Utils.stoppedChanging(this.component.el.object3D.uuid);
-                Utils.preventDefault(e);
+                this.ui.stoppedChanging(this.component.el.object3D.uuid);
+                this.ui.preventDefault(e);
             }
         });
     }
@@ -449,7 +446,7 @@ export class ScrollPane extends UiComponent {
                         // Wait for the font to load first.
                         child.addEventListener('textfontset',()=>{
                             clearTimeout(this.fontRenderTimeout);
-                            this.fontRenderTimeout = setTimeout(()=>Utils.stoppedChanging(this.currentUuid),500);
+                            this.fontRenderTimeout = setTimeout(()=>this.ui.stoppedChanging(this.currentUuid),500);
                             traverse();
                         })
                     }else{

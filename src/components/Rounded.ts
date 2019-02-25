@@ -22,8 +22,6 @@ export class Rounded extends UiComponent {
     }
 
     init(): void {
-        console.log("example ui component init.");
-
         let mesh = this.component.el.getObject3D('mesh') as Mesh;
         let roundedRectShape = new Shape();
         // Draw the Rounded rectangle shape centered in the object - from three.js shapes example.

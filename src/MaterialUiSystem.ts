@@ -17,49 +17,6 @@ import './primitives/int-input';
 import './primitives/password-input';
 import './primitives/scroll-pane';
 import './primitives/renderer';
-import {ExampleUiComponent} from "./components/ExampleUiComponent";
-import {Border} from "./components/Border";
-import {Button} from "./components/Button";
-import {Checkbox} from "./components/Checkbox";
-import {ColorPicker} from "./components/ColorPicker";
-import {CurvedPlane} from "./components/CurvedPlane";
-import {DoubleClick} from "./components/DoubleClick";
-import {Icon} from "./components/Icon";
-import {InputText} from "./components/InputText";
-import {Modal} from "./components/Modal";
-import {MouseShim} from "./components/MouseShim";
-import {NumberComponent} from "./components/NumberComponent";
-import {Radio} from "./components/Radio";
-import {Ripple} from "./components/Ripple";
-import {Rounded} from "./components/Rounded";
-import {Slider} from "./components/Slider";
-import {Switch} from "./components/Switch";
-import {Toast} from "./components/Toast";
-import {Yoga} from "./components/Yoga";
-import {Renderer} from "./components/Renderer";
-import {ScrollPane} from "./components/ScrollPane";
-
-registerComponentController(ExampleUiComponent.DEFINITION);
-registerComponentController(Border.DEFINITION);
-registerComponentController(Button.DEFINITION);
-registerComponentController(Checkbox.DEFINITION);
-registerComponentController(ColorPicker.DEFINITION);
-registerComponentController(CurvedPlane.DEFINITION);
-registerComponentController(DoubleClick.DEFINITION);
-registerComponentController(Icon.DEFINITION);
-registerComponentController(InputText.DEFINITION);
-registerComponentController(Modal.DEFINITION);
-registerComponentController(MouseShim.DEFINITION);
-registerComponentController(NumberComponent.DEFINITION);
-registerComponentController(Radio.DEFINITION);
-registerComponentController(Ripple.DEFINITION);
-registerComponentController(Rounded.DEFINITION);
-registerComponentController(Slider.DEFINITION);
-registerComponentController(Switch.DEFINITION);
-registerComponentController(Toast.DEFINITION);
-registerComponentController(Yoga.DEFINITION);
-registerComponentController(Renderer.DEFINITION);
-registerComponentController(ScrollPane.DEFINITION);
 
 export class MaterialUiSystem extends AbstractSystemController {
 
@@ -85,6 +42,82 @@ export class MaterialUiSystem extends AbstractSystemController {
     }
 
     tick(time: number, timeDelta: number): void {
+    }
+
+
+
+    changesDetected: any = {};
+    is_changeing: boolean = false;
+    scene: Scene = undefined as any as Scene;
+
+
+    isFirstOrLastChange(){
+        let empty = true;
+
+        for(let key in this.changesDetected) {
+            empty = false;
+            break;
+        }
+
+        if(!this.is_changeing&&!empty){
+            this.scene!!.emit('ui-changing');
+            this.is_changeing = true;
+        }else if(this.is_changeing&&empty){
+            if(this.is_changeing){
+                this.scene!!.emit('ui-changing-stopped');
+                this.is_changeing = false;
+            }
+        }
+    }
+
+    preventDefault(e: any){
+        if(e.detail && e.detail.preventDefault && typeof e.detail.preventDefault === "function"){
+            e.detail.preventDefault();
+        }
+    }
+
+    shorten(string: string, length: number){
+        return string.length>length?string.substr(0,length)+"...":string;
+    }
+
+    isChanging(scene: Scene | undefined, ref: string){
+        let index = this.changesDetected[ref];
+        if(!index){
+            this.scene = this.scene||scene;
+            let now = new Date().getTime();
+            this.changesDetected[ref] = {t:now,e:new Error().stack};
+            this.isFirstOrLastChange();
+        }else{
+            this.changesDetected[ref].t = new Date().getTime();
+        }
+    }
+
+    stoppedChanging(ref: string){
+        delete this.changesDetected[ref];
+        this.isFirstOrLastChange();
+    }
+
+    clearObject(object: any){
+        object.traverse((child: any) =>{
+            if(child.material) {
+                if(child.material.length){
+                    for(let i =0; i < child.material.length; i++){
+                        if(child.material[i].map){
+                            child.material[i].map.dispose();
+                        }
+                        child.material[i].dispose();
+                    }
+                }else{
+                    if(child.material.map){
+                        child.material.map.dispose();
+                    }
+                    child.material.dispose();
+                }
+            }
+            if(child.geometry){
+                child.geometry.dispose();
+            }
+        });
     }
 
 }

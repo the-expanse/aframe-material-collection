@@ -1,7 +1,5 @@
 import {Component, Entity} from "aframe";
-import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
-import {Utils} from "../utils";
 import {Color, Math as ThreeMath, Mesh, ShaderMaterial} from "three";
 import {UiComponent} from "./UiComponent";
 
@@ -56,7 +54,7 @@ export class ColorPicker extends UiComponent {
             .then(()=>this.component.el.setAttribute('visible',false));
     };
     tweenPickerScale(from: number, to: number){
-        Utils.isChanging(this.component.el.sceneEl,this.component.el.object3D.uuid);
+        this.ui.isChanging(this.component.el.sceneEl,this.component.el.object3D.uuid);
         return new Promise(r=>{
             let _this = this;
             new TWEEN.Tween({x:from})
@@ -65,7 +63,7 @@ export class ColorPicker extends UiComponent {
                     _this.component.el.setAttribute('scale',this.x+' '+this.x+' '+this.x);
                 })
                 .onComplete(()=>{
-                    Utils.stoppedChanging(this.component.el.object3D.uuid);
+                    this.ui.stoppedChanging(this.component.el.object3D.uuid);
                     r();
                 })
                 .easing(TWEEN.Easing.Exponential.Out).start();
@@ -137,7 +135,7 @@ export class ColorPicker extends UiComponent {
             let hex = this.getHex();
             this.component.el.emit('color-selected',hex);
             (this.component.el as any).close();
-            Utils.preventDefault(e);
+            this.ui.preventDefault(e);
             if(this.data.targetEl){
                 this.data.targetEl.setAttribute('color',hex);
             }
@@ -162,7 +160,7 @@ export class ColorPicker extends UiComponent {
         buttonCancel.addEventListener('mousedown',e=> {
             this.component.el.emit('color-cancelled');
             (this.component.el as any).close();
-            Utils.preventDefault(e);
+            this.ui.preventDefault(e);
         });
         this.hexValue = document.createElement('a-text');
         this.hexValue.setAttribute('value','#ffffff');
@@ -281,23 +279,23 @@ export class ColorPicker extends UiComponent {
 
         brightnessResetLeft.addEventListener('mousedown',()=>{
 
-            Utils.isChanging(this.component.el.sceneEl,this.component.el.object3D.uuid);
+            this.ui.isChanging(this.component.el.sceneEl,this.component.el.object3D.uuid);
             ((this.colorWheel.getObject3D('mesh') as Mesh).material as ShaderMaterial).uniforms['brightness'].value = 0;
             this.hsv.v = 0;
             this.hsv.h = 0;
             this.hsv.s = 0;
             this.updateColor();
-            Utils.stoppedChanging(this.component.el.object3D.uuid);
+            this.ui.stoppedChanging(this.component.el.object3D.uuid);
         });
         brightnessResetRight.addEventListener('mousedown',()=>{
 
-            Utils.isChanging(this.component.el.sceneEl,this.component.el.object3D.uuid);
+            this.ui.isChanging(this.component.el.sceneEl,this.component.el.object3D.uuid);
             ((this.colorWheel.getObject3D('mesh') as Mesh).material as ShaderMaterial).uniforms['brightness'].value = 1;
             this.hsv.v = 1;
             this.hsv.h = 0;
             this.hsv.s = 0;
             this.updateColor();
-            Utils.stoppedChanging(this.component.el.object3D.uuid);
+            this.ui.stoppedChanging(this.component.el.object3D.uuid);
         });
     };
     getHex(){
@@ -313,18 +311,18 @@ export class ColorPicker extends UiComponent {
     setupEvents(){
         this.colorWheel.addEventListener('mousedown', (e)=>{
             this.isMouseDown = true;
-            Utils.preventDefault(e);
+            this.ui.preventDefault(e);
         });
         this.colorWheel.addEventListener('mouseup',(e)=>{
             console.log('mouseup on color picker');
             this.isMouseDown = false;
-            Utils.preventDefault(e);
+            this.ui.preventDefault(e);
         });
         this.colorWheel.addEventListener('ui-mousemove',(e)=>{
             if(!this.isMouseDown)return;
-            Utils.preventDefault(e);
+            this.ui.preventDefault(e);
 
-            Utils.isChanging(this.component.el.sceneEl,this.component.el.object3D.uuid);
+            this.ui.isChanging(this.component.el.sceneEl,this.component.el.object3D.uuid);
             let colorWheel = this.colorWheel.getObject3D('mesh'),
                 radius = 0.5,
                 position = ((e as MouseEvent).detail as any).intersection.point;
@@ -342,20 +340,20 @@ export class ColorPicker extends UiComponent {
             this.hsv.h = angle / 360;
             this.hsv.s = polarPosition.r / radius;
             this.updateColor();
-            Utils.stoppedChanging(this.component.el.object3D.uuid);
+            this.ui.stoppedChanging(this.component.el.object3D.uuid);
         });
         this.brightnessSlider.addEventListener('mousedown',(e)=>{
             this.isMouseDown = true;
-            Utils.preventDefault(e);
+            this.ui.preventDefault(e);
         });
         this.brightnessSlider.addEventListener('mouseup',(e)=>{
             this.isMouseDown = false;
-            Utils.preventDefault(e);
+            this.ui.preventDefault(e);
         });
         this.brightnessSlider.addEventListener('ui-mousemove',(e)=>{
 
-            Utils.preventDefault(e);
-            Utils.isChanging(this.component.el.sceneEl,this.component.el.object3D.uuid);
+            this.ui.preventDefault(e);
+            this.ui.isChanging(this.component.el.sceneEl,this.component.el.object3D.uuid);
             if(!this.isMouseDown)return;
             let brightnessSlider = this.brightnessSlider.getObject3D('mesh'),
                 colorWheel = this.colorWheel.getObject3D('mesh') as Mesh,
@@ -372,7 +370,7 @@ export class ColorPicker extends UiComponent {
             (colorWheel.material as ShaderMaterial).uniforms['brightness'].value = brightness;
             this.hsv.v = brightness;
             this.updateColor();
-            Utils.stoppedChanging(this.component.el.object3D.uuid);
+            this.ui.stoppedChanging(this.component.el.object3D.uuid);
         });
     };
     hsvToRgb(hsv: any) {

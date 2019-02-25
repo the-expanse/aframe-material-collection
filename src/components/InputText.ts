@@ -1,8 +1,6 @@
 import {Component, Entity} from "aframe";
-import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
 import {Mesh, MeshLambertMaterial, Plane, Vector3} from "three";
-import {Utils} from "../utils";
 import {UiComponent} from "./UiComponent";
 
 export class InputText extends UiComponent {
@@ -102,13 +100,13 @@ export class InputText extends UiComponent {
             });
             this.component.el.setAttribute('visible',false);
             this.setValue();
-            // Utils.isChanging(this.component.el.sceneEl,this.text.object3D.uuid);
+            // this.ui.isChanging(this.component.el.sceneEl,this.text.object3D.uuid);
 
             //TODO For some reason initial value is not shown if delay is not there.
             setTimeout(()=> {
                 this.setScrollClips();
                 this.component.el.setAttribute('visible',true);
-                //Utils.stoppedChanging(this.text.object3D.uuid);
+                //this.ui.stoppedChanging(this.text.object3D.uuid);
             },500);
         });
         (this.component.el as any).getValue = this.getValue.bind(this);
@@ -225,7 +223,7 @@ export class InputText extends UiComponent {
         this.component.el.sceneEl!!.removeEventListener('key-cut',this.keyCut);
         this.component.el.sceneEl!!.removeEventListener('key-copy',this.keyCopy);
         this.component.el.sceneEl!!.removeEventListener('key-paste',this.keyPaste);
-        Utils.stoppedChanging(this.text.object3D.uuid);
+        this.ui.stoppedChanging(this.text.object3D.uuid);
         this.underline.setAttribute('height',0.005);
         this.underline.setAttribute('color','#bfbfbf');
     }
@@ -467,7 +465,7 @@ export class InputText extends UiComponent {
         let material = ((this.carret.getObject3D('mesh') as Mesh).material as MeshLambertMaterial);
         this.carretInterval = setInterval(()=>{
             material.opacity = material.opacity?0:1;
-            Utils.isChanging(this.component.el.sceneEl,this.text.object3D.uuid);
+            this.ui.isChanging(this.component.el.sceneEl,this.text.object3D.uuid);
         },350);
     }
     value(text: string){

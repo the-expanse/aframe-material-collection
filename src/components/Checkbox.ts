@@ -1,7 +1,5 @@
 import {Component, Entity} from "aframe";
-import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
-import {Utils} from "../utils";
 import {UiComponent} from "./UiComponent";
 
 export class Checkbox extends UiComponent {
@@ -101,7 +99,7 @@ export class Checkbox extends UiComponent {
     animateSelected(){
         let _this = this;
         // Start changes
-        Utils.isChanging(this.component.el.sceneEl,this.component.el.object3D.uuid);
+        this.ui.isChanging(this.component.el.sceneEl,this.component.el.object3D.uuid);
         new TWEEN.Tween({x:0})
             .to({ x: 1}, 200)
             .onUpdate(function () {
@@ -109,7 +107,7 @@ export class Checkbox extends UiComponent {
             })
             .onComplete(function(){
                 // Stop changes
-                Utils.stoppedChanging(_this.component.el.object3D.uuid);
+                _this.ui.stoppedChanging(_this.component.el.object3D.uuid);
             })
             .easing(TWEEN.Easing.Exponential.Out).start();
     };

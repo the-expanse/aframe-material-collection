@@ -1,7 +1,6 @@
 import {Component, Entity} from "aframe";
 import {AbstractComponentController} from "aframe-typescript-boilerplate/built/component/AbstractComponentController";
 import {ComponentControllerDefinition} from "aframe-typescript-boilerplate/built";
-import {Utils} from "../utils";
 import {UiComponent} from "./UiComponent";
 
 export class Button extends UiComponent {
@@ -47,7 +46,7 @@ export class Button extends UiComponent {
         }, function () {
             _this.component.el.object3D.position.z = _this.defaultZ + _this.data.hoverHeight;
         });
-        //Utils.preventDefault(e)
+        //this.ui.preventDefault(e)
     };
     
     mouseLeave(e: MouseEvent) {
@@ -57,14 +56,14 @@ export class Button extends UiComponent {
         }
         // Reset button state from hover
         this.resetAnimation(this.defaultZ + this.data.hoverHeight);
-        //Utils.preventDefault(e)
+        //this.ui.preventDefault(e)
     };
     
     mouseUp(e: MouseEvent) {
         this.is_clicked = true;
         // Reset button state from pressed
         this.resetAnimation(this.defaultZ + this.data.activeHeight);
-        Utils.preventDefault(e)
+        this.ui.preventDefault(e)
     };
     
     mouseDown(e: MouseEvent) {
@@ -75,7 +74,7 @@ export class Button extends UiComponent {
         }, function () {
             _this.component.el.object3D.position.z = _this.defaultZ + _this.data.activeHeight;
         });
-        Utils.preventDefault(e)
+        this.ui.preventDefault(e)
     };
     
     resetAnimation(start_z: number) {
@@ -90,13 +89,13 @@ export class Button extends UiComponent {
     tween(from: number, to: number, callback: any, complete: any) {
         let _this = this;
         // Start changes
-        if (!this.data.preventUpdates) Utils.isChanging(this.component.el.sceneEl, this.component.el.object3D.uuid);
+        if (!this.data.preventUpdates) this.ui.isChanging(this.component.el.sceneEl, this.component.el.object3D.uuid);
         return new TWEEN.Tween({x: from})
             .to({x: to}, this.data.duration)
             .onUpdate(callback)
             .onComplete( () => {
                 // Stop changes
-                if (!_this.data.preventUpdates) Utils.stoppedChanging(_this.component.el.object3D.uuid);
+                if (!_this.data.preventUpdates) this.ui.stoppedChanging(_this.component.el.object3D.uuid);
                 return complete.call(this);
             })
             .easing(TWEEN.Easing.Exponential.Out).start();
