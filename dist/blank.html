@@ -1,0 +1,25 @@
+<!doctype html>
+<head>
+    <meta charset="utf-8">
+    <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
+    <script src="aframe-material-collection.js"> </script>
+    <title>Aframe Material Collection - Minimal Example</title>
+</head>
+<body>
+<a-scene stats>
+
+    <a-entity light="type: ambient; intensity: 0.5;"></a-entity>
+    <a-sky color="#0000ff"></a-sky>
+
+    <a-entity id="camera" camera="near:0.1;far:10000" look-controls wasd-controls>
+        <a-entity id="cursor" cursor="rayOrigin: mouse" ui-mouse-shim raycaster="far: 30; objects: .intersect;"></a-entity>
+    </a-entity>
+
+    <a-ui id="mainRenderer" panel-width="6" panel-height="3" panel-position="0 0 -2">
+
+    </a-ui>
+
+
+</a-scene>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!doctype html>
+<head>
+    <meta charset="utf-8">
+    <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
+    <script src="aframe-material-collection.js"> </script>
+    <title>Aframe Material Collection - Minimal Example</title>
+</head>
+<body>
+<a-scene stats>
+
+    <a-entity light="type: ambient; intensity: 0.5;"></a-entity>
+    <a-sky color="#0000ff"></a-sky>
+
+    <a-entity id="camera" camera="near:0.1;far:10000" look-controls wasd-controls>
+        <a-entity id="cursor" cursor="rayOrigin: mouse" ui-mouse-shim raycaster="far: 30; objects: .intersect;"></a-entity>
+    </a-entity>
+
+    <a-ui panel-width="6" panel-height="3" panel-position="0 0 -2">
+
+        <a-ui-scroll-pane position="0 0 -0.1" height="1.5" scroll-z-offset="0.001" look-controls-el="#camera">
+            <a-entity class="container">
+                <!--Introduction-->
+                <a-entity width="2.9">
+                    <a-text font="roboto" baseLine="center" value="Introduction"
+                            color="#212121" anchor="center" alpha-test="0.3" wrap-count="54" width="2.45" height="0.1"></a-text>
+
+                    <a-text font="roboto" baseLine="bottom" value="Here we have some material UI based primitives and components for use in your aframe projects."
+                            anchor="center" color="#515151" alpha-test="0.3" wrap-count="80" width="2.85" height="0.15"></a-text>
+
+                    <a-text id="getwidth" font="roboto" baseLine="center" anchor="center" value="Scroll Pane"
+                            color="#212121" wrap-count="54" alpha-test="0.3" width="2" height="0.1"></a-text>
+
+                    <a-text font="roboto" baseLine="center" value="All of these primitive elements are enclosed inside a scroll pane. Elements out of view are automatically clipped."
+                            anchor="center" color="#515151" alpha-test="0.3" wrap-count="80" width="2.9" height="0.15"></a-text>
+                </a-entity>
+
+                <!-- Left Panel -->
+                <a-entity width="1.35">
+
+                    <!--Renderer-->
+                    <a-entity width="1.25">
+                        <a-text id="getwidth" font="roboto" baseLine="center" anchor="center" value="UI Renderer"
+                                color="#212121" wrap-count="27" width="1" height="0.2"></a-text>
+
+                        <a-text font="roboto" baseLine="center"
+                                value="The objects contained within the renderer entity are removed from the main scene and then rendered only when things change using the inbuilt change detection system."
+                                anchor="center" color="#515151" wrap-count="35" width="1.26875" height="0.2"></a-text>
+                    </a-entity>
+
+                    <!--Ripple-->
+                    <a-entity width="1.25">
+
+                        <a-text font="roboto" baseLine="bottom" value="Ripple"
+                                color="#212121" anchor="center" wrap-count="25" width="1.25" height="0.2"></a-text>
+
+                        <a-plane class="intersectable" shader="flat" width="0.25" height="0.2"
+                                 color="#673ab7" ui-ripple="size:0.25 0.2;clampToSquare:true;zIndex:0.001;color:white;"></a-plane>
+
+                        <a-triangle class="intersectable" shader="flat" vertex-a="0 0.075 0" vertex-b="-0.075 -0.075 0" vertex-c="0.075 -0.075 0"
+                                    color="#ec407a" ui-ripple="size:0.15 0.15;zIndex:-0.001;color:#f48fb1; duration:500;fadeDuration:250;"  width="0.25" height="0.2"></a-triangle>
+                    </a-entity>
+
+                    <!-- Buttons -->
+                    <a-entity width="1.25">
+
+                        <a-text font="roboto" baseLine="center" value="Buttons"
+                                color="#212121" anchor="center" wrap-count="25" width="1.25" height="0.1"></a-text>
+
+                        <!--Button-->
+                        <a-ui-button class="intersectable" text-value="Button" ></a-ui-button>
+
+                        <!--Flat Button-->
+                        <a-ui-button class="intersectable" text-value="Flat Button" transparent="true"
+                                     font-color="#009688" color="white" ripple-color="#009688"></a-ui-button>
+
+                        <!--Disabled Button-->
+                        <a-ui-button class="intersectable" text-value="Disabled" disabled="true" transparent="true"
+                                     font-color="#cfcfcf" color="#efefef" ripple-color="#cfcfcf"></a-ui-button>
+
+
+                        <a-text font="roboto" baseLine="center" value="Floating Action Buttons"
+                                color="#212121" anchor="center" wrap-count="25" width="1.25" height="0.15"></a-text>
+
+                        <!--Floating Action Button-->
+                        <a-ui-fab-button class="intersectable" color="#f44336"></a-ui-fab-button>
+
+                        <!--Floating Action Button Small-->
+                        <a-ui-fab-button-small class="intersectable" color="#2196f3"></a-ui-fab-button-small>
+
+                        <!--Floating Action Button Disabled-->
+                        <a-ui-fab-button-small class="intersectable" disabled="true"
+                                               color="#afafaf" ripple-color="#afafaf"></a-ui-fab-button-small>
+
+                        <a-text font="roboto" baseLine="center" value="Color Picker"
+                                color="#212121" anchor="center" wrap-count="25" width="1.25" height="0.15"></a-text>
+
+                        <!--Color Picker Button-->
+                        <a-ui-button id="pickColor" class="intersectable" text-value="Pick Color" wrap-count="12">
+
+                        </a-ui-button>
+                    </a-entity>
+
+                    <!-- Slider -->
+                    <a-entity width="1.25">
+
+                        <a-text font="roboto" baseLine="center" value="Slider"
+                                color="#212121" anchor="center" wrap-count="25" width="1.25" height="0.1"></a-text>
+
+                        <a-ui-slider camera-el="#camera" value="0.5"></a-ui-slider>
+                    </a-entity>
+
+                </a-entity>
+
+                <!-- Right Panel -->
+                <a-entity width="1.35">
+
+                    <!--Text Input-->
+                    <a-entity width="1.25">
+                        <a-text font="roboto" baseLine="center" anchor="center" value="Text"
+                                color="#212121" wrap-count="25" width="0.9" height="0.1"></a-text>
+                        <a-ui-input-text camera-el="#camera" width="1" height="0.2"
+                                         value=""
+
+                        ></a-ui-input-text>
+                        <!--Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut in quam dui.-->
+                    </a-entity>
+
+                    <!--Number Input-->
+                    <a-entity width="1.25">
+                        <a-text font="roboto" baseLine="center" anchor="center" value="Number"
+                                color="#212121" wrap-count="25" width="0.9" height="0.1"></a-text>
+
+                        <a-ui-input-text camera-el="#camera" width="0.45" height="0.2" type="number"
+                                         value="0.00" place-holder="Number..."></a-ui-input-text>
+
+
+                        <a-ui-number></a-ui-number>
+
+                    </a-entity>
+
+                    <!--Int Input-->
+                    <a-entity width="1.25">
+                        <a-text font="roboto" baseLine="center" anchor="center" value="Integer"
+                                color="#212121" wrap-count="25" width="1.25" height="0.1"></a-text>
+
+                        <a-ui-input-text camera-el="#camera" width="1" height="0.2" type="int"
+                                         value="10" place-holder="Whole Number..."></a-ui-input-text>
+                    </a-entity>
+
+                    <!--Password Input-->
+                    <a-entity width="1.25">
+                        <a-text font="roboto" baseLine="center" anchor="center" value="Password"
+                                color="#212121" wrap-count="25" width="1.25" height="0.1"></a-text>
+
+                        <a-ui-input-text camera-el="#camera" width="1" height="0.2" type="password"
+                                         place-holder="Password..."></a-ui-input-text>
+                    </a-entity>
+                    <!--Switch-->
+                    <a-entity width="1.25">
+
+                        <a-text font="roboto" baseLine="center" anchor="center" value="Switch"
+                                color="#212121" wrap-count="25" width="1.25" height="0.15"></a-text>
+                        <a-ui-switch></a-ui-switch>
+
+                        <a-ui-switch disabled="true"></a-ui-switch>
+
+                    </a-entity>
+
+                    <a-text font="roboto" baseLine="center" anchor="center" value="Checkbox"
+                            color="#212121" wrap-count="25" width="1.25" height="0.1"></a-text>
+
+                    <!--Checkbox-->
+                    <a-entity width="1.25">
+                        <a-ui-checkbox ></a-ui-checkbox>
+
+                        <a-ui-checkbox value="true" ></a-ui-checkbox>
+
+                        <a-ui-checkbox indeterminate="true" ></a-ui-checkbox>
+
+                        <a-ui-checkbox disabled="true" ></a-ui-checkbox>
+                    </a-entity>
+
+                    <!--Radio Group-->
+                    <a-entity width="1.25">
+                        <a-text font="roboto" baseLine="center" anchor="center" value="Radio"
+                                color="#212121" wrap-count="25" width="1.25" height="0.1"></a-text>
+                        <a-ui-radio></a-ui-radio>
+                        <a-ui-radio selected="true"></a-ui-radio>
+                        <a-ui-radio></a-ui-radio>
+                        <a-ui-radio disabled="true"></a-ui-radio>
+                    </a-entity>
+
+                    <a-entity width="1.25">
+
+                        <a-text font="roboto" baseLine="center" value="Toast Message"
+                                color="#212121" anchor="center" wrap-count="25" width="1.25" height="0.15"></a-text>
+
+                        <!--Toast Button-->
+                        <a-ui-button ui-toast="toastEl:#toastMessage;message:Im a toast message!" class="intersectable" text-value="Show Toast" wrap-count="12"></a-ui-button>
+
+                        <!--Toast Button 2-->
+                        <a-ui-button ui-toast="toastEl:#toastMessage;message:Hello World! Im a very long toast message toast toasty toast toasty toast toast toasty toast toasty toast toast!" class="intersectable" text-value="Show Toast 2" wrap-count="12"></a-ui-button>
+
+                    </a-entity>
+
+                </a-entity>
+
+            </a-entity>
+
+        </a-ui-scroll-pane>
+
+        <a-entity ui-color-picker="targetEl:#pickColor" position="0 0.2 -0.55"></a-entity>
+
+        <a-ui-toast id="toastMessage" position="1 -0.4 0.1" visible="false"></a-ui-toast>
+
+    </a-ui>
+
+
+</a-scene>
+</body>
+</html>

@@ -53,6 +53,8 @@ npm start
 #### Building
 
 ```
+npm config set yoga-layout:platform standalone
+npm install
 npm run build
 ```
 
